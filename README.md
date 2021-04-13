@@ -25,7 +25,7 @@ It's small size makes it suitable for embedded environments.
 
 ## Licensing
 
-- See the [Xinu license](/LICENSE.md) for details
+- See the [Xinu license](/LICENSE.TXT) for details
 
 ## Additional Information
 
