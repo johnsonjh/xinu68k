@@ -1,3 +1,6 @@
 MECB/src/lib/gnulib/tm.h linguist-vendored
 MECB/src/lib/gnulib/tm-m68k.h linguist-vendored
 MECB/src/sys/h/sluaccess6850.h linguist-vendored
+./MECB/src/lib/gnulib/tm.h linguist-vendored
+./MECB/src/lib/gnulib/tm-m68k.h linguist-vendored
+./MECB/src/sys/h/sluaccess6850.h linguist-vendored
