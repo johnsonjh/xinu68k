@@ -1,0 +1,66 @@
+
+
+
+RECVTIM(2)          Xinu Programmer's Manual           RECVTIM(2)
+
+
+
+NAME
+     recvtim - receive a message with timeout
+
+SYNOPSIS
+     int recvtim(maxwait)
+     int maxwait;
+
+DESCRIPTION
+     _R_e_c_v_t_i_m allows a process to specify a maximum time limit it
+     is willing to wait for a message to arrive.  Like
+     RECEIVE(2), _r_e_c_v_t_i_m blocks the calling process until a mes-
+     sage arrives from SEND(2).  Argument _m_a_x_w_a_i_t gives the max-
+     imum time to wait for a message, specified in tenths of
+     seconds.
+
+     _R_e_c_v_t_i_m returns integer SYSERR if the argument is incorrect
+     or if no clock is present.  It returns integer TIMEOUT if
+     the time limit expires before a message arrives.  Otherwise,
+     it returns the message.
+
+SEE ALSO
+     receive(2), recvclr(2), send(2), sleep10(2), sleep(2)
+
+BUGS
+     There is no way to distinguish between messages that contain
+     TIMEOUT or SYSERR and errors reported by _r_e_c_v_t_i_m.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

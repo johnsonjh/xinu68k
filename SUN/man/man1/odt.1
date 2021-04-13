@@ -1,0 +1,24 @@
+.TH ODT 1
+.SH NAME
+odt \- connect user's terminal to a micro console (odt) line
+.SH SYNOPSIS
+.B odt
+[ option ] ...
+.SH DESCRIPTION
+.I Odt
+connects a terminal on the VAX to a microcomputer tty line so the output
+of the micro appears on the terminal screen and characters typed at the
+keyboard are sent to the micro.
+\f2Odt\f1 sets the micro tty line to raw mode, and the VAX terminal to
+cbreak mode.
+The connection can be broken by killing the odt process (e.g., by
+typing the interrupt character (e.g., CONTROL-C).
+.PP
+When \f2odt\f1 receives a backslash from the terminal,
+it switches to raw mode to read
+one character, after which it switches back to cbreak mode.
+The backslash escape allows the user to send characters like CONTROL-C
+to the micro even though they are normally interpreted as signals.
+As a special case, an escaped null character (octal 0) causes \f2odt\f1
+to force the micro line into a break condition for 1 second.
+This is useful for trapping a \s-2Sun\s0 into monitor mode.

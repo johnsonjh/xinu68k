@@ -1,0 +1,28 @@
+			Shell Directory README
+
+This directory contains the source for the Xinu shell and sample set
+of commands.  When make runs, it produces a library (libS.a) that contains
+object files for all commands (x_zzz.c).  It then compiles the shell
+(addarg.c ascdate.c login.c shell.c) and links it together with commands
+that are referenced to produce a single object file (sh.o).
+
+Files cmd.h and shell.h are linked to ../../h/cmd.h and ../../h/shell.h
+to make it convenient to share them between the rest of the kernel and
+files here.
+
+To change the command set, edit cmd.h and change the list defined by
+CMDS.  Each entry consists of a command name to recognize, a Boolean
+that specifies whether the command should be run as a builtin (as opposed
+to running it as a separate process), and a procedure to call for that
+command.  File cmd.h also contains extern declarations for all of the
+procedures mentioned in CMDS.
+
+Note 1:	Some commands cannot be inserted and/or removed without modifying
+	the rest of the kernel.  In particular, the ruptime command cannot
+	be used unless the kernel is compiled to execute the rwho daemon.
+
+Note 2:	The system comes on the distribution tape with all the commands
+	configured in it.  This leaves very little of the LSI 11's 16-bit
+	address space for modifications or additions.  We suggest removing
+        commands like create, snap, rls, and echo.  You can gain considerably
+	more space by removing ruptime, uptime, and the rwho daemons.

@@ -1,0 +1,66 @@
+
+
+
+SRESET(2)           Xinu Programmer's Manual            SRESET(2)
+
+
+
+NAME
+     sreset - reset semaphore count
+
+SYNOPSIS
+     int sreset(sem,count)
+     int sem;
+     int count;
+
+DESCRIPTION
+     _S_r_e_s_e_t frees processes in the queue for semaphore _s_e_m, and
+     resets its count to _c_o_u_n_t. This corresponds to the opera-
+     tions of sdelete(sem) and sem=screate(count), except that it
+     guarantees that the semaphore id _s_e_m does not change.
+     _S_r_e_s_e_t returns SYSERR if _s_e_m is not a valid semaphore id.
+     The current count in a semaphore does not affect resetting
+     it.
+
+SEE ALSO
+     scount(2), screate(2), sdelete(2), signal(2), wait(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

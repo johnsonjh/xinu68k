@@ -1,0 +1,132 @@
+
+
+
+DOWNLOAD(1)         UNIX Programmer's Manual          DOWNLOAD(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     download - load program into SUN test machine
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ddddoooowwwwnnnnllllooooaaaadddd [ option ] ...  [ file ]
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _D_o_w_n_l_o_a_d takes an absolute binary program image (SUN a.out
+     format) and copies it to the frontend file /_t_f_t_p_b_o_o_t/_a._o_u_t
+     for the backend sun to use when booting.  _D_o_w_n_l_o_a_d deter-
+     mines which backend SUN the user has reserved, or finds a
+     free backend SUN if the user does not have a backend SUN
+     reserved.  Once a backend is found, _d_o_w_n_l_o_a_d uses TCP to
+     send the binary program image to the associated front end.
+     Note that local net broadcasts are used to find free backend
+     SUNs so downloading is only allowed to SUNs connected to the
+     local net.  There is one exception to this rule.  You may
+     download from a frontend on a remote net to a frontend run-
+     ning a BED server on the local net if the frontend on the
+     remote net has a bedservers file which lists all of the
+     frontends running BED servers.
+
+     Loading the object program takes time proportional to the
+     size of the program itself.  In two seconds, download will
+     transfer about 56K bytes over the ethernet using TCP.
+
+     _D_o_w_n_l_o_a_d transfers the user's program as specified in the
+     command line.  If no program name is given, _a._o_u_t is used.
+
+     Options are:
+
+     ----cccc_C_L_A_S_S
+          Class.  Use a machine in the class _C_L_A_S_S. The default
+          class is SUN.  If the user already has a backend
+          reserved in class _C_L_A_S_S, then it will be used. If no
+          machines are available in class _C_L_A_S_S a message indi-
+          cating this will be printed.  See also _b_u_s_e_r_s, which
+          displays which class each backend machine belongs to.
+
+     ----mmmm_M_A_C_H
+          Machine.  Use the backend machine named _M_A_C_H if it is
+          available.  A user may now reserve two or more machines
+          at once.  The first machine they reserve will not
+          automatically be released like the original version of
+          the software used to do.  Moreover,  the tty line and
+          the user name are used to make a reservation.  This
+          means that a user can download to two different backend
+          machines from two different windows on his workstation,
+          and the reservation system will remember which window
+          is associated with each backend.  If you want to down-
+          load to two different backends from the same window,
+          then you must specify the desired backend each time, or
+
+
+
+Printed 1/16/89                                                 1
+
+
+
+
+
+
+DOWNLOAD(1)         UNIX Programmer's Manual          DOWNLOAD(1)
+
+
+
+          the reservation system will automatically download to
+          the backend that you used most recently in that window.
+
+     ----vvvv   Verbose.  The verbose option will print messages indi-
+          cating what the program is currently doing.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     busers(1), odt(1), odtunlock(1)
+
+FFFFIIIILLLLEEEESSSS
+     /tmp/xinu/*   Local lock files.  Named by user's login id
+     /usr/xinu/database/bedservers  List of BED servers if on
+                                    on remote net
+
+BBBBUUUUGGGGSSSS
+     Currently it only works to download to a backend SUN.  You
+     can download from a frontend SUN or VAX.  In future versions
+     you will be able to download from anything to anything.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 1/16/89                                                 2
+
+
+

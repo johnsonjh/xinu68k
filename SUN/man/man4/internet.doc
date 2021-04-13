@@ -1,0 +1,131 @@
+
+
+
+INTERNET(4)         Xinu Programmer's Manual          INTERNET(4)
+
+
+
+NAME
+     internet - IP-level Internet interface pseudo-device driver
+     (types dgm, dg)
+
+SYNOPSIS
+     #include <network.h>
+
+     read(device buffer, length)
+     write(device, buffer, length)
+     open(device, name)
+     close(device)
+     control(device, function, arg1)
+     init(device)
+
+DESCRIPTION
+     The _d_g_m and _d_g device drivers, which operate as a related
+     pair, provide a network interface at the IP datagram level.
+     They accept datagrams from user processes and send them out
+     on the DARPA Internet, or receive datagrams from the Inter-
+     net and deliver them to user processes.  The standard Xinu
+     device name for the datagram master pseudo-device is _I_N_T_E_R_-
+     _N_E_T, and the standard name for individual connection
+     pseudo-devices is _D_G_R_A_M.
+
+     The drivers cooperate so that users can initiate connection
+     by calling OPEN(2) on the datagram master device.  If suc-
+     cessful, the call to OPEN(2) returns the device descriptor
+     of a _d_g pseudo-device that can be used with READ(2) or
+     WRITE(2) to transfer data.  Finally, when finished with the
+     connection, the user process calls CLOSE(2) on the _d_g dev-
+     ice.
+
+     The _d_g_m driver consists of routines that implement OPEN(2)
+     and CONTROL(2), while the _d_g driver consists of routines for
+     READ(2), WRITE(2), CLOSE(2), and CONTROL(2).  Primitives
+     READ(2) and WRITE(2) operate in one of two basic modes.
+     Either they transfer data in Xinugram format complete with
+     an address header, or they transfer just the data portion of
+     the datagram.
+
+     open(device,name,mode)
+          Used with the master device to open a datagram pseudo-
+          device.  Name is a string that gives an IP address and
+          UDP port number in the form _i_1._i_2._i_3._i_4:_u.
+
+     control(device,function,arg1)
+          Used with master device to set the default gateway for
+          nonlocal IP datagram traffic.  The only function sup-
+          ported is _D_G_M__G_A_T_E which takes an IP address as an
+          argument and sets the default gateway to that address.
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+INTERNET(4)         Xinu Programmer's Manual          INTERNET(4)
+
+
+
+     Used with a _d_g pseudo-device to set the transfer mode.  The
+     valid operations include _D_G__C_L_E_A_R, which clears any UDP
+     datagrams that happen to be in the receive queue, and
+     _D_G__S_E_T_M_O_D_E, which sets the pseudo-device mode.  The mode
+     argument composed of a word in which the first two bits con-
+     trol the transfer mode and sixth bit controls timeout.  The
+     symbolic constants for these bits are:
+9       DG_NMODE (001) - Normal mode
+       DG_DMODE (002) - Data-only mode
+       DG_TMODE (040) - Timeout all reads
+9     Note that timeout can be applied to either transfer mode.
+
+     read(device buffer, length)
+          Used with a _d_g pseudo-device to await the arrival of a
+          UDP datagram and transfer it to the user in the form of
+          a Xinugram.
+
+     write(device, buffer, length)
+          Used with a _d_g pseudo-device to transfer a xinugram
+          into a UDP datagram and send it on the Internet.
+
+     close(device)
+          Closes a _d_g pseudo-device.
+
+     init(device)
+          When applied to _d_g pseudo-devices initializes each to
+          mark it not in use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

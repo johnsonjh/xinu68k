@@ -1,0 +1,85 @@
+.TH CTYPE 3
+.SH NAME
+ctype \- character type predicates and manipulation routines
+.SH SYNOPSIS
+.B #include <ctype.h>
+.PP
+.nf
+.B isalpha(c)
+.B ...
+.B toascii(c)
+.B tolower(c)
+.B toupper(c)
+.br
+.B char c;
+.SH DESCRIPTION
+Routines beginning with \f2is\f1 are predicates that classify
+the type of a character.
+Routines beginning with \f2to\f1 convert characters.
+Each predicate returns \f2TRUE\f1 if the condition is satisfied,
+and \f2FALSE\f1 otherwise.
+In the current implementation, predicates are macros that use table lookup
+for efficiency.
+.TP 15n
+.I isalnum
+.I c
+is an alphanumeric character (i.e., a letter or digit)
+.TP
+.I isalpha
+.I c
+is a lower- or upper-case letter
+.TP
+.I isascii
+.I c
+is an ASCII character, code less than 0200
+.TP
+.I iscntrl
+.I c
+has a value less than octal 040 or is a DEL (octal value 0177).
+.TP
+.I isdigit
+.I c
+is a digit.
+.TP
+.I islower 
+.I c
+is a lower case letter.
+.TP
+.I isprint
+.I c
+is a printable character with octal value 040 (blank) through 0176 (tilde).
+.TP
+.I isprshort
+.I c
+is a printable short.
+.TP
+.I ispunct
+.I c
+is a punctuation character (neither control nor alphanumeric).
+.TP
+.I isspace
+.I c
+is a space, tab, carriage return, newline, or formfeed.
+.TP
+.I isupper
+.I c
+is an upper case letter.
+.TP
+.I isxdigit
+.I c
+is a hexadecimal digit (i.e., is 0\-9 or a-f).
+.TP
+.I toascii
+Converts
+.I c
+to an ascii by turning off high-order bits.
+.TP
+.I tolower
+Converts argument
+.I c
+from upper to lower case.
+.TP
+.I toupper
+Converts argument
+.I c
+from lower to upper case.

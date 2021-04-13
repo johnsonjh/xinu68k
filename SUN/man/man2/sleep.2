@@ -1,0 +1,34 @@
+.TH SLEEP 2
+.SH NAME
+sleep, sleep10 \- go to sleep for a specified time
+.SH SYNOPSIS
+.nf
+.B int sleep(secs)
+.B int sleep10(tenths)
+.B int secs;
+.B int tenths;
+.fi
+.SH DESCRIPTION
+In either form,
+.I sleep
+causes the current process to delay for a specified time and then
+resume.
+The form
+.I sleep
+expects the delay to be given in an integral number of seconds;
+it is most useful for longer delays.
+The form
+.I sleep10
+expects the delay to be given in an integral number of tenths of
+seconds; it is most useful for short delays.
+.PP
+Both forms return SYSERR if the argument is negative or if the
+line time clock is not enabled on the processor.
+Otherwise they delay for the specified time and return OK.
+.SH SEE ALSO
+suspend(2), unsleep(2)
+.SH BUGS
+The maximum sleep is 32767 seconds (about 546 minutes, or 9.1 hours).
+Sleep guarantees a lower bound on delay, but since the system may
+delay processing of
+interrupts at times, sleep cannot guarantee an upper bound.

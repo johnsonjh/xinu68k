@@ -1,0 +1,18 @@
+.TH UNSLEEP 2
+.SH NAME
+unsleep \- remove a sleeping process from the clock queue prematurely
+.SH SYNOPSIS
+.nf
+.B int unsleep(pid)
+.B int pid;
+.fi
+.SH DESCRIPTION
+.I Unsleep
+allow one process to take another out of the sleeping state before
+the time limit has expired.
+usually, only system routines like RECVTIM(2) and KILL(2) call
+\f2unsleep\f1.
+User-level processes can avoid using \f2unsleep\f1 by arranging
+processes to cooperate using message passing primitives.
+.SH SEE ALSO
+sleep(2), kill(2), recvtim(2)

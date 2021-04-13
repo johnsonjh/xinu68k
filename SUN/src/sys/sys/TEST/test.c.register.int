@@ -1,0 +1,28 @@
+	
+main()
+{
+    register int i = 10;
+    register int j = 20;
+    register int k = 30;
+
+    proc2();
+    
+    kprintf("i is %2d, j is %2d, k is %2d\n",i,j,k);
+
+    sleep(1);
+    
+    kprintf("i is %2d, j is %2d, k is %2d\n",i,j,k);
+
+    sleep(1);
+    ret_mon();
+}
+
+proc2()
+{
+  register int x;
+  
+  kprintf("x is %d\n",x);
+  x = 100;
+  kprintf("x is %d\n",x);
+}
+

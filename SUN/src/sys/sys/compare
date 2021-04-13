@@ -1,0 +1,5 @@
+for FILE in `/bin/ls *.c`
+   do
+      echo ======================== $FILE =========================
+      diff /u5/xinu/xinu7/src/sys/sys/$FILE $FILE
+    done

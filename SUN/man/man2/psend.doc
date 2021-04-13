@@ -1,0 +1,66 @@
+
+
+
+PSEND(2)            Xinu Programmer's Manual             PSEND(2)
+
+
+
+NAME
+     psend - send a message to a port
+
+SYNOPSIS
+     int psend(portid, message)
+     int portid;
+     char *message;
+
+DESCRIPTION
+     _P_s_e_n_d adds the pointer _m_e_s_s_a_g_e to the port _p_o_r_t_i_d. If suc-
+     cessful, _p_s_e_n_d returns OK; it returns SYSERR if _p_o_r_t_i_d is
+     invalid.  Note that only a pointer, not the entire message,
+     is enqueued, and that psend may return to the caller before
+     the receiver has consumed the message.
+
+     If the port is full at the time of the call, the sending
+     process will be blocked until space is available in the port
+     for the message.
+
+SEE ALSO
+     pcount(2), pcreate(2), pdelete(2), preceive(2), preset(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

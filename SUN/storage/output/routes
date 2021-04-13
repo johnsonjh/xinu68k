@@ -1,0 +1,21 @@
+Routing cache: size=20, next=19
+  0. Route=D, Dev= 1 IPaddr=128.010.002.040, Ether addr=0800.2001.4ffd
+  1. Route=D, Dev= 1 IPaddr=128.010.002.182, Ether addr=0800.2000.1ec5
+  2. Route=D, Dev= 1 IPaddr=128.010.002.027, Ether addr=0800.2001.6808
+  3. Route=D, Dev= 1 IPaddr=128.010.002.002, Ether addr=0207.0100.27ba
+  4. Route=D, Dev= 1 IPaddr=128.010.002.200, Ether addr=0800.1411.4143
+  5. Route=D, Dev= 1 IPaddr=128.010.002.161, Ether addr=0800.2001.f140
+  6. Route=D, Dev= 1 IPaddr=128.010.002.024, Ether addr=0800.2001.0d49
+  7. Route=D, Dev= 1 IPaddr=128.010.002.107, Ether addr=0800.2000.0a30
+  8. Route=D, Dev= 1 IPaddr=128.010.002.170, Ether addr=0800.2000.1435
+  9. Route=D, Dev= 1 IPaddr=128.010.002.167, Ether addr=0800.2001.d92d
+ 10. Route=D, Dev= 1 IPaddr=128.010.002.004, Ether addr=0800.4700.04e1
+ 11. Route=D, Dev= 1 IPaddr=128.010.002.165, Ether addr=0800.2001.8878
+ 12. Route=D, Dev= 1 IPaddr=128.010.002.168, Ether addr=0800.2001.d8e2
+ 13. Route=D, Dev= 1 IPaddr=128.010.002.088, Ether addr=0800.2001.f618
+ 14. Route=D, Dev= 1 IPaddr=128.010.002.162, Ether addr=0800.2000.0278
+ 15. Route=D, Dev= 1 IPaddr=128.010.002.112, Ether addr=0800.1100.409c
+ 16. Route=D, Dev= 1 IPaddr=128.010.002.178, Ether addr=0800.2000.1df8
+ 17. Route=D, Dev= 1 IPaddr=128.010.002.103, Ether addr=0800.2001.bc5f
+ 18. Route=D, Dev= 1 IPaddr=128.010.002.053, Ether addr=0800.2001.87f3
+ 19. Route=D, Dev= 1 IPaddr=128.010.002.042, Ether addr=0800.2001.608d

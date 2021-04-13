@@ -1,0 +1,66 @@
+
+
+
+PINIT(2)            Xinu Programmer's Manual             PINIT(2)
+
+
+
+NAME
+     pinit - initialize the ports table at system startup
+
+SYNOPSIS
+     int pinit(maxmsgs)
+     int maxmsgs;
+
+DESCRIPTION
+     _P_i_n_i_t initializes the ports mechanism by clearing the ports
+     table and allocating memory for messages.  It should be
+     called only once (usually at system startup).  Argument
+     _m_a_x_m_s_g_s specifies an upper bound on the number of simultane-
+     ously outstanding messages at all ports.
+
+SEE ALSO
+     pcreate(2), pdelete(2), psend(2), preceive(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

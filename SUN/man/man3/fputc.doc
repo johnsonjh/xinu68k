@@ -1,0 +1,66 @@
+
+
+
+FPUTC(3)            Xinu Programmer's Manual             FPUTC(3)
+
+
+
+NAME
+     fputc, putchar - put character to a device
+
+SYNOPSIS
+     #include <io.h>
+
+     int fputc(device, c)
+     int device;
+     char c;
+     putchar(c)
+
+DESCRIPTION
+     These procedures are included for compatibility with UNIX.
+     _F_p_u_t_c appends the character _c to the named output _d_e_v_i_c_e,
+     and returns SYSERR if device is invalid; it is defined to be
+     _p_u_t_c(_d_e_v_i_c_e, _c).
+
+     _P_u_t_c_h_a_r(_c) is also defined to be _p_u_t_c(_C_O_N_S_O_L_E, _c).
+
+SEE ALSO
+     putc(2), puts(3), printf(3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

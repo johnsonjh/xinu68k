@@ -1,0 +1,66 @@
+
+
+
+ACCESS(2)           Xinu Programmer's Manual            ACCESS(2)
+
+
+
+NAME
+     access - determine whether a file is accessible
+
+SYNOPSIS
+     int access(filename, mode)
+     char *filename;
+     char *mode;
+
+DESCRIPTION
+     _A_c_c_e_s_s examines file with name _f_i_l_e_n_a_m_e to determine if it
+     is accessible according to the modes specified in the mode
+     string _m_o_d_e.  Valid characters in the mode string are r
+     (check for read access) w (check for write access), n (check
+     to see if a new  file can be created), and o (check to see
+     if file exists).  If neither r nor w is specified, both are
+     assumed.
+
+SEE ALSO
+     open(2), ckmode(3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

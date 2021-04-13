@@ -1,0 +1,66 @@
+
+
+
+BEDREBOOT(1)        UNIX Programmer's Manual         BEDREBOOT(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     bedreboot - reboot the BED on the specified frontend
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     bbbbeeeeddddrrrreeeebbbbooooooootttt [ frontend-machine ] ...
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _B_e_d_r_e_b_o_o_t restarts the BED process on all frontends speci-
+     fied on the command line.  This is useful if it appears that
+     a particular BED is functioning incorrectly and needs to be
+     restarted.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     bed(1), bedkill(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 6/11/88                                                 1
+
+
+

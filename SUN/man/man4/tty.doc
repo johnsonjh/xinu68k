@@ -1,0 +1,132 @@
+
+
+
+TTY(4)              Xinu Programmer's Manual               TTY(4)
+
+
+
+NAME
+     tty - general-purpose terminal I/O device driver (type tty)
+
+SYNOPSIS
+     #include <slu.h>
+     #include <tty.h>
+
+     read(device buffer, length)
+     write(device, buffer, length)
+     open(device, name)
+     close(device)
+     control(device, function, arg1, arg2)
+     init(device)
+
+DESCRIPTION
+     The _t_t_y device driver provides input and output for a full-
+     duplex ascii terminal device.  On most Xinu systems, device
+     _C_O_N_S_O_L_E is of type tty.
+
+     Currently implemented on a Digital Equipment Corporation
+     serial line unit (SLU) like that on the DLV11 and MXV11, the
+     driver expects one interrupt per character on both input and
+     output.
+
+     The _t_t_y driver operates in one of three modes, with switch-
+     ing between the modes determined dynamically.  In _r_a_w _m_o_d_e,
+     it passes incoming characters to the reading process without
+     further processing.  In _c_b_r_e_a_k _m_o_d_e, the driver honors XON-
+     XOFF flow control, character echo, and mapping between car-
+     riage return and line feed.  In _c_o_o_k_e_d _m_o_d_e the driver
+     behaves like cbreak mode, but also handles line editing with
+     backspace and line kill keys.  Characters are processed
+     according to the driver mode when they arrive, and are
+     placed in a queue from which upper-half routines extract
+     them.  Echoing, presentation of control characters, and
+     editing are controlled by several fields in the driver con-
+     trol structure, and may be changed dynamically.
+
+     The upper-half routines behave as follows:
+
+     read(device,buffer,length)
+          Reads up to one line into the user's _b_u_f_f_e_r, stopping
+          on an END-OF-FILE or NEWLINE character, or after _l_e_n_g_t_h
+          characters have been supplied.  As a special case, if
+          _l_e_n_g_t_h is zero, the driver reads whatever characters
+          are available in the input buffer (possibly zero).  In
+          cooked mode, _r_e_a_d blocks until a line has been typed.
+
+     write(device,buffer,length)
+          Writes _l_e_n_g_t_h characters from the user's _b_u_f_f_e_r, map-
+          ping CARRIAGE RETURN to NEWLINE as specified by field
+          _o_c_r_l_f of the driver control structure.  Write may block
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+TTY(4)              Xinu Programmer's Manual               TTY(4)
+
+
+
+          if the output exceeds the currently available buffer
+          space.
+
+     getc(device)
+          Reads a single character and returns it as the function
+          value.
+
+     putc(device,char)
+          Writes character _c_h_a_r.
+
+     open(device,name)
+          Returns _O_K if character string _n_a_m_e is null, and _S_Y_S_E_R_R
+          otherwise, taking no action except generating a return
+          value.
+
+     close(device)
+          Returns _O_K without taking any action.
+
+     init(device)
+          Initializes the driver.  Note: for historical reasons,
+          device _C_O_N_S_O_L_E is initialized to cooked mode with echo,
+          visual control character printing, and line editing
+          enabled, while other devices are initialized to raw
+          mode.
+
+     control(device,function)
+          Controls the driver and provides non-transfer opera-
+          tions.  The valid functions are:
+            TCSETBRK - set the line into  the ``break'' state.
+            TCRSTBRK - reset the line, turning off ``break'' state.
+            TCNEXTC - lookahead one character without reading it.
+            TCMODER - change the driver to raw mode.
+            TCMODEC - change the driver to cooked mode.
+            TCMODEK - change the driver to cbreak mode.
+            TCECHO - turn on character echo.
+            TCNOECHO - turn off character echo.
+            TCICHARS - return a count of characters in the input buffer.
+
+DIAGNOSTICS
+     Character errors are reported by turning on the high-order
+     bit of the character.
+
+NOTES
+     The version 6 driver used buffer counts as exact requests;
+     version 7 is line oriented.  Error reporting should be
+     improved.
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

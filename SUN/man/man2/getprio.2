@@ -1,0 +1,16 @@
+.TH GETPRIO 2
+.SH NAME
+getprio \- return the scheduling priority of a given process
+.SH SYNOPSIS
+.B int
+.B getprio(pid)
+.nf
+.B int pid;
+.fi
+.SH DESCRIPTION
+.I Getprio
+returns the scheduling priority of process
+.I pid.
+If pid is invalid,
+.I getprio
+returns SYSERR.

@@ -1,0 +1,5 @@
+DIR=/u5/xinu/xinu7
+FORDIR=$DIR/book/formatted
+for i in *.c *.h
+do   expand < $i | sed 's/\\/&&&&/g;s/^\./\\\\\&./' > $FORDIR/$i
+done

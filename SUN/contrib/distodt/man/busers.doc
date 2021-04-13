@@ -1,0 +1,66 @@
+
+
+
+BUSERS(1)           UNIX Programmer's Manual            BUSERS(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     busers - list users holding odt lock reservations on all
+     backends
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     bbbbuuuusssseeeerrrrssss
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _B_u_s_e_r_s lists the users who hold reservations on all backend
+     machines.  Each line of output contains the machine name,
+     the class the machine belongs to, the user who holds it, and
+     the idle time.  Reservations are made by _o_d_t(1), and _d_o_w_n_-
+     _l_o_a_d(1).
+
+FFFFIIIILLLLEEEESSSS
+     /tmp/xinu/*  Lock files consulted by BED process.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     odtunlock(1), odt(1), download(1)
+
+BBBBUUUUGGGGSSSS
+     _B_u_s_e_r_s lists reservations and idle time based on lock file
+     times which may not be quite accurate.  Machines with more
+     than 10 minutes of idle time are listed even though the
+     reservation software considers the reservation to have
+     expired.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 6/8/88                                                  1
+
+
+

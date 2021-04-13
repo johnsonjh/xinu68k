@@ -1,0 +1,66 @@
+
+
+
+CLOSE(2)            Xinu Programmer's Manual             CLOSE(2)
+
+
+
+NAME
+     close - device independent close routine
+
+SYNOPSIS
+     int close(dev)
+     int dev;
+
+DESCRIPTION
+     _C_l_o_s_e will disconnect I/O from the device given by _d_e_v. It
+     returns SYSERR if _d_e_v is incorrect, or is not opened for
+     I/O.  Otherwise, _c_l_o_s_e returns OK.
+
+     Normally tty devices like the console do not have to be
+     opened and closed.
+
+SEE ALSO
+     control(2), getc(2), open(2), putc(2), read(2), seek(2),
+     write(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

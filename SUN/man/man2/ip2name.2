@@ -1,0 +1,30 @@
+.TH IP2NAME 2
+.SH NAME
+ip2name \- translate an Internet address to a host Domain Name
+.SH SYNOPSIS
+.B int *ip2name(ip, name)
+.br
+.B IPaddr ip;
+.sp
+.B char *name;
+.fi
+.SH DESCRIPTION
+\f2Ip2name\f1 accepts a 4-byte Internet (IP) address and returns
+the Domain Name for that host by consulting a DARPA Domain nameserver
+to perform the translation.
+Argument \f2ip\f1 gives the address of a 4-byte host Internet
+address to be translated into a name.
+Argument \f2name\f1 points to an area of memory in which the domain name
+will be written.
+The name is written as a null\-terminated byte string with periods
+separating domain name components.
+.PP
+\f2Ip2name\f1 returns \f2SYSERR\f1 if the Internet address is invalid,
+if the nameserver does not respond, or if the translation fails.
+It returns \f2OK\f1 otherwise.
+.SH SEE ALSO
+getname(2), getaddr(2)
+.SH BUGS
+There is no way to specify a long time delay, so name lookup that
+consults a distant nameserver may timeout due to network delays.
+Also, there is no way to specify a maximum name size.

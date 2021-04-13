@@ -1,0 +1,66 @@
+
+
+
+RECVCLR(2)          Xinu Programmer's Manual           RECVCLR(2)
+
+
+
+NAME
+     recvclr - clear incoming message buffer asynchronously
+
+SYNOPSIS
+     int recvclr()
+
+DESCRIPTION
+     A process executes _r_e_c_v_c_l_r to clear its message buffer of
+     any waiting message in preparation for receiving messages.
+     If a message is waiting, _r_e_c_v_c_l_r returns it to the caller.
+     If no messages are waiting, _r_e_c_v_c_l_r returns OK.
+
+SEE ALSO
+     receive(2), send(2), preceive(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

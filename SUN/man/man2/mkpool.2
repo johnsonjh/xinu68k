@@ -1,0 +1,24 @@
+.TH MKPOOL 2
+.SH NAME
+mkpool \- create a buffer pool
+.SH SYNOPSIS
+.nf
+.B int mkpool(bufsiz, numbufs)
+.B int bufsiz;
+.B int numbufs;
+.fi
+.SH DESCRIPTION
+.I Mkpool
+creates a pool of
+.I numbufs
+buffers, each of size
+.I bufsiz,
+and returns an integer identifying the pool.
+If no more pools can be created, or if the arguments are incorrect,
+.I mkpool
+returns SYSERR.
+.SH SEE ALSO
+getbuf(2), freebuf(2), poolinit(2)
+.SH BUGS
+At present there is no way to reclaim space from buffer pools once
+they are no longer needed.

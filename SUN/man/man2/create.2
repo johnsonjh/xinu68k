@@ -1,0 +1,54 @@
+.TH CREATE 2
+.SH NAME
+create \- create a new process
+.SH SYNOPSIS
+.B int
+.B create(caddr,ssize,prio,name,nargs[,argument]*)
+.nf
+.B char *caddr;
+.B int ssize;
+.B int prio;
+.B char *name;
+.B int nargs;
+.B int argument;	/* actually, type "machine word" */
+.fi
+.SH DESCRIPTION
+.I Create
+creates a new process that will begin execution at location
+.I caddr,
+with a stack of
+.I ssize
+words, initial priority
+.I prio,
+and identifying name
+.I name.
+.I Caddr
+should be the address of a procedure or main program,
+If the creation is successful, the (nonnegative) process id of
+the new process is returned to the caller.
+The created process is left in the suspended state; it will
+not begin execution until started by a resume command.
+If the arguments are incorrect, or if there are no free process
+slots, the value SYSERR is returned.
+The new process has its own stack, but shares global data
+with other processes according to the scope rules of C.
+If the procedure attempts to return, its
+process will be terminated (see KILL(2)).
+.PP
+The caller can pass a variable number of arguments to the created
+process which are accessed through formal parameters.
+The integer
+.I nargs
+specifies how many argument values follow.
+.I Nargs
+values from the
+.I arguments
+list will be passed to the created process.
+The type and number of such arguments is not checked; each
+is treated as a single machine word.
+The user is cautioned against passing the address of any dynamically
+allocated datum to a process because such objects may be deallocated
+from the creator's run-time stack even though
+the created process retains a pointer.
+.SH SEE ALSO
+kill(2)

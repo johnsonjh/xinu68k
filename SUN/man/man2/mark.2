@@ -1,0 +1,55 @@
+.TH MARK 2
+.SH NAME
+mark, unmarked \- set and check initialization marks efficiently
+.SH SYNOPSIS
+.nf
+.B #include <mark.h>
+.sp
+.B int mark(mk)
+.B MARKER mk;
+.sp
+.B int unmarked(mk)
+.B MARKER mk;
+.fi
+.SH DESCRIPTION
+.I Mark
+sets
+.I mk
+to "initialized", and records its location in the system.
+It returns 0 if the location is already marked, OK if the
+marking was successful, and SYSERR if there are too many
+marked locations.
+.PP
+.I Unmarked
+checks the contents and location of
+.I mk
+to see if it has been previously marked with the
+.I mark
+procedure.
+It returns OK if and only if
+.I mk
+has not been marked, 0 otherwise.
+The key is that they work correctly after a reboot, no matter what
+was left in the marked locations when the system stopped.
+.PP
+Both
+.I mark
+and
+.I unmarked
+operate efficiently (in a few instructions) to correctly determine whether
+a location has been marked.
+They are most useful for creating self-initializing procedures when the
+system will be restarted.
+Both the value in
+.I mk
+as well as its location are used to tell if it has been marked.
+.PP
+Memory marking can be eliminated from Xinu by removing the definition of
+the symbol MEMMARK from the Configuration file.
+Self-initializing library routines may require manual initialization
+if MEMMARK is disabled (e.g., see BUFFER(3)).
+.SH BUGS
+Mark does not verify that the location given lies in the static data
+area before marking it; to avoid having the system retain marks for
+locations on the stack after procedure exit, do not mark automatic
+variables.

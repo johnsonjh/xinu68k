@@ -1,0 +1,66 @@
+
+
+
+GETPRIO(2)          Xinu Programmer's Manual           GETPRIO(2)
+
+
+
+NAME
+     getprio - return the scheduling priority of a given process
+
+SYNOPSIS
+     int getprio(pid)
+     int pid;
+
+DESCRIPTION
+     _G_e_t_p_r_i_o returns the scheduling priority of process _p_i_d. If
+     pid is invalid, _g_e_t_p_r_i_o returns SYSERR.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

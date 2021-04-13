@@ -1,0 +1,66 @@
+
+
+
+NAMESPACE(4)        Xinu Programmer's Manual         NAMESPACE(4)
+
+
+
+NAME
+     namespace - syntactic namespace pseudo-device driver (type
+     nam)
+
+SYNOPSIS
+     #include <name.h>
+
+     open(device, name, mode)
+     init(device)
+
+DESCRIPTION
+     The _n_a_m pseudo-device driver provides mapping of OPEN(2)
+     calls to underlying devices based on name syntax.  The stan-
+     dard Xinu name for the namespace device is _N_A_M_E_S_P_A_C_E.
+
+     The _n_a_m driver provides two operations as follows:
+
+     open(device,name,mode)
+          Open a device given its name and access mode (see
+          ACCESS(2) for an explanation of modes).
+
+     init(device)
+          Initialize the namespace by establishing a default
+          interpretation for names.
+
+NOTES
+     Although system calls MOUNT(2), UNMOUNT(2), NAMMAP(2), and
+     NAMREPL(2) are intricate parts of the naming system, they
+     are not included in the driver simply because they do not
+     fit the read/write paradigm easily.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

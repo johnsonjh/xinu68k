@@ -1,0 +1,28 @@
+.TH PSEND 2
+.SH NAME
+psend \- send a message to a port
+.SH SYNOPSIS
+.nf
+.B int psend(portid, message)
+.B int portid;
+.B char *message;
+.fi
+.SH DESCRIPTION
+.I Psend
+adds the pointer
+.I message
+to the port
+.I portid.
+If successful,
+.I psend
+returns OK; it returns SYSERR if
+.I portid
+is invalid.
+Note that only a pointer, not the entire message, is enqueued,
+and that psend may return to the caller before the receiver
+has consumed the message.
+.PP
+If the port is full at the time of the call, the sending process will be
+blocked until space is available in the port for the message.
+.SH SEE ALSO
+pcount(2), pcreate(2), pdelete(2), preceive(2), preset(2)

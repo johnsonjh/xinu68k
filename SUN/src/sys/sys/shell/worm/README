@@ -1,0 +1,30 @@
+This directory contains the source code for a simple game called Xinu
+worm.  The game started as a lab assignment for CS503, our operating
+systems class, and was ported to Sun3 Xinu to use for testing and
+debugging.  It is intended as a simple example of some of the
+capabilities of Xinu, and not as a full-fledged game.  The game is
+process and message passing based.  Part of the assignment was to
+write a "wide message" passing scheme, that could send messages of
+multiple words to other processes using a simple procedure call style.
+
+The game contains the following communicating processes:
+
+plotter:  Responsible for all screen output
+mover:    Responsible for accepting keyboard input and moving the
+          player's worm figure.
+robot:    A robot is created as an opponent. It always heads for the target.
+targeter: In charge of placing and timing out the target on the screen.
+referee:  Watches the game at low priority and looks for players
+          hitting the target, or running into the walls.
+
+Interaction between the processes is handled by using the existing
+Xinu low level message passing, or the new "wide" messages for
+communicating with the plotter.
+
+Since Xinu does not support anything like "curses", it is necessary to
+hard code the strings necessary to clear the screen, and to position
+the cursor to a random point on the screen.  These constants are given
+in the file "game.h", and presently work on xterm, vt100, and raw Sun
+terminals.
+	  
+Shawn Ostermann

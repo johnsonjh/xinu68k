@@ -1,0 +1,30 @@
+.TH PCREATE 2
+.SH NAME
+pcreate \- create a new port
+.SH SYNOPSIS
+.B int
+.B pcreate(count)
+.br
+.B int count;
+.SH DESCRIPTION
+.I Pcreate
+creates a port with
+.I count
+locations for storing message pointers.
+.PP
+.I Pcreate
+returns an integer identifying  the port if
+successful.  If no more ports can be allocated,
+or if
+.I count
+is nonpositive,
+.I pcreate
+returns
+SYSERR.
+.PP
+Ports are manipulated with
+PSEND(2) and PRECEIVE(2).
+Receiving from a port returns a pointer to a message that was previously
+sent to the port.
+.SH SEE ALSO
+pcount(2), pdelete(2), preceive(2), preset(2), psend(2)

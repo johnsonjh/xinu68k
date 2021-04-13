@@ -1,0 +1,9 @@
+This is README in {Xinu directory}/src/cmd.
+
+To make and install all commands, run
+
+	Makeall
+
+To make particular programs (e.g., when you modify them), use
+
+	make program-name

@@ -1,0 +1,66 @@
+
+
+
+IP2NAME(2)          Xinu Programmer's Manual           IP2NAME(2)
+
+
+
+NAME
+     ip2name - translate an Internet address to a host Domain
+     Name
+
+SYNOPSIS
+     int *ip2name(ip, name)
+     IPaddr ip;
+
+     char *name;
+
+DESCRIPTION
+     _I_p_2_n_a_m_e accepts a 4-byte Internet (IP) address and returns
+     the Domain Name for that host by consulting a DARPA Domain
+     nameserver to perform the translation.  Argument _i_p gives
+     the address of a 4-byte host Internet address to be
+     translated into a name.  Argument _n_a_m_e points to an area of
+     memory in which the domain name will be written.  The name
+     is written as a null-terminated byte string with periods
+     separating domain name components.
+
+     _I_p_2_n_a_m_e returns _S_Y_S_E_R_R if the Internet address is invalid,
+     if the nameserver does not respond, or if the translation
+     fails.  It returns _O_K otherwise.
+
+SEE ALSO
+     getname(2), getaddr(2)
+
+BUGS
+     There is no way to specify a long time delay, so name lookup
+     that consults a distant nameserver may timeout due to net-
+     work delays.  Also, there is no way to specify a maximum
+     name size.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

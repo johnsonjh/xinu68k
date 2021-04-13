@@ -1,0 +1,28 @@
+: ' Makeall  --  Print message about making all of Xinu'
+:
+: 'Makeall'
+:
+PATH=/bin:/usr/bin
+echo
+echo '*** Making {Xinu--directory}/src/sys/con'
+cd con
+make
+make install
+cd ..
+ranlib {Xinu-directory}/lib/libx.a
+echo
+echo
+echo '*************************************************************'
+echo '*************************************************************'
+echo '*************************************************************'
+echo '***							***'
+echo '***			N O T E				***'
+echo '***	To make all of Xinu, change to directory	***'
+echo '***	{Xinu-directory}/src/sys/sys and look at file	***'
+echo '***	Configuration.  If your Sun 3 has the		***'
+echo '***	standard hardware configuration you may		***'
+echo '***	not need to recompile at all.			***'
+echo '***							***'
+echo '*************************************************************'
+echo '*************************************************************'
+echo '*************************************************************'

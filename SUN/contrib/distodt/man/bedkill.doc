@@ -1,0 +1,66 @@
+
+
+
+BEDKILL(1)          UNIX Programmer's Manual           BEDKILL(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     bedkill - kill all BED processes running on frontends
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     bbbbeeeeddddkkkkiiiillllllll
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _B_e_d_k_i_l_l broadcasts a _k_i_l_l message to all BED processes.  It
+     is useful for quickly stopping all BED processes.  This is
+     very helpful when debugging the distributed
+     odt/download/upload software.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     bed(1), bedreboot(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 6/8/88                                                  1
+
+
+

@@ -1,0 +1,66 @@
+
+
+
+DOT2IP(3)           Xinu Programmer's Manual            DOT2IP(3)
+
+
+
+NAME
+     dot2ip - convert dotted decimal notation to an IP address
+
+SYNOPSIS
+     int dot2ip(ip, b1, b2, b3, b4)
+     IPaddr ip;
+     int  b1;
+     int  b2;
+     int  b3;
+     int  b4;
+
+DESCRIPTION
+     Procedure _d_o_t_2_i_p converts an Internet (IP) address from dot-
+     ted decimal notation to its 32-bit integer form and stores
+     it in argument _i_p.  Each of the arguments _b_1, _b_2, _b_3, and
+     _b_4, gives the value of one byte of the internet address.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,23 @@
+.TH BLKEQU 3
+.SH NAME
+blkequ \-  compare two contiguous blocks of memory for equality
+.SH SYNOPSIS
+.B Bool blkequ(first, second, nbytes)
+.br
+.B char *first;
+.br
+.B char *second;
+.br
+.B int  nbytes;
+.br
+.SH DESCRIPTION
+.I Blkequ
+compares two blocks of memory for equality.
+Each block contains exactly \f2nbytes\f1 bytes.
+\f2Blkequ\f1 returns FALSE if the two blocks differ, and
+TRUE if the blocks are equal.
+\f2Blkequ\f1 compares all byte values including null (zero).
+.SH "SEE ALSO"
+blkcopy(3), string(3)
+.SH BUGS
+\f2Blkequ\f1 does not check for valid memory addresses.

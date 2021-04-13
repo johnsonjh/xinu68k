@@ -1,0 +1,20 @@
+.TH SDELETE 2
+.SH NAME
+sdelete \- delete a semaphore
+.SH SYNOPSIS
+.nf
+.B int sdelete(sem)
+.B int sem;
+.fi
+.SH DESCRIPTION
+.I Sdelete
+removes semaphore
+.I sem
+from the system and returns processes that were waiting for it
+to the ready state.
+The call returns SYSERR if
+.I sem
+is not a legal semaphore;
+it returns OK if the deletion was successful.
+.SH SEE ALSO
+scount(2), screate(2), signal(2), sreset(2), wait(2)

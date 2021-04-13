@@ -1,0 +1,66 @@
+
+
+
+PUTC(2)             Xinu Programmer's Manual              PUTC(2)
+
+
+
+NAME
+     putc - device independent character output routine
+
+SYNOPSIS
+     int putc(dev, ch)
+     int dev;
+     char ch;
+
+DESCRIPTION
+     _P_u_t_c will write the character _c_h on the I/O device given by
+     _d_e_v. It returns SYSERR if _d_e_v is incorrect, OK otherwise.
+
+     By convention, _p_r_i_n_t_f calls _p_u_t_c on device CONSOLE to write
+     formatted output.  Usually CONSOLE is device zero.
+
+SEE ALSO
+     close(2), control(2), getc(2), open(2), read(2), seek(2),
+     write(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

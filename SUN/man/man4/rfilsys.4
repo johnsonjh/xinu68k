@@ -1,0 +1,77 @@
+.TH RFILSYS 4
+.SH NAME
+rfilsys \- remote file system pseudo-device driver (types rfm, rf)
+.SH SYNOPSIS
+.nf
+.B #include <rfile.h>
+.B #include <fserver.h>
+.sp
+.B read(device buffer, length)
+.B write(device, buffer, length)
+.B open(device, name, mode)
+.B close(device)
+.B control(device, function, arg1, arg2)
+.B init(device)
+.B seek(device,offset)
+.br
+.SH DESCRIPTION
+.PP
+The \f2rfm\f1 and \f2rf\f1 pseudo-device drivers work as a pair to
+provide access to remote files using a Xinu remote file server across
+an Internet.
+There is one master remote file pseudo-device (type \f2rfm\f1)
+for a given remote server.
+When users open the master remote file pseudo-device, they pass it the
+name of a specific file and the access mode for that file.
+The call to OPEN(2) returns the device descriptor of a remote file
+pseudo-device (type \f2rf\f1) connected to the named file.
+.PP
+Once opened, a user calls
+READ(2), WRITE(2), GETC(2), or PUTC(2), to transfer data between
+the user program and the remote file; they call SEEK(2) to position the
+file pointer.
+The user calls CLOSE(2) to disconnect from the file.
+Finally, users call CONTROL(2) on the master pseudo-device to test
+file access protections, remove files, or change file names.
+.PP
+The standard Xinu device name for the remote file master pseudo-device is
+\f2RFILSYS\f1; the standard Xinu device name for individual remote
+file pseudo-devices is \f2RFILE\f1.
+The operations on these devices are defined by:
+.TP
+.B open(device, name, mode)
+Opens a connection to a remote file given the file name and access mode,
+and returns the device descriptor used to access the file.
+See ACCESS(2) for valid file modes.
+.TP
+.B read(device buffer, length)
+Transfers up to  \f2length\f1 bytes of data from a file to
+the user's \f2buffer\f1, and returns the number of bytes found
+or \f2EOF\f1 if no more data remains in the file.
+.TP
+.B write(device, buffer, length)
+Writes \f2length\f1 bytes of data to a file from the user's \f2buffer\f1.
+File length extends automatically if needed.
+.TP
+.B close(device)
+Disconnect from a file, leaving it on secondary storage.
+.TP
+.B control(device, function, arg1, arg2)
+Handles file manipulation other than data transfer.
+The possible functions are:
+.in +0.2i
+.nf
+FLACCESS \- test access (\f2arg1\f1 is mode string).
+FLREMOVE \- remove file named by \f2arg1\f1.
+FLRENAME \- rename file named by \f2arg1\f1 to \f2arg2\f1
+FLCLEAR \- clear the remote file datagram port
+.in -0.2i
+.fi
+.TP
+.B init(device)
+When called with an \f2rf\f1 device, initializes the pseudo-device
+data structures at system startup.
+Initializing the master pseudo-device has no effect.
+.TP
+.B seek(device,offset)
+Positions the file to \f2offset\f1 bytes from the beginning.

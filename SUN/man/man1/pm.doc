@@ -1,0 +1,132 @@
+
+
+
+PM(1)               Xinu Programmer's Manual                PM(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     pm - Xinu post mortem debugger
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ppppmmmm [ ----pppp ] [ ----ssss ] [ ----tttt ] [ _t_x_t_f_i_l [ _c_o_r_f_i_l ] ]
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _P_m performs a post mortem given a core image from a Sun run-
+     ning Xinu.  It takes as input the memory image (in Sun a.out
+     format) that was _d_o_w_n_l_o_a_ded, uploads the core image (in Sun
+     core format) from the Sun, and prints the following informa-
+     tion:
+
+          Differences between the text portions (program instruc-
+          tion areas) of the file before downloading and after
+          uploading.  Except for interrupt vectors which are ini-
+          tialized at run-time, differences indicate that
+          instructions were accidentally overwritten.
+
+          C traceback of the executing process, based on Xinu's
+          _c_u_r_r_p_i_d.
+
+          C traceback of all other processes.
+
+          The status of all semaphores.  If a semaphore is in use
+          and the count indicates that there are processes wait-
+          ing, the list of waiting processes is printed along
+          with an actual count.  Backward links are checked for
+          consistency.
+
+          The status of tty devices, including the buffer head
+          and tail pointers along with buffer contents.
+
+     By default, _p_m takes the downloaded image from file _p_m._o_u_t,
+     and produces all of the above output.  _P_m always prints
+     information about the current process.  If the following
+     flags are present, _p_m prints only the information requested.
+
+     ----pppp   dump the process table.
+
+     ----ssss   dump the semaphore table.
+
+     ----tttt   dump the tty tables.
+
+     ----mmmm   check for overwritten text
+
+     ----rrrr   print a stack trace of all processes
+
+     ----vvvv   give verbose messages
+
+     Optional arguments _t_x_t_f_i_l and _c_o_r_f_i_l can be specified to
+     change the files used as the downloaded and uploaded image.
+
+
+
+Version 6b              Printed 10/24/87                        1
+
+
+
+
+
+
+PM(1)               Xinu Programmer's Manual                PM(1)
+
+
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     download(1), upload(1)
+
+BBBBUUUUGGGGSSSS
+     _P_m may fault when given garbage files (e.g., a badly damaged
+     core file) because it references symbols in the core image
+     based on values obtained from the a.out file without check-
+     ing their validity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b              Printed 10/24/87                        2
+
+
+

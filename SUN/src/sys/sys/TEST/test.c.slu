@@ -1,0 +1,32 @@
+#include <conf.h>
+#include <kernel.h>
+#include <mem.h>
+#include <io.h>
+
+
+main ()
+{
+    int child;
+    int reader();
+    
+    kprintf("\n\nHello world, Xinu lives\n\n");
+
+    printf("Xinu SLU Lives!!\n");
+    resume(child=create(reader,1000,20,"child",0));
+    sleep(60);
+    kill(child);
+}
+
+reader()
+{
+    unsigned int ch;
+    kprintf("Reading from the SLU\n");
+    for (;;) {
+	kprintf("You typed the line: ");
+	for (;(ch = getchar()) != '\n';) {
+	    kprintf("%c",(char) ch);
+	}
+	kprintf("\n");
+    }
+
+}

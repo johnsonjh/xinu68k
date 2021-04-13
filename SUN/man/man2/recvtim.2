@@ -1,0 +1,27 @@
+.TH RECVTIM 2
+.SH NAME
+recvtim \- receive a message with timeout
+.SH SYNOPSIS
+.nf
+.B int recvtim(maxwait)
+.B int maxwait;
+.fi
+.SH DESCRIPTION
+.I Recvtim
+allows a process to specify a maximum time limit it is willing to wait
+for a message to arrive.
+Like RECEIVE(2), \f2recvtim\f1 blocks the calling process until a message
+arrives from SEND(2).
+Argument \f2maxwait\f1 gives the maximum time to wait for a message,
+specified in tenths of seconds.
+.PP
+\f2Recvtim\f1 returns integer SYSERR if the argument is
+incorrect or if no clock is present.
+It returns integer TIMEOUT if the time limit expires
+before a message arrives.
+Otherwise, it returns the message.
+.SH SEE ALSO
+receive(2), recvclr(2), send(2), sleep10(2), sleep(2)
+.SH BUGS
+There is no way to distinguish between messages that contain
+TIMEOUT or SYSERR and errors reported by \f2recvtim\f1.

@@ -1,0 +1,63 @@
+#! /bin/sh
+: 'Install -- edit directory names in source files to install Xinu'
+:
+: 'cd {Xinu-directory}/install ; ./Install [-f]'
+:
+PATH=/bin:/usr/bin
+export PATH
+DEFAULT=/usr/Xinu/.
+cd ..
+DIR=`pwd`
+#
+# We play this syntax game to see if current directory is
+# reachable as /usr/Xinu.  If so, the software will execute
+# without change.  If not, modify all hardwired occurrences
+# of "/usr/Xinu" to point to the real directory.  Note:
+# using  pwd  alone will not suffice because "/usr/Xinu"
+# could be a symbolic link.
+#
+LSDOT=`ls -lid .|sed 's/[^ ][^ ]*$//'`
+if test -d /usr/Xinu/.
+then LSXIN=`ls -lid /usr/Xinu/.|sed 's/[^ ][^ ]*$//'`
+else LSXIN=
+fi
+if test "x$1" = "x4.2"
+then	echo 'Removing all 4.3 binaries'
+	find . -name '*.o' -exec rm {} \;
+	echo 'Finished removing 4.3 binaries.'
+	echo 'Type "./Install -f"'
+	echo 'to initiate installation.'
+	exit
+fi
+if test "x$1" != 'x-f' -a "x$LSDOT" = "x$LSXIN"
+then	echo 'No recompilation needed when tape is installed in'
+	echo 'directory /usr/Xinu.  Type  ./Install -f  to force'
+	echo 'recompilation if the software has been moved into'
+	echo 'this directory after being installed elsewhere.'
+else
+	if test "x$LSDOT" = "x$LSXIN"
+	then DIR=/usr/Xinu
+	fi
+	EXECUTABLE=$DIR/install/.install
+	echo Xinu directory is $DIR
+	MDIR=`echo $DIR|sed 's/\//\\\\&/g'`
+#
+#  We use csh because there is a bug in /bin/sh that seems to prevent
+#  this script from working correctly on files with long names.  The
+#  sh version is included in case you want to fool around with it.
+#	echo "FNAME=\`echo \$1|sed 's/.RAW//'\`" >>$EXECUTABLE
+#	echo 'echo Installing source file $1' >>$EXECUTABLE
+#	echo "sed 's/{Xinu-directory}/$MDIR/g' < \$1 > \$FNAME" >>$EXECUTABLE
+#
+	echo '#!/bin/csh' > $EXECUTABLE
+	echo "set FNAME=\`echo \$1|sed 's/.RAW//'\`" >>$EXECUTABLE
+	echo 'echo Installing source file .$1' >>$EXECUTABLE
+	echo "sed 's/{Xinu-directory}/$MDIR/g' < \$1 > \$FNAME" >>$EXECUTABLE
+	chmod 755 $EXECUTABLE
+	find . -name '*.RAW' -exec $EXECUTABLE {} \;
+	echo 'Finished installing Xinu source files.'
+	echo
+	echo 'To complete installation, change to directory'
+	echo '../src and type  ./Makeall  (you may want to'
+	echo 'run it in background and go out for coffee).'
+fi

@@ -1,0 +1,32 @@
+.TH KILL 2
+.SH NAME
+kill \- terminate a process
+.SH SYNOPSIS
+.B int
+.B kill(pid)
+.br
+.B int pid;
+.fi
+.SH DESCRIPTION
+.I Kill
+will stop process
+.I pid
+and remove it from the system,
+returning SYSERR if the process id is invalid, OK otherwise.
+.I Kill
+terminates a process immediately.
+If the process has been queued on a semaphore, it is removed from
+the queue and the semaphore count is incremented as if the
+process had never been there.
+Processes waiting to send a message to a full port disappear without
+affecting the port.
+If the process is waiting for I/O, the I/O is stopped (if possible).
+.PP
+One can kill a process in any state, including a suspended one.
+Once killed, a process cannot recover.
+.SH BUGS
+At present there is no way to recover space allocated dynamically
+when a process terminates.
+However,
+.I kill
+does recover the stack space allocated to a process when it is created.

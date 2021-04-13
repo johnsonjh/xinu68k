@@ -1,0 +1,30 @@
+.TH NAMMAP 2
+.SH NAME
+nammap \- map a name through the syntactic namespace
+.SH SYNOPSIS
+.nf
+.B int nammap(name, newname)
+.B char *name;
+.B char *newname;
+.fi
+.SH DESCRIPTION
+.I Nammap
+uses the syntactic namespace to translate a name into a new
+name and returns the id of a device to which the name maps.
+Names are mapped iteratively until they map to a device other than
+the \f2NAMESPACE\f1.
+.PP
+Argument \f2name\f1 points to a null-terminated string containing
+the name to be mapped.
+Argument \f2newname\f1 points to a string area large enough to hold the mapped
+version of the name.
+If successful, \f2nammap\f1 returns the device id of the device to which the
+mapping corresponds.
+Otherwise, it returns SYSERR.
+.SH SEE ALSO
+namrepl(2), open(2), mount(2), unmount(2), namespace(4)
+.SH BUGS
+\f2Nammap\f1 writes the mapped name into \f2newname\f1 without checking
+to make sure it fits.
+There is no way to distinguish errors such as string overflow from
+names that map to device SYSERR.

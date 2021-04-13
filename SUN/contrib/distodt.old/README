@@ -1,0 +1,187 @@
+
+		Distributed Odt/Download README File
+		------------------------------------
+
+This is the beta version of the Distributed Odt/Download software.
+The software runs on both SUNs and VAXes, however downloading to
+non-sun backends is not yet possible.
+
+These are the directories and their contents:
+
+./src		contains all the Dist Odt/Download software and Makefile
+./h		header files for Dist Odt/Download
+./sunbin	directory for sun binaries when compiled
+./vaxbin	directory for vax binaries when compiled
+./man		manual pages for using the new Dist Odt/Download software
+./extrabin	directory for miscellaneous useful programs
+
+
+To compile the system and get it running you need to change a few of
+the constants in the header files to suit your system.  Look in the
+file ./h/bed.h and modify the constants at the top - there are
+comments indicating which constants need to be modified.  The BED
+server needs to read a machines database and so you should find a
+directory to place the machines database in.  There is an example
+machines database in the file ./src/machines that you can modify and
+place in the correct directory.  The only fields of the machines database
+that are currently used by the software are the 'ttyline',
+'be-name', 'baud', and 'class'.  The other fields must be there but
+can be anything. You also will have to specify the
+directory to use for storing lock files.  Since lock files are
+temporary the constant in ./h/bed.h currently specifies /tmp/xinu as
+the directory for lock files, but you may want to change this.
+Each frontend running the BED server must have a machines database
+that specifies the backends connected to it, and each frontend must
+have a directory reserved for the lock files.  These must be set up on
+each frontend before you start up the BED process.
+
+Another constant that probably needs explaining is STATTIMEOUT.  Status
+messages are broadcast to all frontends to find out if they have a backend
+available.  The program then waits for status responses from all the BED
+servers.  It will wait accept status responses for the next STATTIMEOUT
+seconds and then it will assume that it has heared from all the BED
+servers.  Currently STATTIMEOUT is set to 2 seconds.  On our system here at
+Purdue a 1 second timeout is long enough, but you will have to adjust this
+to fit your network.
+
+Once you have modified ./h/bed.h to fit your configuration you can
+compile the system.  You can compile either the sun or the vax
+version.  First cd to ./src and edit the Makefile there.  You should
+edit the lines at the top of the Makefile which indicate which
+architecture you are compiling for.  Then typing 'make all' will make
+the entire system and store the executables in ./sunbin or ./vaxbin
+depending on the architecture you have selected in the Makefile.
+
+To run the BED server, simply log into the frontend you want to run it
+on, cd to the correct {sun/vax}bin directory and type 'bed'.  Only the
+frontend machines that have backend machines attached to them need to run
+a BED server.  So not ALL frontend machines need to run a BED server, only
+frontends connected to backends.  See Figure 1.  The user can log on to
+ANY frontend machine and use odt, download, busers, etc (even if the
+frontend machine they are logged onto is not running a BED server!).
+
+
+    +-----------+                                 +-----------+
+    |  backend  |                            +----|  backend  |
+    +-----------+                            |    +-----------+
+          |            	  		     |          |
+          | serial line			     |          | serial line
+          |                                  |          |
+    +---------------+      +-----------+     |    +---------------+
+    |          +---+|      |           |     |    |          +---+|
+    | frontend |BED||      | frontend  |     |    | frontend |BED||
+    |          +---+|      |           |     |    |          +---+|
+    +---------------+      +-----------+     |    +---------------+
+          |                      |           |          |
+  --------+----------------------+-----------+----------+-------------------
+			Ethernet   LAN
+  --------------------+-----------------------+-----------------------------
+		      | 	              |
+                      |                       |
+       	        +-----------+   	+---------------+
+	        |           |   	|          +---+|
+	        | frontend  |   	| frontend |BED||
+	        |           |   	|          +---+|
+	        +-----------+   	+---------------+
+					      |
+					      | serial line
+					      |
+					+-----------+
+					|  backend  |
+					+-----------+
+
+
+		 Figure 1:  Example Configuration.  Note, only
+		            the frontend machines with backends
+		            directly attached run BED servers. Users
+		            can log onto ANY frontend machine and
+		            run odt, download, busers, etc.
+
+
+
+See the manual pages for other commands and their usage.
+
+
+BUGS:
+
+	Here at Purdue we start the BED server in the rc.local file at
+system boot time.  We have noticed that on occation (very
+infrequently) the child BED server will die immediately and then the
+parent (monitoring) BED server will automatically restart it.  The new
+child then dies and is restarted.  It can loop like this forever!
+Since this happens so infrequently (I have never seen it happen
+myself) we have not yet located the bug.  Those that have seen it say
+that removing all the lock files in the temporary directory will stop
+it from looping.  Also we have added a check to the code so that the
+parent (monitoring) process will only restart the child a limited
+number of times.  This should keep it from looping forever.
+
+
+NOTES:
+------
+
+11-21-88: Some of the SEMANTICS from the first version of the software have
+	  changed with this (11-21-88) release.  If you are using a version
+	  of the software written prior to this date beware of this fact.
+	  The change has been made to the reservation system.  Originally a
+	  user could only reserve one backend machine at a time.  We soon
+	  found this to be very inconvenient when testing networking code
+	  between backend machines (to send packets between machines you
+	  need to be able to reserve at least 2 machines simultaneously).
+	  In the original version if you tried to reserve a second machine
+	  the reservation system would automatically release the first
+	  machine you had reserved.  This is no longer true.  The
+	  reservation system will not automatically release your backend
+	  machine unless it has been idle too long.  This means that a user
+	  can reserve two or more backend machines at the same time, and as
+	  long as he continues to use them the will not be released.  In
+	  addition, local lock files used to be associated per user so that
+	  when a user said 'odt' or 'download' without specifying a backend
+	  machine, the reservation system would look at the local lock file
+	  associated with that user and give him the same machine again if
+	  at all possible.  Now that a user can reserve multiple machines,
+	  he needs multiple local lock files, one for each machine he has
+	  reserved.  The question still remains, if a user has reserved
+	  multiple machines and does not specify a backend machine when he
+	  issues an 'odt' or 'download' command, which backend machine
+	  should he get.  In light of the fact that many people now use
+	  workstations and work in some sort of windowing environment, it
+	  seemed a user in that evironment would use one window for each
+	  machine he had reserved.  Thus we associate a tty and a user with
+	  each local lock file.  If the user does not specify a backend
+	  machine, then he will get the last machine he used in that
+	  particular window (assuming each window has a psuedo-tty).  It is
+	  difficult to enumerate all the possible situations that can arise
+	  under this scheme and so I will not list what exactly will happen
+	  in each possible case if the backend machine name is not
+	  specified.  If you want to know, try it out :-) !
+		We found that when we switched our SUN3/50s to SunOS 4.0
+	  everything ran slower.  In fact the BED servers response time was
+	  so slow that you would rarely get replies back from all the BED
+	  servers when you issued a 'busers' or 'status' command.  After
+	  some testing we concluded that network traffic was NOT the
+	  problem and that it was infact the SunOS 4.0 that was slow.  To
+	  fix this problem we had to 'nice' the bed servers to (-20) the
+	  highest priority.
+		Also we found that we wanted to have frontend machines
+	  (with no backend machines attached to them) on different
+	  networks.  Since network directed IP broadcasts are not
+	  implemented in the gateway code (at least not ours),  we added a
+	  database that lists all of the frontend machines running BED
+	  servers.  The software first looks for a file call
+	  /usr/xinu/database/bedservers (the same place the machines
+	  database resides) and it contacts all of the machines in this
+	  file.  If this file does not exist, then it does a broadcast like
+	  it used to do.  By putting this file on machines residing on
+	  different networks, they can odt and download to frontends
+	  running BED servers on different networks.  An example bedservers
+	  file can be found in src/bedservers.  This file should be placed
+	  in the same directory as the machines database.  Note, you only
+	  have to use the bedservers file if you want to run the
+	  odt/download/busers/fusers code from a machine on a different
+	  network.
+
+
+
+
+	

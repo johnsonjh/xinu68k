@@ -1,0 +1,34 @@
+.TH PUTS 3
+.SH NAME
+puts, fputs \- write a string to a device
+.SH SYNOPSIS
+.B puts(s)
+.br
+.B char *s;
+.PP
+.B fputs(dev, s)
+.br
+.B int dev;
+.br
+.B char *s;
+.SH DESCRIPTION
+.I Puts
+writes the null-terminated string
+.I s
+on the output device CONSOLE and appends a newline character.
+.PP
+.I Fputs
+writes the null-terminated string
+.I s
+on device
+.IR dev .
+.PP
+Neither routine writes the terminal null character.
+They return SYSERR if \f2dev\f1 is invalid.
+.SH "SEE ALSO"
+gets(3), putc(3), printf(3), read(2), write(2)
+.SH BUGS
+.I Puts
+appends a newline,
+.I fputs
+does not; there is no good reason for this.

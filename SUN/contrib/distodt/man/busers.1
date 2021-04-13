@@ -1,0 +1,20 @@
+.TH BUSERS 1
+.SH NAME
+busers \- list users holding odt lock reservations on all backends
+.SH SYNOPSIS
+.B busers
+.SH DESCRIPTION
+.I Busers
+lists the users who hold reservations on all backend machines.
+Each line of output contains the machine name, the class the
+machine belongs to, the user
+who holds it, and the idle time.
+Reservations are made by \f2odt\f1(1), and \f2download\f1(1).
+.SH FILES
+/tmp/xinu/*  Lock files consulted by BED process.
+.SH "SEE ALSO"
+odtunlock(1), odt(1), download(1)
+.SH BUGS
+Machines with more than 10 minutes of idle time are listed even though
+the reservation software considers the reservation to have
+expired.

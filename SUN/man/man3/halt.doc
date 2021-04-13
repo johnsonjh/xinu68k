@@ -1,0 +1,66 @@
+
+
+
+HALT(3)             Xinu Programmer's Manual              HALT(3)
+
+
+
+NAME
+     halt, pause - pause or halt the processor
+
+SYNOPSIS
+     #include <kernel.h>
+
+     halt();
+     pause();
+
+DESCRIPTION
+     _H_a_l_t stops the processor immediately without affecting dev-
+     ices or direct-memory-access (DMA) operations on the bus.
+     Once halted, the processor will not respond to interrupts.
+     _H_a_l_t is useful for debugging the operating system.
+
+     _P_a_u_s_e stops the processor until an interrupt occurs, allow-
+     ing it to continue at the instruction following the _p_a_u_s_e
+     when the interrupt returns.  _P_a_u_s_e is used in the null pro-
+     cess instead of an infinite loop to avoid taking bus
+     bandwidth needlessly.
+
+     In the current implementation, both _h_a_l_t and _p_a_u_s_e are mac-
+     ros that expand to the assembler language _h_a_l_t and _p_a_u_s_e
+     instructions.  Thus, they can only be executed in kernel
+     mode.
+
+SEE ALSO
+     disable(3), wait(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

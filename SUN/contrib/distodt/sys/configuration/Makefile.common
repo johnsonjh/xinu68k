@@ -1,0 +1,165 @@
+#
+#  Makefile for the Distributed Odt/Download
+#
+
+INSTALLDIR=	/usr/xinu/bin/.`cputype`
+BINDIR	=	./bin
+
+ROOTDIR =	../..
+SRCDIR	=	$(ROOTDIR)/src
+HDIR	=	$(ROOTDIR)/includes
+DEFINES	=	$(MACHINETYPE) $(SITE)
+INCLUDES= 	-I$(HDIR) 
+CFLAGS	=	-g $(INCLUDES) $(DEFINES)
+
+# tools
+RM	= 	/bin/rm
+AR	=	/bin/ar
+RANLIB	=	/bin/ranlib
+CC	= 	/bin/cc
+CP	=	/bin/cp
+
+LIB=		lib.a
+
+SRCg=		scanner.c
+HDRg=
+
+BEDDIROBJ=	bed.o bedlog.o downloadd.o idletime.o	\
+		lock.o odtd.o support.o sysstat.o
+
+LIBDIROBJ=	bmutils.o connectbed.o getuser.o lockutils.o netutils.o	\
+		obtainlock.o obtainstatus.o printstatus.o releaselock.o	\
+		ttymode.o xmalloc.o getoptions.o	\
+		statusrecv.o statusrequest.o utils.o
+
+CMDSDIROBJ=	bedkill.o bedkillall.o bedreboot.o busers.o dload2tcp.o	\
+		download.o fusers.o odt.o odt2tcp.o 	\
+		odtunlock.o restart.o odtstatus.o
+
+BEDOBJ=		bed.o bedlog.o idletime.o lock.o scanner.o	\
+		support.o sysstat.o bmutils.o
+
+ODTDOBJ= 	odtd.o bedlog.o 
+
+DOWNLOADDOBJ= 	downloadd.o bedlog.o 
+
+RESTARTOBJ=	restart.o 
+
+ODTSTATUSOBJ=	odtstatus.o 
+
+ODTOBJ=		odt.o odt2tcp.o
+
+DOWNLOADOBJ=	download.o dload2tcp.o
+
+BEDKILLALLOBJ=	bedkillall.o
+
+BEDKILLOBJ=	bedkill.o
+
+BEDREBOOTOBJ= 	bedreboot.o
+
+ODTUNLOCKOBJ= 	odtunlock.o
+
+BUSERSOBJ=	busers.o
+
+FUSERSOBJ=	fusers.o
+
+EXE=		$(BINDIR)/bed 					\
+		$(BINDIR)/odtd					\
+		$(BINDIR)/downloadd				\
+		$(BINDIR)/odtstatus				\
+		$(BINDIR)/odt					\
+		$(BINDIR)/download				\
+		$(BINDIR)/bedkillall				\
+		$(BINDIR)/bedkill				\
+		$(BINDIR)/bedreboot				\
+		$(BINDIR)/odtunlock				\
+		$(BINDIR)/busers				\
+		$(BINDIR)/fusers				\
+		$(BINDIR)/restart
+
+all: 		$(LIB) $(EXE)
+
+install:	all
+		$(CP) $(EXE) $(INSTALLDIR)
+
+bed:		$(BINDIR)/bed 			
+odtd:		$(BINDIR)/odtd			
+downloadd:	$(BINDIR)/downloadd		
+odtstatus:	$(BINDIR)/odtstatus		
+odt:		$(BINDIR)/odt			
+download:	$(BINDIR)/download		
+bedkillall:	$(BINDIR)/bedkillall
+bedkill:	$(BINDIR)/bedkill
+bedreboot:	$(BINDIR)/bedreboot		
+odtunlock:	$(BINDIR)/odtunlock		
+busers:		$(BINDIR)/busers		
+fusers:		$(BINDIR)/fusers		
+restart:	$(BINDIR)/restart
+
+
+$(BINDIR)/bed: $(BEDOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(BEDOBJ) $(LIB) -ll -o $(BINDIR)/bed
+
+$(BINDIR)/odtd: $(ODTDOBJ) $(LIB)
+	$(CC) $(CFlAGS) $(ODTDOBJ) $(LIB) -o $(BINDIR)/odtd
+
+$(BINDIR)/downloadd: $(DOWNLOADDOBJ) $(LIB)
+	$(CC) $(CFlAGS) $(DOWNLOADDOBJ) $(LIB) -o $(BINDIR)/downloadd
+
+$(BINDIR)/restart:  $(RESTARTOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(RESTARTOBJ) $(LIB) -o $(BINDIR)/restart
+
+$(BINDIR)/odtstatus: $(ODTSTATUSOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(ODTSTATUSOBJ) $(LIB) -o $(BINDIR)/odtstatus
+
+$(BINDIR)/odt: $(ODTOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(ODTOBJ) $(LIB) -o $(BINDIR)/odt
+
+$(BINDIR)/download: $(DOWNLOADOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(DOWNLOADOBJ) $(LIB) -o $(BINDIR)/download
+
+$(BINDIR)/bedkillall: $(BEDKILLALLOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(BEDKILLALLOBJ) $(LIB) -o $(BINDIR)/bedkillall
+
+$(BINDIR)/bedkill: $(BEDKILLOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(BEDKILLOBJ) $(LIB) -o $(BINDIR)/bedkill
+
+
+$(BINDIR)/bedreboot: $(BEDREBOOTOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(BEDREBOOTOBJ) $(LIB) -o $(BINDIR)/bedreboot
+
+$(BINDIR)/odtunlock: $(ODTUNLOCKOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(ODTUNLOCKOBJ) $(LIB) -o $(BINDIR)/odtunlock
+
+$(BINDIR)/busers: $(BUSERSOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(BUSERSOBJ) $(LIB) -o $(BINDIR)/busers
+
+$(BINDIR)/fusers: $(FUSERSOBJ) $(LIB)
+	$(CC) $(CFLAGS) $(FUSERSOBJ) $(LIB) -o $(BINDIR)/fusers
+
+$(LIB): $(LIBDIROBJ)
+	$(RM) -f  $(LIB)
+	$(AR) cr $(LIB) $(LIBDIROBJ);
+	$(RANLIB) $(LIB)
+
+scanner.c: $(SRCDIR)/bed/scanner.l
+	lex -t $(SRCDIR)/bed/scanner.l > scanner.c
+
+scanner.o: scanner.c
+	$(CC) -c $(CFLAGS) scanner.c -ll
+
+clean:
+	$(RM) -f *.o $(EXE) $(SRCg) $(LIB) 
+
+semiclean:
+	$(RM) *.o
+
+$(BEDDIROBJ):
+	$(CC) -c $(CFLAGS) $(SRCDIR)/bed/`basename $@ .o`.[cs]
+
+$(CMDSDIROBJ):
+	$(CC) -c $(CFLAGS) $(SRCDIR)/cmds/`basename $@ .o`.[cs]
+
+$(LIBDIROBJ):
+	$(CC) -c $(CFLAGS) $(SRCDIR)/lib/`basename $@ .o`.[cs]
+

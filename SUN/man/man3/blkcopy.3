@@ -1,0 +1,19 @@
+.TH BLKCOPY 3
+.SH NAME
+blkcopy \- copy a contiguous block of bytes
+.SH SYNOPSIS
+.nf
+.B int blkcopy(to, from, nbytes)
+.B char *to;
+.B char *from;
+.B int  nbytes;
+.SH DESCRIPTION
+.I Blkcopy
+copies a block of \f2nbytes\f1 contiguous bytes starting at
+location \f2from\f1 into the area starting at location \f2to\f1.
+\f2Blkcopy\f1 returns \f2OK\f1 to the caller.
+\f2Blkcopy\f1 will copy any byte value including the null character (zero).
+.SH "SEE ALSO"
+blkequ(3), string(3)
+.SH BUGS
+\f2Blkcopy\f1 does not check for valid memory addresses.

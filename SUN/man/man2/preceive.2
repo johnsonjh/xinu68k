@@ -1,0 +1,29 @@
+.TH PRECEIVE 2
+.SH NAME
+preceive \- get a message from a port
+.SH SYNOPSIS
+.nf
+.B char *preceive(portid)
+.B int portid;
+.fi
+.SH DESCRIPTION
+.I Preceive
+retrieves the next message from the port
+.I portid,
+returning a pointer to the message if successful, or SYSERR if
+.I portid
+is invalid.
+(The sender and receiver
+must agree on a convention for passing the message length.)
+.PP
+The calling process is blocked if there are no messages
+available (and reawakened as soon as a message arrives).
+The only ways to be released from a port queue are for
+some other process to send a message to the port
+with PSEND(2)
+or
+for some other process to delete
+or reset
+the port with PDELETE(2) or PRESET(2).
+.SH SEE ALSO
+pcount(2), pcreate(2), pdelete(2), preset(2), psend(2)

@@ -1,0 +1,66 @@
+
+
+
+GETPID(2)           Xinu Programmer's Manual            GETPID(2)
+
+
+
+NAME
+     getpid - return the process id of the currently running pro-
+     cess
+
+SYNOPSIS
+     int getpid()
+
+DESCRIPTION
+     _G_e_t_p_i_d returns the process id of the currently executing
+     process.  It is necessary to be able to identify one's self
+     in order to perform some operations (e.g., change one's
+     scheduling priority).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,180 @@
+                    The Xinu Sun3 Downloader
+
+
+From time to time, most Sun 3 users find out that the tftp driver
+program stored in the machine's EEPROM is rather slow and buggy.
+People who run Unix on their machines only have to worry about it
+every few weeks when they reboot their machines.  When the machines
+are running Xinu, however, they get rebooted often a hundred times a
+day, and the buggy downloader really becomes a pain.
+
+Jim Griffioen and I We set out to write a better downloader.  We had
+two goals: it must be much faster than the present EEPROM downloader,
+and it must be extremely small.  It must be small, because it will
+have to be downloaded by the EEPROM downloader, and the fewer packets
+it takes, the better.  The downloader in this package is about 5000
+bytes (with several options #ifdef'd out), which takes 10 packets, and
+almost always gets downloaded quickly and without problems.  It is
+capable of downloading a 60k Xinu program in about 7 seconds from the
+boot instruction at the ROM prompt to the start of Xinu.  Downloading
+a 1 meg file only takes about 17 seconds, so most of the time is still
+spent in startup overhead.
+
+The downloader is installed as follows.  In the original Xinu scheme,
+we set up the /tftpboot directory on the front end Sun as follows:
+
+	===== /tftpboot =====
+   1 lrwxrwxrwx  1 root   wheel         9 Oct 25 16:11 800A03B9 -> a.out
+  75 -rw-r--r--  1 root   wheel     76681 Jan 15 09:09 a.out
+
+The file "800A03B9" is the default load image for machine
+128.10.3.185.  It originally pointed to a.out, which was the Xinu
+image to download and run.  In the new system, that directory looks like:
+
+	===== /tftpboot =====
+   1 lrwxrwxrwx  1 root   wheel         9 Oct 25 16:11 800A03B9 -> xboot.out
+   5 -rw-r--r--  1 root   wheel      5056 Jan 14 17:29 xboot.out
+  75 -rw-r--r--  1 root   wheel     76681 Jan 15 09:09 a.out
+
+Note that the new default download file is "xboot.out", which is the
+new downloader.  Once it starts, it will come back and ask for the
+file "a.out", which it can download much more quickly.  Note that all
+of these files must be world readable.
+
+
+Addresses
+=========
+In order to run, the Xinu downloader needs 4 addresses:
+   1) Its ETHERNET address
+   2) Its IP address
+   3) tftp server's ETHERNET address
+   4) tftp server's IP address.
+The first address is easy.  It is stored in the ROM portion of the
+machines ID memory.  The code is set up to determine the remaining 3
+address in one of the following ways:
+   1) Use RARP
+   2) Read from special location in EEPROM
+   3) Prompt from the terminal
+At Purdue, we use RARP.  By definition, one of the RARP responses that
+you get will come from the machine that you boot from (the front end),
+and that's the machine that we run tftp to.  When we see the response
+from this machine (according to routine IsMyTftpServer), all 3 of the
+desired addresses can be determined from the response.
+
+Another option is to store these address in EEPROM.  There are several
+hundred bytes of (apparently) unused memory in the EEPROM.  I selected
+an address in this range, and use it to store these addresses.  When
+the downloader starts up, it checks these locations for usable
+addresses.  If it finds them, it avoids RARP entirely.  This can be
+helpful if you want to get Xinu files from a machine that won't answer
+RARPs from the Xinu back end.  This method also starts up quite a bit
+faster that the RARP method.  There is a program called setboot.out
+that can be downloaded to the back end machines and run to allow you
+to easily set these addresses.  There is also a ROM monitor routines
+that lets you access the EEPROM as raw bytes.
+
+The last option is to read the addresses from the terminal when the
+downloader starts up.  If you specify "-i" as a boot argument ">b -i",
+then the downloader will prompt you for these addresses.  This would
+be a pain to do on a regular basis, but can be helpful from time to time.
+
+The code for these functions is rather simple.  If it cannot get ALL 3
+addresses from the EEPROM or interactively, it will still try to get
+ALL 3 from RARP.  It thinks that an address is valid if it is not 0.
+
+Both the program setboot.out and the downloader (running in
+interactive mode) will prompt you for addresses.  IP addresses must be
+typed in dotted decimal notation (128.10.2.185), and ETHERNET
+addresses must be given in dotted hexadecimal notation
+(34.0.1C.34.A3.FF).  This corresponds to the way that they are
+generally printed by Unix utilities.  The IP addresses are easy to
+find (try to "host" command).  The ETHERNET address is harder to come
+by.  I usually "ping" the host I want, and then type "arp -a".  This
+will list the name, IP address, and ETHERNET address of all recently
+identified machines (all in the correct base for you!).
+
+When running with the "-i" option, or getting addresses from the
+EEPROM, the file name to download can also be changed.  When using
+rarp, it always gets "a.out".  Remember that on a Sun3 with a chroot()
+TFTP server, /tftpboot IS root, so "a.out" is really
+"/tftpboot/a.out".  If you're reading from a TFTP server that does not
+do the chroot(), then you should be able to specify a full path name.
+
+
+#defines
+========
+For the sake of keeping the image small, all of the code which reads
+from the EEPROM is surrounded by conditional compilation code based on
+the symbol USE_EEPROM, and all of the code to do interactive reads is
+protected by USE_INTERACTIVE.  We don't currently use either of these
+features, so they are compiled out.  This code exists only in the file
+tftpload.c, so they can either be defined there, or in the Makefile.
+If both symbols are defined, the xboot.out image is increased in size
+by about 2000 bytes.
+
+
+What can you download
+=====================
+The Xinu downloader will accept files with or without the a.out header
+at the front.  If the header is there, it lets the program know how
+large the entire image will be.  If it is not present, we just read
+until tftp signals us that it is done.  The Xinu Makefile strips the
+a.out header with the line:
+       dd if=b.out of=a.out ibs=32 skip=1
+You can remove that line if you wish, and just have the load generate
+the a.out file directory, either way will work.
+
+
+Fancy Stuff
+===========
+In order to let the user monitor download progress, a status bar is
+displayed on the terminal.  If the downloaded file contains an a.out
+header, then the program will draw a bar across a single line of the
+terminal, and cross it off as packets come in.  If no a.out header is
+present, then we don't know how much to expect, so we just give a
+visual ACK for every other packet.  Once you've downloaded the same
+program several times, you get to know how long it is.
+
+
+Where things go
+===============
+When the downloader is downloaded, it is placed at location 0x4000.
+When it is run, it copies itself up to location 0x100000, and runs
+from there.  It is often possible to restart the downloader with a
+"g 100000" command from the PROM monitor, unless that memory has been
+used.  The Xinu downloader always places the downloaded image at
+0x4000, and enters the program at that location.
+
+
+Problems
+========
+The tftp daemon on the suns is set up to do a change root to the
+/tftpboot directory.  That means that you can only request files from
+this directory, and that symbolic links cannot point OUT of this
+directory.  It would be fairly simple to remove the chroot(), (it's
+just an argument to the command), but we decided not to for the sake
+of extra security.  Most 4.3 type systems allow their tftp daemons to
+grab ANY world readable file, so it would be possible to set up the
+download program to grab files from other directories.
+
+
+Space Saved
+===========
+To keep the image size small, several tricks were used.  First, we
+don't load the C library.  This is to control the amount of code
+sucked in without our knowledge.  It turned out that only a few
+routines were taken from there.  All but 2 were short functions like
+strcmp(), bcopy(), etc.  These were included in the directory with the
+rest of the downloader code.  Another routine was scanf().  This adds
+an incredible amount of code when loaded in.  To avoid this, I hand
+coded several routines to scan addresses.  The last (and largest)
+routine was printf().  To get around this, I use the version of printf
+that lives in the SUN3 ROM (see file kprintf.c).  It is mostly the
+same, except that it will not accept field widths.  This cut out over
+1000 bytes of code (2 packets)
+
+
+Shawn Ostermann
+-----------------------------------------------------------------------------
+Shawn Ostermann      ARPA:  sdo@cs.purdue.edu      UUCP:  ...!purdue!sdo
+-----------------------------------------------------------------------------

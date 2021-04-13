@@ -1,0 +1,35 @@
+.TH OPEN 2
+.SH NAME
+open \- device independent open routine
+.SH SYNOPSIS
+.B int
+.B open(dev, name, mode)
+.br
+.B int dev;
+.br
+.B char *name;
+.br
+.B char *modes;
+.fi
+.SH DESCRIPTION
+.I Open
+will establish connection with the device given by
+.I dev
+using the null-terminated string \f2name\f1 to name an object on that
+device, and null-terminated string \f2mode\f1 to specify the access mode
+for that object.
+Valid access mode characters include \f3r\f1 (read), \f3w\f1 (write),
+\f3o\f1 (old), and \f3n\f1 (new) as specified in ACCESS(2).
+.PP
+\f2Open\f1 returns SYSERR if
+.I dev
+is incorrect or cannot be opened.
+If successful, the value returned by \f2open\f1 depends on the device.
+Most calls to open return a device descriptor that can be used in
+subsequent calls to \f2readf1 or \f2write\f1.
+For example, calling \f2open\f1 on a disk device with a file name
+as an argument produces a descriptor by which that file can be accessed.
+.SH SEE ALSO
+access(2), close(2), ckmode(3), namespace(4)
+.SH BUGS
+Not all devices produce meaningful return values for \f2open\f1.

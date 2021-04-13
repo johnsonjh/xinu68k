@@ -1,0 +1,66 @@
+
+
+
+SCOUNT(2)           Xinu Programmer's Manual            SCOUNT(2)
+
+
+
+NAME
+     scount - return the count associated with a semaphore
+
+SYNOPSIS
+     int scount(sem)
+     int sem;
+
+DESCRIPTION
+     _S_c_o_u_n_t returns the current count associated with semaphore
+     _s_e_m. A count of negative p means that there are p processes
+     waiting on the semaphore; a count of positive p means that
+     at most p more calls to WAIT(2) can occur before a process
+     will be blocked (assuming no intervening sends occur).
+
+SEE ALSO
+     screate(2), sdelete(2), signal(2), sreset(2), wait(2)
+
+BUGS
+     In this version, there is no way to distinguish SYSERR from
+     a legal semaphore count of -1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

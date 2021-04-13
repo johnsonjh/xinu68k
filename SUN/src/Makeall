@@ -1,0 +1,17 @@
+: 'Makeall -- make all pieces of Xinu cross-development system'
+:
+: 'Makeall'
+:
+PATH=/bin:/usr/bin
+echo '*** Making all pieces of Xinu cross-development system'
+echo
+echo
+for i in *
+do if test -d $i
+   then if test -f $i/Makeall
+        then cd $i
+             ./Makeall
+	     cd ..
+        fi
+   fi
+done

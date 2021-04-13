@@ -1,0 +1,26 @@
+.TH SCREATE 2
+.SH NAME
+screate \- create a new semaphore
+.SH SYNOPSIS
+.nf
+.B int screate(count)
+.B int count;
+.fi
+.SH DESCRIPTION
+.I Screate
+creates a counting semaphore and initializes it to
+.I count.
+If successful,
+.I screate
+returns the integer identifier of the new semaphore.
+It returns SYSERR if no more semaphores can be allocated or
+if \f2count\f1 is less than zero.
+.PP
+Semaphores are manipulated with WAIT(2) and SIGNAL(2) to
+synchronize processes.
+Waiting causes the semaphore count to be decremented; decrementing
+a semaphore count past zero causes a process to be blocked.
+Signaling a semaphore increases its count, freeing a blocked
+process if one is waiting.
+.SH SEE ALSO
+scount(2), sdelete(2), signal(2), sreset(2), wait(2)

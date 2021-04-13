@@ -1,0 +1,190 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	91.11.25.09.42.25;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.05.28.44;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.04.23.03;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.06.04;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@/dev/null
+@
+text
+@/* obtainlock.c - Routines for obtaining a lock on a remote machine
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Tue May 24 22:10:01 1988
+ *
+ * Copyright (c) 1988 Jim Griffioen
+ */
+
+#include <stdio.h>
+#include <sys/file.h>
+
+#include "bed.h"
+#include "status.h"
+
+/*---------------------------------------------------------------------------
+ * getfilename
+ *---------------------------------------------------------------------------
+ */
+int
+getfilename( filename, user )
+     char * filename, * user;
+{
+	char * ttyline;			/* tty line used		*/
+	char * devname;			/* tty device line name		*/
+	char * sb;
+	
+	strcpy( filename, BASEDIR );
+	strcat( filename, user );
+	strcat( filename, "." );
+	
+	if ( ( devname = (char *) ttyname( 0 ) ) != NULL ) {
+		ttyline = (char *) strrchr( devname, '/' );
+		ttyline++;
+		strcat( filename, ttyline );
+	}
+	else {
+		strcat( filename, "notty" );
+	}
+	return( 1 );
+}
+
+/*---------------------------------------------------------------------------
+ * getidleminutes - extract minutes from idletime string
+ *---------------------------------------------------------------------------
+ */
+int
+getidleminutes( idletime )
+     char * idletime;
+{
+	int hours, minutes, seconds;
+	
+	sscanf( idletime, "%d:%d:%d", & hours, & minutes, & seconds );
+	if ( hours > 0 ) {
+		minutes = minutes + ( hours * 60 );
+	}
+	return( minutes );
+}
+
+
+#ifdef HPPA
+
+bzero( buf, len )
+     char * buf;
+     int len;
+{
+	for (; len > 0; len-- ) {
+		*buf++ = 0;
+	}
+}
+
+bcopy( from, to, len )
+     char * from, * to;
+     int len;
+{
+	for (; len > 0; len-- ) {
+		*to++ = *from++;
+	}
+}
+
+char *
+index( buf, ch )
+     char * buf;
+     char ch;
+{
+	for (; *buf; buf++ ) {
+		if ( *buf == ch ) {
+			return( buf );
+		}
+	}
+	return( NULL );
+}
+
+int
+getdtablesize()
+{
+	return( _NFILE );
+}
+
+#endif
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@a13 1
+#include "String.h"
+d62 40
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d23 2
+a24 2
+getfilename( filename , user )
+     char * filename , * user;
+d30 3
+a32 3
+	strcpy( filename , BASEDIR );
+	strcat( filename , user );
+	strcat( filename , "." );
+d35 1
+a35 1
+		ttyline = (char *) strrchr( devname , '/' );
+d37 1
+a37 1
+		strcat( filename , ttyline );
+d40 1
+a40 1
+		strcat( filename , "notty" );
+d55 1
+a55 1
+	sscanf( idletime , "%d:%d:%d" , & hours , & minutes , & seconds );
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a12 1
+#include <strings.h>
+d14 1
+@

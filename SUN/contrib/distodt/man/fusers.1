@@ -1,0 +1,16 @@
+.TH FUSERS 1
+.SH NAME
+fusers \- list number of users and load averages on frontend machines
+.SH SYNOPSIS
+.B fusers
+.SH DESCRIPTION
+.I Fusers
+prints information about each frontend machine that is running a BED server.
+Each line lists the frontend machine name, the number of users
+logged in to the frontend, the load average, and the number of backends it
+serves.  The load average printed lists the 1, 5, and 15 minute load
+averages on the frontend.
+.SH "SEE ALSO"
+busers(1), status(1)
+
+

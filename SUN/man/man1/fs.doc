@@ -1,0 +1,66 @@
+
+
+
+FS(1)               Xinu Programmer's Manual                FS(1)
+
+
+
+NAME
+     fs - invoke server side of Xinu remote file system
+
+SYNOPSIS
+     fs [ -pport  ]
+
+DESCRIPTION
+     _F_s invokes the Xinu remote file system server on a UNIX
+     host.  The server executes with permissions set to that of
+     the invoking user, or user ``xinu'' if it is able to change
+     user id.  Typically, the host machine invokes _f_s at system
+     startup, making it available always.
+
+     Option -p allows the user to specify a _U_D_P port number to
+     which the server will respond.  If -p is omitted, _f_s uses a
+     default port number.  Thus, it is possible to have several
+     versions of the server in use simultaneously, with each ver-
+     sion using a unique UDP port.
+
+     When started, _f_s forks a child in background to become the
+     file server.  The background process executes forever, but
+     the foreground process exits.  Thus, the _f_s command appears
+     to complete instantly even though the server is still exe-
+     cuting.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

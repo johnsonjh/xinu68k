@@ -1,0 +1,66 @@
+
+
+
+SENDF(2)            Xinu Programmer's Manual             SENDF(2)
+
+
+
+NAME
+     sendf - send a (one-word) message to a process, forcing
+     delivery
+
+SYNOPSIS
+     int sendf(pid, msg)
+     int pid;
+     int msg;
+
+DESCRIPTION
+     _S_e_n_d_f sends the one-word message _m_s_g to the process with id
+     _p_i_d. A process may have at most one outstanding message that
+     has not been received.  _S_e_n_d_f returns SYSERR if process id
+     _p_i_d is invalid.  Otherwise, it returns OK.
+
+SEE ALSO
+     receive(2), recvtim(2), recvclr(2), preceive(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

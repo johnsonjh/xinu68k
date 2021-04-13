@@ -1,0 +1,66 @@
+
+
+
+RECEIVE(2)          Xinu Programmer's Manual           RECEIVE(2)
+
+
+
+NAME
+     receive - receive a (one-word) message
+
+SYNOPSIS
+     int receive()
+
+DESCRIPTION
+     _R_e_c_e_i_v_e returns the one-word message sent to a process using
+     SEND(2).  If no messages are waiting, _r_e_c_e_i_v_e blocks until
+     one appears.
+
+SEE ALSO
+     preceive(2), psend(2), receive(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,119 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.3
+date	92.01.04.03.44.34;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.07.00.21;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.06.50;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@
+/* 
+ * sitespecific.h - 
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 10 16:01:48 1988
+ *
+ * Copyright (c) 1988/* Jim Griffioen
+ */
+
+/*
+ *---------------------------------------------------------------------------
+ * These are site specific constants and should be modified to work with
+ * your machines and file system
+ *---------------------------------------------------------------------------
+ */
+
+#define BED_EXEC_PATH	"/usr/xinu/bin/bed"
+					/* full bed program name	*/
+
+#define BASEDIR		"/tmp/xinu/"
+					/* basedir for lock files	*/
+    
+#define MACHINES_FILE	"/usr/xinu/database/machines" 
+					/* machines database name	*/
+    
+#define BEDSERVERS_FILE	"/usr/xinu/database/bedservers"	 
+					/* list of bedservers on the net*/
+    
+#define	LOGGINGDIR	"/usr/xinu/bedlog/"
+					/* log file to write errors to	*/
+    
+#define KNOWN_UDP_PORT	2024		/* port bed will listen on	*/
+#define MAXNETPACKET	1500		/* low est of network packet size */
+#define APPROXUDPHEAD	200		/* hi est of eth/ip/udp header size */
+#define STATTIMEOUT	1		/* status timeout set to 1 seconds */
+#define DOMAINNAME	"purdue.edu"	/* domain name not to be printed */
+
+/* Environment Variables */
+#define ENVFILENAME	"ODTFILENAME"
+#define ENVBEMACHINE	"ODTBEMACHINE"
+#define ENVBEDSERVERS 	"ODTBEDSERVERS"
+#define ENVCLASS	"ODTCLASS"
+#define DEFAULTCLASS	"SUN"		/* default class		*/
+
+/* number of times to restart the bed */
+#define MAXRESTARTS 5
+
+/* should the bed be in background ? */
+#define BACKGROUND
+
+/***** End site specific constants ******/
+
+
+@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@a44 1
+#define ENVBEDSERVERSFILE "ODTBEDSERVERSFILE"
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d20 1
+a20 1
+#define BED_EXEC_PATH	"/homes/xinu/bin/bed"
+d26 1
+a26 1
+#define MACHINES_FILE	"/homes/xinu/database/machines" 
+d29 1
+a29 1
+#define BEDSERVERS_FILE	"/homes/xinu/database/bedservers"	 
+d32 1
+a32 1
+#define	LOGGINGDIR	"/homes/xinu/bedlog/"
+@

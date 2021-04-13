@@ -1,0 +1,34 @@
+.TH PDELETE 2
+.SH NAME
+pdelete \- delete a port
+.SH SYNOPSIS
+.nf
+.B int pdelete(portid, dispose)
+.B int portid;
+.B int (*dispose)(); 
+.fi
+.SH DESCRIPTION
+.I Pdelete
+deallocates port
+.I portid.
+The call returns SYSERR if
+.I portid
+is illegal or is not currently allocated.
+.PP
+The command has several effects, depending on the state of the 
+port at the time the call is issued.
+If processes are waiting for messages from portid, they
+are made ready and return SYSERR to their caller. If messages
+exist in the port, they are disposed of by procedure
+.IR dispose .
+If processes are waiting to place messages
+in the port, they are made ready and given SYSERR indications
+(just as if the port never existed).
+.I Pdelete
+performs the same function of clearing messages and processes from a
+port as PRESET(2)
+except that
+.I pdelete
+also deallocates the port.
+.SH SEE ALSO
+pcount(2), pcreate(2), preceive(2), preset(2), psend(2)

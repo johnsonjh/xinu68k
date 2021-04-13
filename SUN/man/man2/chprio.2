@@ -1,0 +1,35 @@
+.TH CHPRIO 2
+.SH NAME
+chprio \- change the priority of a process
+.SH SYNOPSIS
+.B int
+.B chprio(pid,newprio)
+.nf
+.B int pid;
+.B int newprio;
+.fi
+.SH DESCRIPTION
+.I Chprio
+changes the scheduling priority of process
+.I pid
+to
+.I newprio.
+Priorities are positive integers.
+At any instant, the highest priority process  that is ready
+will be running.
+A set of processes with equal priority is scheduled round-robin.
+.PP
+If the new priority is invalid, or the process id is invalid
+.I chprio
+returns SYSERR.
+Otherwise, it returns the old process priority.
+It is forbidden to change the priority of the null process, which
+always remains zero.
+.SH SEE ALSO
+create(2), getprio(2), resume(2)
+.SH BUGS
+Because
+.I chprio
+changes priorities without rearranging processes on the ready list,
+it should only be used on waiting, sleeping, suspended, or current
+processes.

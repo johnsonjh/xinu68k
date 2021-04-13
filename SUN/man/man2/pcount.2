@@ -1,0 +1,26 @@
+.TH PCOUNT 2
+.SH NAME
+pcount \- return the number of messages currently waiting at a port
+.SH SYNOPSIS
+.nf
+.B int pcount(portid)
+.B int portid;
+.fi
+.SH DESCRIPTION
+.I Pcount
+returns the message count associated with port
+.I portid.
+.PP
+A positive count p means that there are p messages available
+for processing. This count includes the count of messages explicitly in 
+the port and the count of the number of processes which attempted
+to send messages to the queue but are blocked (because the 
+queue is full). A negative count p means that there are
+p processes awaiting messages from the port.
+A zero count means that there are neither messages waiting nor
+processes waiting to consume messages.
+.SH SEE ALSO
+pcreate(2), pdelete(2), preceive(2), preset(2), psend(2)
+.SH BUGS
+In this version there is no way to distinguish SYSERR (which
+has value \-1) from a legal port count.

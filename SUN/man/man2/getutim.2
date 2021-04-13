@@ -1,0 +1,31 @@
+.TH GETUTIM 2
+.SH NAME
+getutim \- obtain current universal time in seconds past the epoch
+.SH SYNOPSIS
+.nf
+.B int getutim(timvar)
+.B long *timvar;
+.fi
+.SH DESCRIPTION
+.I Getutim
+obtains the current time measured in seconds past the epoch date,
+and places
+it in the longword pointed to by argument \f2timvar\f1.
+The correct time is usually kept by the real-time clock, but
+\f2gettime\f1  may contact a time server on the network if the local
+time has not been initialized.
+.PP
+The epoch is taken to be zero seconds past Jan 1, 1970.
+Universal time, formerly called Greenwich Mean Time, is the mean solar
+time of the meridian in Greenwich, England, and is used throughout the world
+as a standard for measuring time.
+.PP
+If \f2getutim\f1 cannot obtain the current time, it returns SYSERR
+to the caller.
+Otherwise, \f2getutim\f1 returns OK.
+.SH SEE ALSO
+gettime(2)
+.SH BUGS
+The local clock may drift, especially under heavy CPU activity or
+activities that require the operating system to mask interrupts for
+extended periods.

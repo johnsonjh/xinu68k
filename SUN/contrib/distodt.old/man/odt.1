@@ -1,0 +1,80 @@
+.TH ODT 1
+.SH NAME
+odt \- connect user's terminal to a backend \s-2SUN's\s0 console
+.SH SYNOPSIS
+.B odt
+[ option ] ...
+.SH DESCRIPTION
+.I Odt
+connects a terminal on the SUN (or VAX)
+to a backend SUN's console line so the output
+of the backend SUN appears on the terminal screen and characters
+typed at the 
+keyboard are sent to the backend SUN.
+\f2Odt\f1 sets the backend SUN's tty line to raw mode, and the SUN
+(or VAX) terminal to 
+cbreak mode.
+The connection can be broken by killing the odt process (e.g., by
+typing the interrupt character (e.g., CONTROL-C).
+.PP
+When \f2odt\f1 receives a backslash from the terminal,
+it switches to raw mode to read
+one character, after which it switches back to cbreak mode.
+The backslash escape allows the user to send characters like CONTROL-C
+to the backend SUN even though they are normally interpreted as signals.
+As a special case, an escaped null character (octal 0) causes \f2odt\f1
+to force the backend SUN line into a break condition for 1 second.
+This is useful for halting the processor and trapping to the SUN monitor
+program.
+.PP
+Options are:
+.TP
+.BI \-c "CLASS"
+Class. Connect to a machine in the class
+.I CLASS
+if one is available.  The default class is SUN.  If the user
+already has a machine
+reserved in the class
+.I CLASS,
+then the reserved machine
+will be used. 
+If no machines are available in the specified class
+then a message to that effect will be printed.
+.TP
+.BI \-m "MACH"
+Machine.
+Use the backend SUN named
+.I MACH
+if it is available.
+A user may now reserve two or more machines at once.  The first machine
+they reserve will not automatically be released like the original version
+of the software used to do.  Moreover,  the tty line and the user name are
+used to make a reservation.  This means that a user can odt to two
+different backend machines from two different
+windows on his workstation, and the reservation system will remember which
+window is associated with each backend.  If you want to odt to two
+different backends from the same window, then you must specify the desired
+backend each time, or the reservation system will automatically odt to
+the backend that you used most recently in that window.
+If machine
+.I MACH
+is unavailable, then a message to that effect will be printed.
+.TP
+.BI \-v 
+Verbose.
+The verbose option will print messages indicating what the program is
+currently doing.
+.SH "SEE ALSO"
+busers(1), download(1), odtunlock(1)
+.SH FILES
+.ta 1i
+/tmp/xinu/*   Local lock files.  Named by user's login id
+.ta 1i
+/usr/xinu/database/bedservers  List of BED servers if on
+.ta 1i
+                               on remote net
+.SH BUGS
+Avoid suspending odt (CONTROL-Z) if possible since it will leave the
+terminal line in cbreak mode.
+
+

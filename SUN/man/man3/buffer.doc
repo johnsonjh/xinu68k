@@ -1,0 +1,66 @@
+
+
+
+BUFFER(3)           Xinu Programmer's Manual            BUFFER(3)
+
+
+
+NAME
+     freebuf, getbuf, mkpool, poolinit - buffer pool routines
+
+SYNOPSIS
+     int freebuf(buf);
+     char *buf;
+
+     char *getbuf(poolid);
+     int poolid;
+
+     int mkpool(bufsiz, numbufs)
+     int bufsiz, numbufs;
+
+     int poolinit()
+
+DESCRIPTION
+     The routine _p_o_o_l_i_n_i_t initializes the entire buffer pool
+     manager.  It may be ignored as long as the MEMMARK option
+     has been included in the Xinu Configuration file.  Without
+     MEMMARK, _p_o_o_l_i_n_i_t must be called once, before any other
+     buffer manipulatiion routines.
+
+     _M_k_p_o_o_l creates a pool of _n_u_m_b_u_f_s buffers, each of size _b_u_f_-
+     _s_i_z, and returns an integer identifying the pool.  If no
+     more pools can be created, or if the arguments are
+     incorrect, _m_k_p_o_o_l returns SYSERR.
+
+     Once a pool has been created, _g_e_t_b_u_f obtains a free buffer
+     from the pool given by _p_o_o_l_i_d, and returns a pointer to the
+     first word of the buffer.  If all buffers in the specified
+     pool are in use, the calling process will be blocked until a
+     buffer becomes available.  If the argument _p_o_o_l_i_d does not
+     specify a valid pool, getbuf returns SYSERR.
+
+     _F_r_e_e_b_u_f returns a buffer to the pool from which it was allo-
+     cated.  _F_r_e_e_b_u_f returns OK for normal completion, SYSERR if
+     _b_u_f does not point to a valid buffer from a buffer pool.
+
+BUGS
+     At present there is no way to reclaim space from buffer
+     pools once they are no longer needed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b              Printed 11/26/83                        1
+
+
+

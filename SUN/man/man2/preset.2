@@ -1,0 +1,42 @@
+.TH PRESET 2
+.SH NAME
+preset  \- reset a port
+.SH SYNOPSIS
+.nf
+.B int preset(portid, dispose)
+.B int portid;
+.B int (*dispose)();
+.fi
+.SH DESCRIPTION
+.I Preset
+flushes all messages from a port and releases all processes waiting to
+send or receive messages.
+.I Preset
+returns SYSERR if
+.I portid
+is not a valid port id.
+.PP
+.I Preset
+has several effects, depending on the state of the port at the
+time the call is issued.
+If processes are blocked waiting to receive
+messages from port
+.I portid,
+they are all made ready; each returns SYSERR to caller.
+If messages are in the port they are disposed of by passing them
+to function
+.IR dispose .
+If process are blocked waiting to send messages
+they are made ready; each returns SYSERR to its caller
+(as though the port never existed).
+.PP
+The effects of 
+.I preset
+are the same as PDELETE(2) followed by PCREATE(2),
+except that the port is not deallocated.
+The maximum message count remains the same as it was.
+.SH BUGS
+There is no way to change the maximum message count when the port is
+reset.
+.SH SEE ALSO
+pcount(2), pcreate(2), pdelete(2), preceive(2), psend(2)

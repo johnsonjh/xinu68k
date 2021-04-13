@@ -1,0 +1,50 @@
+.TH NETUTIL 3
+.SH NAME
+netutil \- Network utilities hs2net, net2hs, hl2net, net2hl, vax2hl, hl2vax
+.SH SYNOPSIS
+.nf
+.B short net2hs(s)
+.B short hs2net(s)
+.B long net2hl(l)
+.B long hl2net(l)
+.B long vax2hl(l)
+.B long hl2vax(l)
+.br
+.sp
+.B short s;
+.br
+.B long l;
+.br
+.SH DESCRIPTION
+These routines map binary integer data between network standard byte order
+and local host byte order.
+In the description, the term \f2short\f1 refers to a 2-octet (16-bit)
+binary value, whether two's complement signed or unsigned,
+and the term \f2long\f2 refers to a 4-octet (32-bit) value.
+The individual routines are:
+.TP
+.B net2hs
+Converts a short item from network byte order to host byte order.
+.TP
+.B hs2net
+Converts a short item from host byte order to network byte
+order.
+.TP
+.B net2hl
+Converts a long item from network byte order to host byte order.
+.TP
+.B hl2net
+Converts a long item from host byte order to network byte order.
+.TP
+.B vax2hl
+Converts a long item from \s-2VAX\s0 byte order to host byte order
+(used in communication with a file server running on a \s-2VAX\s0).
+.TP
+.B hl2vax
+Converts a long from host byte order to \s-2VAX\s0 byte order
+(used in communication with a file server running on a \s-2VAX\s0).
+.PP
+No conversion is needed for character strings
+because the local host order on most machines agrees with network
+standard byte order (i.e., the string extends upward in the
+memory address space).

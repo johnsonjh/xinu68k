@@ -1,0 +1,32 @@
+.TH HALT 3
+.SH NAME
+halt, pause \- pause or halt the processor
+.SH SYNOPSIS
+.B #include <kernel.h>
+.PP
+.B halt();
+.br
+.B pause();
+.br
+.SH DESCRIPTION
+.I Halt
+stops the processor immediately without affecting devices or
+direct-memory-access (DMA) operations on the bus.
+Once halted, the processor will not respond to interrupts.
+.I Halt
+is useful for debugging the operating system.
+.PP
+.I Pause
+stops the processor until an interrupt occurs, allowing
+it to continue at the instruction following the \f2pause\f1
+when the interrupt returns.
+.I Pause
+is used in the null process instead of an infinite loop to
+avoid taking bus bandwidth needlessly.
+.PP
+In the current implementation, both \f2halt\f1 and \f2pause\f1 are
+macros that expand to the assembler language \f2halt\f1 and \f2pause\f1
+instructions.
+Thus, they can only be executed in kernel mode.
+.SH "SEE ALSO"
+disable(3), wait(2)

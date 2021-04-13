@@ -1,0 +1,132 @@
+
+
+
+EIS(3)              Xinu Programmer's Manual               EIS(3)
+
+
+
+NAME
+     EIS - extended instruction set for the LSI-11/2
+
+SYNOPSIS
+     jsr pc,times2
+     jsr pc,over2
+     jsr pc,shift2
+     jsr pc,cshft2
+
+DESCRIPTION
+     Library _e_i_s._a contains assembly language routines to simu-
+     late LSI-11 multiply, divide, arithmetic shift, and arith-
+     metic shift combined instructions.  Normally, an assembly
+     language listing should be filtered through the programs
+     _s_u_b_M_U_L, _s_u_b_D_I_V, _s_u_b_A_S_H, and _s_u_b_A_S_H_C to replace any of the
+     extended instructions with the proper calling sequence.  The
+     resulting assembly language program must be loaded with this
+     library, which contains the routines called.
+
+     These routines do _n_o_t use the C calling conventions. The
+     multiply routine is called by:
+       mfps  -(sp)     / push psw
+       mov   A,-(sp)   / push multiplier
+       mov   R,-(sp)   / push multiplicand
+       jsr   pc,times2 / call mul simulation routine
+       mov   (sp)+,R   / save low word of product
+       mov   (sp)+,R+1 / save high word of product
+       mtps  (sp)+     / put in new psw
+     where the instruction being mimicked is "mul A,R" and R is
+     an even-numbered register (if R is odd, change the "mov
+     (sp)+,R" to "tst (sp)+" and the "mov (sp)+,R+1" to "mov
+     (sp)+,R").
+
+     The division routine is called by:
+       mfps  -(sp)     / push psw
+       mov   A,-(sp)   / push divisor
+       mov   R,-(sp)   / push high word of dividend
+       mov   R+1,-(sp) / push low word of dividend
+       jsr   pc,over2  / call div simulation routine
+       mov   (sp)+,R+1 / save remainder
+       mov   (sp)+,R   / save quotient
+       tst   (sp)+     / reset stack pointer
+       mtps  (sp)+     / put in new psw
+     where the instruction being mimicked is "div A,R".
+
+     The arithmetic shift routine is called by:
+       mfps  -(sp)     / get psw
+       mov   A,-(sp)   / push shift count onto the stack
+       mov   r0,-(sp)  / push number to be shifted onto the stack
+       jsr   pc,shift2 / call the simulation routine
+       mov   (sp)+,r0  / save the result
+       tst   (sp)+     / reset stack pointer
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+EIS(3)              Xinu Programmer's Manual               EIS(3)
+
+
+
+       mtps  (sp)+     / put in new psw
+     where the instruction being mimicked is "ash A,R".  The
+     arithmetic shift combined routine is called by:
+       mfps  -(sp)     / get psw
+       mov   A,-(sp)   / push shift count onto the stack
+       mov   r0,-(sp)  / push high word onto the stack
+       mov   r1,-(sp)  / push low word onto the stack
+       jsr   pc,shift2 / call the simulation routine
+       mov   (sp)+,r1  / save the low word
+       mov   (sp)+,r0  / save the high word
+       tst   (sp)+     / reset stack pointer
+       mtps  (sp)+     / put in the new psw
+     where the instruction being mimicked is "ashc A,R".
+
+FILES
+     {Xinu-directory}/lib/libeis.a
+     {Xinu-directory}/bin/subMUL
+     {Xinu-directory}/bin/subDIV
+     {Xinu-directory}/bin/subASH
+     {Xinu-directory}/bin/subASHC
+
+SEE ALSO
+     cc11(1), subEIS(1)
+
+DIAGNOSTICS
+     The condition codes are correctly set by the above calling
+     sequence.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

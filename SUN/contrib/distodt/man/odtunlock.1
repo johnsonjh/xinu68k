@@ -1,0 +1,60 @@
+.TH ODTUNLOCK 1
+.SH NAME
+odtunlock \- release lock on a backend machine
+.SH SYNOPSIS
+.B odtunlock
+[ \f3\-c\f2CLASS\f1 ]
+[ \f3\-m\f2MACH\f1 ]
+[ \f3\-r\f1 ]
+.SH DESCRIPTION
+.I Odtunlock
+releases the caller's currently reserved SUN,
+making it available for others to use.
+Mutual exclusion locks are created automatically by
+\f2odt\f1 and \f2download\f1, and are reported by \f2busers\f1 and
+\f2status\f1.
+Reservations may expire after some idle time even if
+\f2odtunlock\f1 is not used.  \f2Odt\f1 or \f2download\f1 may reclaim a
+backend SUN if the reservation has expired.
+.PP
+Reservations are recorded in two places: once with the BED in charge of the
+specified backend, and once on the user's local machine.  The reservation
+on the BED's frontend is the \f2official\f1 reservation.  The reservation
+recorded on the user's local machine is simply a \f2hint\f1 that tells which
+backend machine the user \f2probably\f1 has reserved.  \f2Odtunlock\f1
+removes the reservation on the BED's frontend, however, by default it does
+not remove the local reservation.  The next time the user uses \f2odt\f1 or
+\f2download\f1 it will check the local reservation and then try to connect
+to the same backend the user used the last time.  If that backend is not
+available, \f2odt\f1 and \f2download\f1 will then find a new free backend
+and change the local reservation to the new backend.  The \f3\-r\f1
+argument causes the local reservation to be removed as well as the
+reservation on the BED's frontend.
+.PP
+Without arguments, \f2odtunlock\f1 removes the reservation on the
+backend machine
+most recently accessed by the caller (in the window the command is issued
+from, if working in a windowing environment).
+.PP
+Argument \f3\-c\f2CLASS\f1 can be used to specify a \f2CLASS\f1, in which
+case \f2odtunlock\f1 removes the user's most recently held reservation in
+that class.
+.PP
+Argument \f3\-m\f2MACH\f1 forces \f2odtunlock\f1 to cancel the reservation
+for machine \f2MACH\f1 within the selected class.
+.PP
+Argument \f3\-r\f1 removes the local reservation lock.
+.PP
+Argument \f3\-v\f1 prints messages indicating what the program is doing.
+.PP
+Xinu's reservation system is a friendly, cooperative mutual-exclusion
+mechanism.
+All software that accesses backend SUNs
+is expected to adhere to the reservation system to
+prevent multiple users from trying to access the same machine
+simultaneously.
+.SH FILES
+.ta 1.4i
+/tmp/xinu/*   Local lock files. Named by user's login id
+.SH "SEE ALSO"
+busers(1), odt(1), download(1)

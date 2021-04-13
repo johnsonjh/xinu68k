@@ -1,0 +1,23 @@
+.TH GETC 2
+.SH NAME
+getc \- device independent character input routine
+.SH SYNOPSIS
+.B int
+.B getc(dev)
+.nf
+.B int dev;
+.fi
+.SH DESCRIPTION
+.I Getc
+will read the next character from the I/O device given by
+.I dev.
+It returns SYSERR if
+.I dev
+is incorrect.
+A successful call may return a
+character (widened to an integer) or the value EOF to denote end of
+file, depending on the device driver.
+.SH SEE ALSO
+close(2), control(2), open(2), putc(2), read(2), seek(2), write(2)
+.SH BUGS
+Not all devices report the end-of-file condition.

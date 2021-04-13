@@ -1,0 +1,66 @@
+
+
+
+MKPOOL(2)           Xinu Programmer's Manual            MKPOOL(2)
+
+
+
+NAME
+     mkpool - create a buffer pool
+
+SYNOPSIS
+     int mkpool(bufsiz, numbufs)
+     int bufsiz;
+     int numbufs;
+
+DESCRIPTION
+     _M_k_p_o_o_l creates a pool of _n_u_m_b_u_f_s buffers, each of size _b_u_f_-
+     _s_i_z, and returns an integer identifying the pool.  If no
+     more pools can be created, or if the arguments are
+     incorrect, _m_k_p_o_o_l returns SYSERR.
+
+SEE ALSO
+     getbuf(2), freebuf(2), poolinit(2)
+
+BUGS
+     At present there is no way to reclaim space from buffer
+     pools once they are no longer needed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

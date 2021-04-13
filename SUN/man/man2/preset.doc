@@ -1,0 +1,66 @@
+
+
+
+PRESET(2)           Xinu Programmer's Manual            PRESET(2)
+
+
+
+NAME
+     preset  - reset a port
+
+SYNOPSIS
+     int preset(portid, dispose)
+     int portid;
+     int (*dispose)();
+
+DESCRIPTION
+     _P_r_e_s_e_t flushes all messages from a port and releases all
+     processes waiting to send or receive messages.  _P_r_e_s_e_t
+     returns SYSERR if _p_o_r_t_i_d is not a valid port id.
+
+     _P_r_e_s_e_t has several effects, depending on the state of the
+     port at the time the call is issued.  If processes are
+     blocked waiting to receive messages from port _p_o_r_t_i_d, they
+     are all made ready; each returns SYSERR to caller.  If mes-
+     sages are in the port they are disposed of by passing them
+     to function _d_i_s_p_o_s_e.  If process are blocked waiting to send
+     messages they are made ready; each returns SYSERR to its
+     caller (as though the port never existed).
+
+     The effects of _p_r_e_s_e_t are the same as PDELETE(2) followed by
+     PCREATE(2), except that the port is not deallocated.  The
+     maximum message count remains the same as it was.
+
+BUGS
+     There is no way to change the maximum message count when the
+     port is reset.
+
+SEE ALSO
+     pcount(2), pcreate(2), pdelete(2), preceive(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

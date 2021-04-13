@@ -1,0 +1,132 @@
+
+
+
+ETHER(4)            Xinu Programmer's Manual             ETHER(4)
+
+
+
+NNNNAAAAMMMMEEEE
+     ether - standard 10Mbps Ethernet network interface device
+     driver (type eth)
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ####iiiinnnncccclllluuuuddddeeee <<<<lllleeeerrrreeeegggg....hhhh>>>>
+     ####iiiinnnncccclllluuuuddddeeee <<<<eeeetttthhhheeeerrrr....hhhh>>>>
+
+     rrrreeeeaaaadddd((((ddddeeeevvvviiiicccceeee bbbbuuuuffffffffeeeerrrr,,,, lllleeeennnnggggtttthhhh))))
+     wwwwrrrriiiitttteeee((((ddddeeeevvvviiiicccceeee,,,, bbbbuuuuffffffffeeeerrrr,,,, lllleeeennnnggggtttthhhh))))
+     iiiinnnniiiitttt((((ddddeeeevvvviiiicccceeee))))
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     The _e_t_h device driver provides input and output for a 10
+     Mbps Ethernet local area network.  The standard Xinu device
+     name for Ethernet devices is _E_T_H_E_R.
+
+     Implemented on an AMD 7990 LANCE Ethernet controller.  the
+     _e_t_h driver handles DMA input and output at the physical net-
+     work level, transmitting complete frames between user
+     processes and the device.
+
+     The driver honors the following operations:
+
+     rrrreeeeaaaadddd((((ddddeeeevvvviiiicccceeee bbbbuuuuffffffffeeeerrrr,,,, lllleeeennnnggggtttthhhh))))
+          Reads one frame into _b_u_f_f_e_r, copying no more than
+          _l_e_n_g_t_h characters.  It returns the length of the frame
+          read; the count includes the 14-octet header.
+
+     wwwwrrrriiiitttteeee((((ddddeeeevvvviiiicccceeee,,,, bbbbuuuuffffffffeeeerrrr,,,, lllleeeennnnggggtttthhhh))))
+          Writes a frame of _l_e_n_g_t_h characters found in _b_u_f_f_e_r.
+          It returns _O_K if the frame was acceptable, _S_Y_S_E_R_R oth-
+          erwise.  The call to _w_r_i_t_e will return once output has
+          been started, but the buffer will be in use until the
+          device finishes.  The driver calls FREEBUF(2) to
+          dispose of the buffer once the device finishes using
+          it.
+
+     iiiinnnniiiitttt((((ddddeeeevvvviiiicccceeee))))
+          Initializes the device and driver.  The driver sets the
+          device to accept only those packets addressed directly
+          to the devices' physical address and broadcast packets
+          (all 1's address).
+
+NNNNOOOOTTTTEEEESSSS
+     Since the LANCE controller has no internal buffering, it was
+     necessary to use the buffer ring facility rather than lose
+     back to back packets.  For this reason, it was no longer
+     possible to expect the next packet to arrive to go into a
+     specific buffer.  Rather than change the semantics of read
+     and write for the ethernet driver, it was decided to copy
+     buffers in both directions.  Also note that, in order for
+
+
+
+Version 6b               Printed 3/2/88                         1
+
+
+
+
+
+
+ETHER(4)            Xinu Programmer's Manual             ETHER(4)
+
+
+
+     the Sun DVMA access to work, the buffers linked into the
+     read and write buffer rings cannot exist at arbitrary loca-
+     tions, but must be allocated using getdmem().
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 3/2/88                         2
+
+
+

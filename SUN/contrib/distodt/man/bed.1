@@ -1,0 +1,37 @@
+.TH BED 1
+.SH NAME
+bed \- backend daemon process that runs on frontend machine
+.SH SYNOPSIS
+.B bed
+.SH DESCRIPTION
+.I Bed
+is the \f3B\f1ack\f3E\f1nd \f3D\f1aemon that runs on the frontend machine.
+It accepts status, odt, and download requests from other frontends and
+then services these requests.  It reads the configuration of the backend
+machines it needs to service from a \f2Machines database\f1, and it keeps
+lock files for each reserved backend machine.
+.PP
+.I Bed
+can be run by anyone \- it is not a setuid program.  It runs in the
+background, so after typing \f2bed\f1 it returns immediately.
+.I Bed
+actually starts 2 processes running in the background, a parent process and
+one child process.  The parent process simply starts the child process and
+then waits for it to die.  The child process is the \f2real\f1 BED process.
+It is the one that services requests from other frontends.  If for some
+reason the child process dies the parent detects it and restarts a new
+child process as the BED process.  This insures that the BED process will
+always be running.
+.PP
+\f2Status\f1 requests are replied to immediately, but \f2odt\f1 and
+\f2download\f1 requests cause a new process to be forked off to handle the
+request. 
+.SH FILES
+/usr/xinu/database/machine  Backend machines database 
+.br
+/tmp/xinu/*  Backend reservation lock files
+.SH "SEE ALSO"
+bedkill(1), bedreboot(1)
+.SH BUGS
+
+

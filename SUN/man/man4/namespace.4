@@ -1,0 +1,31 @@
+.TH NAMESPACE 4
+.SH NAME
+namespace \- syntactic namespace pseudo-device driver (type nam)
+.SH SYNOPSIS
+.nf
+.B #include <name.h>
+.sp
+.B open(device, name, mode)
+.B init(device)
+.br
+.SH DESCRIPTION
+.PP
+The \f2nam\f1 pseudo-device driver provides mapping of OPEN(2)
+calls to underlying devices based on name syntax.
+The standard Xinu name for the namespace device is \f2NAMESPACE\f1.
+.PP
+The \f2nam\f1 driver provides two operations as follows:
+.TP
+.B open(device,name,mode)
+Open a device given its name and access mode (see ACCESS(2) for
+an explanation of modes).
+.TP
+.B init(device)
+Initialize the namespace by establishing a default interpretation
+for names.
+.SH NOTES
+.nh
+Although system calls MOUNT(2), UNMOUNT(2), NAMMAP(2), and
+NAMREPL(2) are intricate parts of the naming system, they are
+not included in the driver simply because they do not fit the
+read/write paradigm easily.

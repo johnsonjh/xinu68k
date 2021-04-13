@@ -1,0 +1,122 @@
+Sun3.V7 -- install.README
+
+Installation Details
+------------ -------
+
+This is file {Xinu-directory}/install/README.  It contains
+instructions for installing the Xinu software and recompiling
+it.  These instructions instructions must be followed:
+(a) after the distribution tape has been read in, or
+(b) after the Xinu directory has been moved.
+
+
+Installation involves changing references to {Xinu-directory}
+in all source files and then recompiling them.
+
+Step 1:	Execute shell script "Install" in this directory
+	to climb around the tree and create final versions
+	of the source files.
+
+		cd {Xinu-directory}/install
+		./Install
+
+Step 2:	Change to the source directory and execute the script
+	that rebuilds binaries:
+
+		cd {Xinu-directory}/src
+        	Makeall > make.out &
+
+	If you have installed Xinu in other than /usr/Xinu,
+	this program takes more than 30 minutes on a SUN 3-50
+	(Hence, we suggest that you run it in background).
+	Also be warned that there are numerous programs in
+	the cross-development software that produce warning
+	messages when recompiled.  You do not need to be
+	superuser; only directories under {Xinu-directory}
+	are affected. 
+
+Step 3:	Add {Xinu-directory}/bin to your "path" so you can
+	execute	commands that are found there:
+
+	C-shell users type:
+
+		set path=( $path {Xinu-directory}/bin )
+
+	Bourne shell users type:
+
+		PATH=$PATH:{Xinu-directory}/bin
+		export PATH
+
+	To make Xinu commands accessible after your next
+	login, you must change the path assignment in your
+	.profile or .cshrc files.
+
+
+Step 4:	Try the command "odt" in {Xinu-directory}/bin. It
+	connects your keyboard to serial line A so that
+	keystrokes go to the back end sun, and it's output
+	comes to your screen:
+
+		odt
+
+	To get the attention of the LSI, type backslash
+	followed by null (CONTROL @).  The Sun will stop
+	execution and print a prompt (">").  You
+	are now talking to the Sun's monitor program.
+	(consult the vendor's manual for additional
+	information on the monitor commands).
+	To terminate the odt command, kill the
+	process with your normal interrupt character
+	(usually CONTROL-C or DELETE).
+
+Step 5: Change to the installation directory and download
+	the test program:
+
+		cd {Xinu-directory}/install
+		cp a.out /tftpboot
+		odt
+		b -a    /* monitor command */
+
+	It will print "hello world." and stop.  When all
+	processes complete, type CONTROL-c to kill the odt
+	command.
+
+
+Step 7:	You are ready to experiment with Xinu itself.
+	Change to the source directory and modify the
+	configuration for your Sun.
+
+		cd {Xinu-directory}/src/sys/sys
+		...edit file "Configuration"...
+		make a.out
+		make download
+		odt
+		b -a     /* monitor command */
+
+	Note that because recompiling the Xinu sources
+	may take considerable time.  It is advisable to
+	run make in the background with output (and error
+	messages) directed to a file.
+
+	Make will recompile the Xinu sources, rebuild
+	file "xinu.o", and rebind library "libx.a".
+	However, it leaves the new versions in source
+	directory.  Make also compiles file "test.c"
+	and binds it with the new library to form file
+	"a.out".  When you are satisfied that the new
+	version works, run "make install" to copy the new
+	version into {Xinu-directory}/lib where command
+	cc accesses it.
+
+	Other arguments can be used with make.  For details
+	see the file "Makefile".  Two that particularly
+	useful ones are "everything" that runs several
+	scripts designed to test source program formats,
+	and "download" that copies the a.out file into the
+	directory where the back end Sun expects to find it.
+	
+
+Suggestions
+-----------
+
+   Suggestions and reports of problems are welcomed.

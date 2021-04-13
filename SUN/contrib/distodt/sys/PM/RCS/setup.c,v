@@ -1,0 +1,369 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	91.11.25.02.07.45;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#include "pm.h"
+#include <sys/stat.h>
+
+/*
+ * pm - initialization routines
+ */
+
+struct	nlist	nl[8];		/* symbols pulled out of the text image	 */
+#define	CURRPID		0
+#define	PROC		1
+#define	XQ		2
+#define	SEMS		3
+#define	TTYS		4
+#define	VERS		5
+#define	CLKTIM		6
+
+extern	struct	pentry	*proctb;
+extern	struct	sentry	*semtab;
+extern	struct	tty	*tptr;
+extern	struct	qent	*Q;
+extern	char	*vers;
+extern	long	clktim;
+
+setup(argc, argv)
+int	argc;
+char	*argv[];
+{
+	char		*malloc();
+	FILE		*txtfd, *corefd;
+	struct stat	stat;
+	register struct nlist	*sp1, *sp2;
+	register 	i;
+	int		s1, s2, strtabsize;
+	int		svalcomp();
+	int		coresize;
+
+	nl[0].n_un.n_name = "_currpid";
+	nl[1].n_un.n_name = "_proctab";
+	nl[2].n_un.n_name = "_q";
+	nl[3].n_un.n_name = "_semaph";
+	nl[4].n_un.n_name = "_tty";
+	nl[5].n_un.n_name = "_vers";
+	nl[6].n_un.n_name = "_clktime";
+	nl[7].n_un.n_name = NULL;
+
+	procargs(argc, argv);
+
+	if (verbose)
+		printf("Opening text file...\n");
+	txtfd = fopen(txtfile, "r");
+	if(txtfd == (FILE *)NULL){
+		fprintf(stderr, "Can't open %s\n", txtfile);
+		exit(-2);
+	}
+	
+	if (verbose)
+		printf("Checking for monitor...\n");
+	if(OpenSun() != 0){
+		fprintf(stderr, "Can't upload\n");
+		exit(-1);
+	}
+
+
+	if (verbose)
+		printf("Reading a.out header...\n");
+	fread(&a_out, sizeof(struct exec), 1, txtfd);
+	if (N_BADMAG(a_out)) {
+		fprintf(stderr,"bad magic number in %s\n", txtfile);
+		exit(2);
+	}
+	text = (char *)malloc(a_out.a_text + a_out.a_data + a_out.a_bss);
+	if(text == (char *)NULL){
+		fprintf(stderr, "Can't allocate space for system image\n");
+		exit(-4);
+	}
+	fseek(txtfd, N_TXTOFF(a_out), 0);
+	fread(text, a_out.a_text + a_out.a_data, 1, txtfd);
+
+	if (N_STROFF(a_out) < N_TXTOFF(a_out)) {
+		fprintf(stderr,"stripped a.out file\n");
+		exit(2);
+	}
+	fseek(txtfd, N_STROFF(a_out), 0);
+	fread(&strtabsize, sizeof(int), 1, txtfd);	/* size of str tab */
+	fseek(txtfd, N_STROFF(a_out), 0);
+	strtab = malloc(strtabsize);			/* get string table */
+	fread(strtab, strtabsize, 1, txtfd);
+
+	symtab = (struct nlist *)malloc(a_out.a_syms);
+	esymtab = &symtab[a_out.a_syms / sizeof (struct nlist)];
+	if(a_out.a_syms == 0)
+	       	printf("No symbol table\n");
+	if(symtab == (struct nlist *)NULL){
+		fprintf(stderr, "Can't allocate space for symbol table\n");
+		exit(-5);
+	}
+	fseek(txtfd, N_SYMOFF(a_out), 0);
+	fread(symtab, a_out.a_syms, 1, txtfd);
+
+	
+	coresize = a_out.a_text + a_out.a_data + a_out.a_bss;
+	if (verbose)
+		printf("Allocating %d bytes for core image\n",
+		       coresize);
+	core = (char *)malloc(coresize+10);
+				  
+	if(core == (char *)NULL){
+		fprintf(stderr, "Can't allocate memory for core image\n");
+		exit(-3);
+	}
+
+	
+	/*
+	 * produce list of externals
+	 */
+
+	ssymtab = (struct nlist *)malloc(a_out.a_syms);
+	i = 0;
+	for(sp1 = symtab, sp2 = ssymtab; sp1 < esymtab; sp1++){
+		if((sp1->n_type & N_EXT) == 0)
+			continue;
+		i++;
+		*sp2++ = *sp1;
+	}
+
+	essymtab = ssymtab + i;
+
+	/* 
+	 * look up addresses of interesting tables 
+	 */
+	nlist(nl);
+	
+	if (UploadSun(core, coresize) != 0) {
+		fprintf(stderr, "Upload failed\n");
+		exit(-6);
+	}
+
+	currpid = *((int *) &core[(nl[CURRPID].n_value)-SUN3START]);
+	proctb = (struct pentry *)(&core[(nl[PROC].n_value)-SUN3START]);
+	semtab = (struct sentry *)(&core[(nl[SEMS].n_value)-SUN3START]);
+	Q = (struct qent *)(&core[(nl[XQ].n_value)-SUN3START]);
+        tptr = (struct tty *)(&core[(nl[TTYS].n_value)-SUN3START]);
+	vers = nl[VERS].n_value == 0 ? "6" :
+		(char *)(&core[(nl[VERS].n_value)-SUN3START]);
+	if (nl[CLKTIM].n_value == 0) {
+		clktim = 0L;
+	} else
+		clktim = (*((long *) &core[(nl[CLKTIM].n_value)-SUN3START]));
+	
+	}
+
+svalcomp(sp1, sp2)
+register struct nlist *sp1, *sp2;
+{
+	if(sp1->n_value == sp2->n_value)
+		return(0);
+	if(sp1->n_value < sp2->n_value)
+		return(-1);
+	return(1);
+}
+
+#define SPACE 100		/* number of symbols read at a time */
+
+nlist(list)
+struct nlist *list;
+{
+	register struct nlist *p, *q;
+
+	for(p = list; p->n_un.n_name; p++) {
+		p->n_type = 0;
+		p->n_value = 0;
+	}
+	for(q = ssymtab; q <= essymtab; q++) {
+		for(p = list; p->n_un.n_name; p++) {
+			if (q->n_un.n_strx) {
+			    if (strcmp(strtab+q->n_un.n_strx,
+			               p->n_un.n_name) != 0)
+				goto cont;
+#ifdef DEBUG			    
+			    if (verbose) {
+				printf("found symbol %s\n",p->n_un.n_name);
+				printf("  value: %x\n",q->n_value);
+				printf("  type: %x\n",q->n_type);
+			    }
+#endif			    
+			    p->n_value = q->n_value;
+			    p->n_type = q->n_type;
+			    break;
+			}
+			cont:		;
+		}
+	}
+	return(0);
+}
+
+UploadSun(core, coresize)
+     char *core;
+     int coresize;
+{
+    int addr;
+    int ret;
+    
+    if(allopts || mopt) {
+	if (verbose)
+	    printf("Uploading entire core text image\n");
+	ret = FillMem(SUN3START,coresize+SUN3START-1,core);
+    }
+    else {
+	
+	/* get currpid */
+	if (verbose)
+	    printf("Uploading currpid\n");
+	addr = nl[CURRPID].n_value;
+	ret = FillMem(addr, addr+3,core+addr-SUN3START);
+	if (ret != 0) return(ret);
+
+	/* get Q structure */
+	if (verbose)
+	    printf("Uploading Q structure\n");
+	addr = nl[XQ].n_value;
+	ret = FillMem(addr, addr+sizeof(struct qent[NQENT]),core+addr-SUN3START);
+	if (ret != 0) return(ret);
+	
+	if(popt) {
+	    addr = nl[PROC].n_value;
+	    printf("Uploading process table\n");
+	    ret = FillMem( addr, addr+sizeof(struct pentry[NPROC]),
+			  core+addr-SUN3START);
+	    if (ret != 0) return(ret);
+	}
+	if(sopt) {
+	    addr = nl[SEMS].n_value;
+	    printf("Uploading semaphore table\n");
+	    ret = FillMem( addr,addr+sizeof(struct sentry[NSEM]),
+			  core+addr-SUN3START);
+	    if (ret != 0) return(ret);
+	}
+	if(topt) {
+	    addr = nl[TTYS].n_value;
+	    printf("Uploading tty table\n");
+	    ret = FillMem( addr,addr+sizeof(struct tty[Ntty]),
+			  core+addr-SUN3START);
+	    if (ret != 0) return(ret);
+	}
+    }
+}
+
+
+
+/*
+ *===================================================
+ * procargs - unified argument processing procedure
+ *===================================================
+ *
+ * This procedure continas the logic for converting the UNIX argument
+ * list into global variables
+ */
+
+procargs(argc, argv)
+int argc;
+char *argv[];
+{
+        int arg, unswitched, more;
+        char *swptr;
+
+	corefile = "coreX";
+	txtfile = "pm.out";
+	allopts = 1;
+	popt = sopt = topt = 0;
+	verbose = 0;
+
+        unswitched = 0;
+        for ( arg=1 ; arg<argc ; arg++ ) {
+                if ( argv[arg][0] == '-' ) {
+                        more = 1;
+                        swptr = &argv[arg][1];
+                        while ( more && *swptr!='\0' ) {
+                                switch ( *swptr++ ) {
+				case 'h':
+					usagexit(argv[0]);
+					break;
+
+				case 'v':
+					verbose=1;
+					break;
+
+				case 'r':
+					allopts = 0;
+					ropt = 1;
+					popt = 1;
+					break;
+					
+				case 'm':
+					allopts = 0;
+					mopt = 1;
+					break;
+					
+				case 'p':
+					allopts = 0;
+					popt = 1;
+					break;
+
+				case 's':
+					allopts = 0;
+					sopt = 1;
+					break;
+
+				case 't':
+					allopts = 0;
+					topt = 1;
+					break;
+
+                                default:
+                                        usagexit(argv[0]);
+                                }
+                        }
+                } else { /* there's no dash in front */
+                        switch ( unswitched++ ) {
+			case 0:
+				txtfile = argv[arg];
+				break;
+			
+			case 1:
+				corefile = argv[arg];
+				break;
+
+                        default:
+                                usagexit(argv[0]);
+                        }
+                }
+        }
+}
+usagexit(pgm)
+char *pgm;
+{
+        fprintf(stderr,"usage: %s -mtpsrvh [program]\n",pgm);
+	fprintf(stderr,"     -m  check for overwritten text\n");
+	fprintf(stderr,"     -t  print tty status\n");
+	fprintf(stderr,"     -p  print process table\n");
+	fprintf(stderr,"     -s  print semaphore table info\n");
+	fprintf(stderr,"     -r  print stack trace\n");
+	fprintf(stderr,"     -v  verbose messages\n");
+	fprintf(stderr,"     -h  print this help message\n");
+	fprintf(stderr,"   [program] - compiled version other than pm.out\n");
+        exit(1);
+}
+@

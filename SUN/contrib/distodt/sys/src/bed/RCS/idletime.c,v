@@ -1,0 +1,147 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	91.12.06.20.39.20;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.09.41.56;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.05.27.50;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.04.06;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@/* 
+ * idletime.c - routines to obtain the idle time
+ * 
+ * Author:	Patrick A. Muckelbauer
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Oct 27 01:49:32 1989
+ *
+ * Copyright (c) 1989 Patrick A. Muckelbauer
+ */
+
+#include <stdio.h>
+#include <signal.h>
+
+#include <sys/file.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/timeb.h>
+
+#include "bed.h"
+#include "bedata.h"
+
+/*
+  -----------------------------------------------------------------------------
+  settime(time, idle) -- set the idle with time seconds
+  -----------------------------------------------------------------------------
+  */
+void
+settime( time, idle )
+     time_t time;
+     char *idle;
+{
+	int hours, min;
+	
+	hours = time / ( 60 * 60 ); time %= ( 60 * 60 );
+	min   = time / 60;
+	time %= 60;
+	sprintf( idle,"%02d:%02d:%02d", hours, min, (int) time );
+}
+
+/*
+  -----------------------------------------------------------------------------
+  getidletime(beconfig)  -- return the idle time (secs.) for the back end
+  -----------------------------------------------------------------------------
+  */
+time_t
+getidletime( beconfig )
+     struct bedata * beconfig;
+{
+	struct stat stats, *buf;
+	time_t t;
+	
+	if ( ! beconfig->lock.locked ) {
+		return( 0 );
+	}
+	buf = &stats;
+	if ( fstat( beconfig->lock.fd, buf ) ) {
+		Log( "error reading stats for ttyline: %s",
+		    beconfig->data.ttyname );
+		return( 0 );
+	}
+	t = time( 0 );
+	t -= buf->st_mtime;
+	return( t );
+}
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@d63 1
+a63 6
+	if ( buf->st_ctime > buf->st_atime ) {
+		t -= buf->st_ctime;
+	}
+	else {
+		t -= buf->st_atime;
+	}
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@a17 1
+#include <strings.h>
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d30 1
+a30 1
+settime( time , idle )
+d39 1
+a39 1
+	sprintf( idle ,"%02d:%02d:%02d" , hours , min , (int) time );
+d58 2
+a59 2
+	if ( fstat( beconfig->lock.fd , buf ) ) {
+		Log( "error reading stats for ttyline: %s" ,
+@

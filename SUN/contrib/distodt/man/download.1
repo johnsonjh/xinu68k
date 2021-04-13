@@ -1,0 +1,87 @@
+.TH DOWNLOAD 1
+.SH NAME
+download \- load program into SUN test machine 
+.SH SYNOPSIS
+.B download
+[ option ] ...
+[ file ]
+.SH DESCRIPTION
+.I Download
+takes an absolute binary program image (SUN a.out format)
+and copies it to the frontend file
+.I /tftpboot/a.out
+for the backend sun to use when booting.
+.I Download
+determines which backend SUN the user has reserved, or finds a free
+backend SUN if the user does not have a backend SUN reserved.  Once
+a backend is found,
+.I download
+uses TCP to send the binary program image to the associated front end.
+Note that local net broadcasts are used to find free backend SUNs
+so downloading is only allowed to SUNs connected to the local net.
+There is one exception to this rule.  You may download from a frontend on a
+remote net to a frontend running a BED server on the local net if the
+frontend on the remote net has a bedservers file which lists all of the
+frontends running BED servers.  
+.PP
+Loading the object program takes time proportional to the size
+of the program itself.
+In two seconds, download will transfer about 56K bytes over the ethernet
+using TCP.
+.PP
+.I Download
+transfers the user's program as specified in the command line.
+If no program name is given,
+.I a.out
+is used.
+.PP
+Options are:
+.TP
+.BI \-c "CLASS"
+Class.
+Use a machine in the class
+.I CLASS.
+The default class is SUN.
+If the user already has a backend reserved in class
+.I CLASS,
+then it will be used. 
+If no machines are available in class
+.I CLASS
+a message indicating this will be printed.
+See also
+.I busers,
+which displays which class each backend machine belongs to.
+.TP
+.BI \-m "MACH"
+Machine.
+Use the backend machine named
+.I MACH
+if it is available.
+A user may now reserve two or more machines at once.  The first machine
+they reserve will not automatically be released like the original version
+of the software used to do.  Moreover,  the tty line and the user name are
+used to make a reservation.  This means that a user can download to two
+different backend machines from two different
+windows on his workstation, and the reservation system will remember which
+window is associated with each backend.  If you want to download to two
+different backends from the same window, then you must specify the desired
+backend each time, or the reservation system will automatically download to
+the backend that you used most recently in that window.
+.TP
+.BI \-v 
+Verbose.
+The verbose option will print messages indicating what the program is
+currently doing.
+.SH "SEE ALSO"
+busers(1), odt(1), odtunlock(1)
+.SH FILES
+.ta 1.6i
+/tmp/xinu/*   Local lock files.  Named by user's login id
+.ta 1i
+/usr/xinu/database/bedservers  List of BED servers if on
+.ta 1i
+                               on remote net
+.SH BUGS
+Currently it only works to download to a backend SUN.  You can
+download from a frontend SUN or VAX.  In future versions
+you will be able to download from anything to anything.

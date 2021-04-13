@@ -1,0 +1,257 @@
+.TH TU58 1
+.SH NAME
+tu58 \- routines to access \s-2TU58\s0 tape drives attached to the VAX
+.SH SYNOPSIS
+.nf
+.B topen(drive, mode, name)
+.B char *drive;
+.B int mode;
+.B char *name;
+.PP
+.B tclose(dn)
+.B int dn;
+.PP
+.B tseek(dn, offset, whence)
+.B int dn;
+.B int offset;
+.B int whence;
+.PP
+.B tread(dn, buf, nbytes)
+.B int dn;
+.B char *buf;
+.B int nbytes;
+.PP
+.B twrite(dn, buf, nbytes)
+.B int dn;
+.B char *buf;
+.B int nbytes;
+.PP
+.B #include <tu58io.h>
+.B tioctl(dn, request, arg)
+.B int dn;
+.B int request;
+.B union tio *arg
+.fi
+.PP
+.B #include <tu58errno.h>
+.B extern int terrno;
+.B tperror(str)
+.B char *str;
+.fi
+.SH DESCRIPTION
+These routines manipulate a \s-2TU58\s0 tape drive unit that
+is attached directly to the VAX.
+They are obtained by loading the library
+.IR lib58.a .
+These routines do all the tape controlling including
+mutual exclusion of users (but
+.I not
+that of a user's processes).
+.PP
+The \s-2TU58\s0 has two drives on one controller.
+These routines treat each drive as a separate file;
+that is, each must be opened individually,
+operations may be intermixed,
+and they can be closed in any order.
+.PP
+.I Topen
+opens drive
+.I drive
+for reading
+(if
+.I mode
+is 0),
+writing (if
+.I mode
+is 1) or for both reading and writing
+(if
+.I mode
+is 2).
+.I Drive
+is the address of a string of ASCII characters representing
+the drive number; only the first character is used.
+Legal drive names are ``0'' and ``1''.
+.I File
+is the name of the port to which the \s-2TU58\s0 is attached;
+if given as NULL, the port
+.I /dev/LSIfast
+is used.
+.PP
+The opened drive is positioned at the beginning (block 0),
+and is opened with the verification bit set and the special addressing
+and maintenance modes cleared.
+(To change these, see
+.IR tioctl ,
+below.)
+The returned drive descriptor must be used for subsequent calls
+for other input-output functions on the drive.
+On error, -1 is returned.
+.PP
+Given
+a drive descriptor
+.I dn
+returned from a
+.I topen
+call,
+.I tclose
+closes the associated drive.
+If all drives on the \s-2TU58\s0 are closed,
+it also releases the unit.
+Note that this routine is
+.I not
+invoked
+automatically;
+it must be called explicitly.
+.PP
+Given a drive descriptor
+.I dn
+returned from a
+.I topen
+call,
+and the address
+.I buf
+which is the location of
+.I nbytes
+contiguous
+bytes into which the input will be placed,
+.I tread
+will read
+.I nbytes
+bytes into the buffer.
+The number of characters read, or -1
+(on error), is returned.
+Note that reading begins at a block boundary,
+and that there is no concept of ``end of file''.
+.PP
+Given a drive descriptor
+.I dn
+returned from a
+.I topen
+call,
+and the address
+.I buf
+which is the location of
+.I nbytes
+contiguous
+bytes which are to be written to the drive,
+.I twrite
+will write
+.I nbytes
+bytes from the buffer to the drive.
+The number of characters written, or -1
+(on error), is returned.
+Note that writing begins at a block boundary,
+.PP
+Given a drive descriptor
+.I dn
+returned from a
+.I topen
+call and
+a request
+.IR request ,
+.I tioctl
+will either alter a characteristic of the drive,
+or return information about the drive.
+Legal requests are:
+.LP
+.br
+.ns
+.TP 15
+.I request
+.I effect
+.br
+.ns
+.TP
+.B TU58SSAM
+set special addressing mode
+.br
+.ns
+.TP
+.B TU58CSAM
+clear special addressing mode
+.br
+.ns
+.TP
+.B TU58SVFY
+set verification mode
+.br
+.ns
+.TP
+.B TU58CVFY
+clear verification mode
+.br
+.ns
+.TP
+.B TU58SMTM
+set maintenance mode
+.br
+.ns
+.TP
+.B TU58CMTM
+clear maintenance mode
+.br
+.ns
+.TP
+.B TU58SPOS
+set new position;
+unlike
+.IR tseek ,
+this does not move the tape,
+but the next operation
+will take place at the current position.
+.I Arg
+is a pointer to an integer,
+which is the new block number.
+.br
+.ns
+.TP
+.B TU58GDCB
+return the drive control block.
+This copies the drive control block into the
+locations pointed to by
+.IR arg ;
+the structure is defined in
+.IR Xinu-directory/include/tu58io.h .
+.LP
+On error,
+.I tioctl
+returns -1;
+on success, 0.
+The requests are defined in the include file
+.IR Xinu-directory/include/tu58io.h .
+.SH ERROR HANDLING
+Errors are handled uniformly;
+if the operation failed,
+the attempted command is aborted and an error flag is returned.
+This flag is always -1.
+To obtain more detailed error messages,
+there is a routine
+.I tperror
+which prints its argument string, followed by
+a brief message describing the last
+error that occurred.
+There is an external variable,
+.IR terrno ,
+that contains a code number indicating the last error.
+Its values are in
+.IR Xinu-directory/include/tu58errno.h .
+.PP
+There is one error that will not return an error code,
+even though
+.I terrno
+is set
+(and so
+.I tperror
+will report it);
+namely, if the operation succeeded
+but retries were necessary.
+This is a \s-2TU58\s0 error code;
+the only routine that ever sends something more than once
+is the routine that initializes communications between the
+\s-2VAX\s0 and the \s-2TU58\s0.
+.SH AUTHOR
+Matt Bishop
+.RI ( mab )
+.SH BUGS
+Sometimes the \s-2TU58\s0 does not respond to an initialization command.
+When this happens, check the connections and try again.

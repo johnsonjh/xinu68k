@@ -1,0 +1,66 @@
+
+
+
+BUFFER(3)           Xinu Programmer's Manual            BUFFER(3)
+
+
+
+NAME
+     getbuf - obtain a buffer from a buffer pool
+
+SYNOPSIS
+     char *getbuf(poolid)
+     int poolid;
+
+DESCRIPTION
+     _G_e_t_b_u_f obtains a free buffer from the pool given by argument
+     _p_o_o_l_i_d, and returns a pointer to the first word of the
+     buffer.  If all buffers in the specified pool are in use,
+     the calling process will be blocked until a buffer becomes
+     available.  If the argument _p_o_o_l_i_d does not specify a valid
+     pool, getbuf returns SYSERR.
+
+SEE ALSO
+     freebuf(2), getmem(2), getstk(2), freemem(2), freestk(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

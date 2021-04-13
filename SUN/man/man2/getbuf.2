@@ -1,0 +1,22 @@
+.TH BUFFER 3
+.SH NAME
+getbuf \- obtain a buffer from a buffer pool
+.SH SYNOPSIS
+.nf
+.B char *getbuf(poolid)
+.B int poolid;
+.fi
+.SH DESCRIPTION
+.I Getbuf
+obtains a free buffer from the pool given by argument
+.I poolid,
+and returns a pointer to the first word of the buffer.
+If all buffers in the specified pool are in use, the
+calling process will be blocked until a buffer becomes
+available.
+If the argument
+.I poolid
+does not specify a valid pool,
+getbuf returns SYSERR.
+.SH SEE ALSO
+freebuf(2), getmem(2), getstk(2), freemem(2), freestk(2)

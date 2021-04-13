@@ -1,0 +1,31 @@
+.TH FGETC 3
+.SH NAME
+fgetc, getchar \- get character from a device
+.SH SYNOPSIS
+.B #include <io.h>
+.PP
+.B int fgetc(dev)
+.br
+.B int
+.B dev;
+.PP
+.B int getchar()
+.SH DESCRIPTION
+These procedures are included for compatibility with \s-2UNIX\s0.
+.I Fgetc
+returns the next character from the named input
+.IR device .
+.PP
+.I Getchar()
+is identical to 
+.IR getc(CONSOLE) .
+.PP
+Note that
+.I fgetc
+is exactly equivalent to 
+.I getc.
+.SH "SEE ALSO"
+getc(2), putc(2), gets(3), scanf(3),
+.SH DIAGNOSTICS
+These functions return SYSERR to indicate an illegal device
+or read error.

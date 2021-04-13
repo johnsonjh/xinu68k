@@ -1,0 +1,66 @@
+
+
+
+ODT(1)              Xinu Programmer's Manual               ODT(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     odt - connect user's terminal to a micro console (odt) line
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ooooddddtttt [ option ] ...
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _O_d_t connects a terminal on the VAX to a microcomputer tty
+     line so the output of the micro appears on the terminal
+     screen and characters typed at the keyboard are sent to the
+     micro.  _O_d_t sets the micro tty line to raw mode, and the VAX
+     terminal to cbreak mode.  The connection can be broken by
+     killing the odt process (e.g., by typing the interrupt char-
+     acter (e.g., CONTROL-C).
+
+     When _o_d_t receives a backslash from the terminal, it switches
+     to raw mode to read one character, after which it switches
+     back to cbreak mode.  The backslash escape allows the user
+     to send characters like CONTROL-C to the micro even though
+     they are normally interpreted as signals.  As a special
+     case, an escaped null character (octal 0) causes _o_d_t to
+     force the micro line into a break condition for 1 second.
+     This is useful for trapping a Sun into monitor mode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b              Printed 10/24/87                        1
+
+
+

@@ -1,0 +1,198 @@
+
+
+
+TU58(1)             Xinu Programmer's Manual              TU58(1)
+
+
+
+NAME
+     tu58 - routines to access TU58 tape drives attached to the
+     VAX
+
+SYNOPSIS
+     topen(drive, mode, name)
+     char *drive;
+     int mode;
+     char *name;
+
+     tclose(dn)
+     int dn;
+
+     tseek(dn, offset, whence)
+     int dn;
+     int offset;
+     int whence;
+
+     tread(dn, buf, nbytes)
+     int dn;
+     char *buf;
+     int nbytes;
+
+     twrite(dn, buf, nbytes)
+     int dn;
+     char *buf;
+     int nbytes;
+
+     #include <tu58io.h>
+     tioctl(dn, request, arg)
+     int dn;
+     int request;
+     union tio *arg
+
+     #include <tu58errno.h> extern int terrno; tperror(str) char
+     *str;
+
+DESCRIPTION
+     These routines manipulate a TU58 tape drive unit that is
+     attached directly to the VAX.  They are obtained by loading
+     the library _l_i_b_5_8._a.  These routines do all the tape con-
+     trolling including mutual exclusion of users (but _n_o_t that
+     of a user's processes).
+
+     The TU58 has two drives on one controller.  These routines
+     treat each drive as a separate file; that is, each must be
+     opened individually, operations may be intermixed, and they
+     can be closed in any order.
+
+     _T_o_p_e_n opens drive _d_r_i_v_e for reading (if _m_o_d_e is 0), writing
+     (if _m_o_d_e is 1) or for both reading and writing (if _m_o_d_e is
+     2).  _D_r_i_v_e is the address of a string of ASCII characters
+
+
+
+Version 6b               Printed 1/17/87                        1
+
+
+
+
+
+
+TU58(1)             Xinu Programmer's Manual              TU58(1)
+
+
+
+     representing the drive number; only the first character is
+     used.  Legal drive names are ``0'' and ``1''.  _F_i_l_e is the
+     name of the port to which the TU58 is attached; if given as
+     NULL, the port /_d_e_v/_L_S_I_f_a_s_t is used.
+
+     The opened drive is positioned at the beginning (block 0),
+     and is opened with the verification bit set and the special
+     addressing and maintenance modes cleared.  (To change these,
+     see _t_i_o_c_t_l, below.) The returned drive descriptor must be
+     used for subsequent calls for other input-output functions
+     on the drive.  On error, -1 is returned.
+
+     Given a drive descriptor _d_n returned from a _t_o_p_e_n call,
+     _t_c_l_o_s_e closes the associated drive.  If all drives on the
+     TU58 are closed, it also releases the unit.  Note that this
+     routine is _n_o_t invoked automatically; it must be called
+     explicitly.
+
+     Given a drive descriptor _d_n returned from a _t_o_p_e_n call, and
+     the address _b_u_f which is the location of _n_b_y_t_e_s contiguous
+     bytes into which the input will be placed, _t_r_e_a_d will read
+     _n_b_y_t_e_s bytes into the buffer.  The number of characters
+     read, or -1 (on error), is returned.  Note that reading
+     begins at a block boundary, and that there is no concept of
+     ``end of file''.
+
+     Given a drive descriptor _d_n returned from a _t_o_p_e_n call, and
+     the address _b_u_f which is the location of _n_b_y_t_e_s contiguous
+     bytes which are to be written to the drive, _t_w_r_i_t_e will
+     write _n_b_y_t_e_s bytes from the buffer to the drive.  The number
+     of characters written, or -1 (on error), is returned.  Note
+     that writing begins at a block boundary,
+
+     Given a drive descriptor _d_n returned from a _t_o_p_e_n call and a
+     request _r_e_q_u_e_s_t, _t_i_o_c_t_l will either alter a characteristic
+     of the drive, or return information about the drive.  Legal
+     requests are:
+
+     _r_e_q_u_e_s_t        _e_f_f_e_c_t
+     TU58SSAM       set special addressing mode
+     TU58CSAM       clear special addressing mode
+     TU58SVFY       set verification mode
+     TU58CVFY       clear verification mode
+     TU58SMTM       set maintenance mode
+     TU58CMTM       clear maintenance mode
+     TU58SPOS       set new position; unlike _t_s_e_e_k, this does not
+                    move the tape, but the next operation will
+                    take place at the current position.  _A_r_g is a
+                    pointer to an integer, which is the new block
+                    number.
+     TU58GDCB       return the drive control block.  This copies
+                    the drive control block into the locations
+
+
+
+Version 6b               Printed 1/17/87                        2
+
+
+
+
+
+
+TU58(1)             Xinu Programmer's Manual              TU58(1)
+
+
+
+                    pointed to by _a_r_g; the structure is defined
+                    in _X_i_n_u-_d_i_r_e_c_t_o_r_y/_i_n_c_l_u_d_e/_t_u_5_8_i_o._h.
+
+     On error, _t_i_o_c_t_l returns -1; on success, 0.  The requests
+     are defined in the include file _X_i_n_u-
+     _d_i_r_e_c_t_o_r_y/_i_n_c_l_u_d_e/_t_u_5_8_i_o._h.
+
+ERROR HANDLING
+     Errors are handled uniformly; if the operation failed, the
+     attempted command is aborted and an error flag is returned.
+     This flag is always -1.  To obtain more detailed error mes-
+     sages, there is a routine _t_p_e_r_r_o_r which prints its argument
+     string, followed by a brief message describing the last
+     error that occurred.  There is an external variable, _t_e_r_r_n_o,
+     that contains a code number indicating the last error.  Its
+     values are in _X_i_n_u-_d_i_r_e_c_t_o_r_y/_i_n_c_l_u_d_e/_t_u_5_8_e_r_r_n_o._h.
+
+     There is one error that will not return an error code, even
+     though _t_e_r_r_n_o is set (and so _t_p_e_r_r_o_r will report it);
+     namely, if the operation succeeded but retries were neces-
+     sary.  This is a TU58 error code; the only routine that ever
+     sends something more than once is the routine that initial-
+     izes communications between the VAX and the TU58.
+
+AUTHOR
+     Matt Bishop (_m_a_b)
+
+BUGS
+     Sometimes the TU58 does not respond to an initialization
+     command.  When this happens, check the connections and try
+     again.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/17/87                        3
+
+
+

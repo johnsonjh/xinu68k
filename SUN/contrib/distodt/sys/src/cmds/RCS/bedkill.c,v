@@ -1,0 +1,124 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.3
+date	92.01.04.03.43.21;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.05.28.56;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.05.30;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@/* 
+ * bedkill.c - kill a backend daemon
+ * 
+ * Author:	Patrick A. Muckelbauer
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 15 09:40:43 1990
+ *
+ *		code stolen mostly from bedreboot
+ *
+ * Copyright (c) 1990 Patrick A. Muckelbauer
+ */
+
+#include <stdio.h>
+
+#include "bed.h"
+
+/*---------------------------------------------------------------------------
+ * main (csb, rgsb)
+ *---------------------------------------------------------------------------
+ */
+main ( csb, rgsb )
+     int csb;
+     char *rgsb[];
+{
+	int i;
+	int sock;
+	struct bm bm;
+
+	if ( csb == 1 ) {
+		fprintf( stderr, "usage: bedkill [frontend-machine]*\n" );
+	}
+	for ( i = 1; i < csb; i++ ) {
+		bm.ver = CURVER;
+		sprintf( bm.cmd, "%d", REQ_QUIT );
+		strncpy( bm.detail, "", MAXDETAIL );
+
+		if ( ( sock = ConnectUdp( rgsb[ i ], KNOWN_UDP_PORT ) ) < 0 ){
+			fprintf( stderr,"error: ConnectUdp to %s:%d failed\n",
+				rgsb[ i ], KNOWN_UDP_PORT );
+			exit( 1 );
+		}
+		if ( bmsend( sock, &bm, lbm, 0 ) <= 0 ) {
+			fprintf( stderr, "error: bmsend failed\n" );
+			exit( 1 );
+		}
+		bmrecv( sock, &bm, lbm, 0 );
+		printf( "killing front end %s\n", bm.detail );
+	}
+	exit( 0 );
+}
+
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d22 1
+a22 1
+main ( csb , rgsb )
+d31 1
+a31 1
+		fprintf( stderr , "usage: bedkill [frontend-machine]*\n" );
+d35 2
+a36 2
+		sprintf( bm.cmd , "%d" , REQ_QUIT );
+		strncpy( bm.detail , "" , MAXDETAIL );
+d38 3
+a40 3
+		if ( ( sock = ConnectUdp( rgsb[ i ] , KNOWN_UDP_PORT ) ) < 0 ){
+			fprintf( stderr,"error: ConnectUdp to %s:%d failed\n" ,
+				rgsb[ i ] , KNOWN_UDP_PORT );
+d43 2
+a44 2
+		if ( bmsend( sock , &bm , lbm , 0 ) <= 0 ) {
+			fprintf( stderr , "error: bmsend failed\n" );
+d47 2
+a48 2
+		bmrecv( sock , &bm , lbm , 0 );
+		printf( "killing front end %s\n" , bm.detail );
+@

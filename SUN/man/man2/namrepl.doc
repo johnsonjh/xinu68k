@@ -1,0 +1,66 @@
+
+
+
+NAMREPL(2)          Xinu Programmer's Manual           NAMREPL(2)
+
+
+
+NAME
+     namrepl - replace a name once using the syntactic namespace
+
+SYNOPSIS
+     int namrepl(name, newname)
+     char *name;
+     char *newname;
+
+DESCRIPTION
+     _N_a_m_r_e_p_l uses the syntactic namespace to translate a name
+     into a new name and returns the id of a device to which the
+     name maps.  The name is translated exactly once, independent
+     of the device to which it maps.  In particular, _n_a_m_r_e_p_l will
+     return the device id _N_A_M_E_S_P_A_C_E without further mapping for
+     those names that map recursively through the syntactic
+     namespace.
+
+     Argument _n_a_m_e points to a null-terminated string containing
+     the name to be mapped, and argument _n_e_w_n_a_m_e points to a
+     string area large enough to hold the mapped version of the
+     name.  If successful, _n_a_m_r_e_p_l returns the device id of the
+     device to which the name maps.  Otherwise, it returns
+     SYSERR.
+
+SEE ALSO
+     nammap(2), open(2), mount(2), unmount(2), namespace(4)
+
+BUGS
+     _N_a_m_r_e_p_l writes the mapped name into _n_e_w_n_a_m_e without checking
+     to make sure it fits.  There is no way to distinguish errors
+     such as string overflow from names that map to device
+     SYSERR.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,21 @@
+.TH SCOUNT 2
+.SH NAME
+scount \- return the count associated with a semaphore
+.SH SYNOPSIS
+.nf
+.B int scount(sem)
+.B int sem;
+.fi
+.SH DESCRIPTION
+.I Scount
+returns the current count associated with semaphore
+.I sem.
+A count of negative p means that there are p processes waiting
+on the semaphore; a count of positive p means that at most p more
+calls to WAIT(2) can occur before a process will be blocked (assuming
+no intervening sends occur).
+.SH SEE ALSO
+screate(2), sdelete(2), signal(2), sreset(2), wait(2)
+.SH BUGS
+In this version, there is no way to distinguish SYSERR
+from a legal semaphore count of \-1.

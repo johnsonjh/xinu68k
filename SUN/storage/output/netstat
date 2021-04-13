@@ -1,0 +1,6 @@
+bpool=0, mutex/cnt=26/1, nxt prt=2073, addr valid
+Packets: recvd=18268, tossed=4343 (0 for overrun)
+         (0 missed: no buffer space)  (0 LANCE errors)
+ 0. uport= 513, pid= -1, xprt=18, size=-1
+ 1. uport=   7, pid= -1, xprt=17, size=-1
+ 2. uport=2052, pid= -1, xprt=16, size= 0

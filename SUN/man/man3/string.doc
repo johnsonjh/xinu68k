@@ -1,0 +1,132 @@
+
+
+
+STRING(3)           Xinu Programmer's Manual            STRING(3)
+
+
+
+NAME
+     strcat, strncat, strcmp, strncmp, strcpy, strncpy, strlen,
+     index, rindex - string operations
+
+SYNOPSIS
+     char *strcat(s1, s2)
+     char *s1, *s2;
+
+     char *strncat(s1, s2, n)
+     char *s1, *s2;
+
+     strcmp(s1, s2)
+     char *s1, *s2;
+
+     strncmp(s1, s2, n)
+     char *s1, *s2;
+
+     char *strcpy(s1, s2)
+     char *s1, *s2;
+
+     char *strncpy(s1, s2, n)
+     char *s1, *s2;
+
+     strlen(s)
+     char *s;
+
+     char *index(s, c)
+     char *s, c;
+
+     char *rindex(s, c)
+     char *s, c;
+
+DESCRIPTION
+     These functions operate on null-terminated strings.  They do
+     not check for overflow of any receiving string.
+
+     _S_t_r_c_a_t appends a copy of string _s_2 to the end of string _s_1.
+     _S_t_r_n_c_a_t copies at most _n characters.  Both return a pointer
+     to the null-terminated result.
+
+     _S_t_r_c_m_p compares its arguments and returns an integer greater
+     than, equal to, or less than 0, according as _s_1 is lexico-
+     graphically greater than, equal to, or less than _s_2.
+     _S_t_r_n_c_m_p makes the same comparison but examines at most _n
+     characters.
+
+     _S_t_r_c_p_y copies string _s_2 to _s_1, stopping after the null char-
+     acter has been moved.  _S_t_r_n_c_p_y copies exactly _n characters,
+     truncating or null-padding _s_2; the target may not be null-
+     terminated if the length of _s_2 is _n or more.  Both return
+     _s_1.
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+STRING(3)           Xinu Programmer's Manual            STRING(3)
+
+
+
+     _S_t_r_l_e_n returns the number of non-null characters in _s.
+
+     _I_n_d_e_x (_r_i_n_d_e_x) returns a pointer to the first (last)
+     occurrence of character _c in string _s, or zero if _c does not
+     occur in  the string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

@@ -1,0 +1,29 @@
+.TH WAIT 2
+.SH NAME
+wait \- block and wait until semaphore signalled
+.SH SYNOPSIS
+.nf
+.B int wait(sem)
+.B int sem;
+.fi
+.SH DESCRIPTION
+.I Wait
+decrements the count of semaphore
+.I sem,
+blocking the calling process if the count goes negative
+by enqueuing it in the queue for
+.I sem.
+The only ways to get free from a semaphore queue are for
+some other process to signal the semaphore, or
+for some other process to delete or reset the semaphore.
+.I Wait
+and SIGNAL(2) are the two basic synchronization primitives in
+the system.
+.PP
+.I Wait
+returns SYSERR if
+.I sem
+is invalid.
+Otherwise, it returns OK once freed from the queue.
+.SH SEE ALSO
+scount(2), screate(2), sdelete(2), signal(2), sreset(2)

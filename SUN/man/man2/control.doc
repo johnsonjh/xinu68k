@@ -1,0 +1,66 @@
+
+
+
+CONTROL(2)          Xinu Programmer's Manual           CONTROL(2)
+
+
+
+NAME
+     control - device independent control routine
+
+SYNOPSIS
+     int control(dev, function, arg1, arg2)
+     int dev;
+     int function;
+     int arg1, arg2;
+
+DESCRIPTION
+     _C_o_n_t_r_o_l is the mechanism used to send control information to
+     devices and device drivers, or to interrogate their status.
+     (Data normally flows through GETC(2), PUTC(2), READ(2), and
+     WRITE(2).)
+
+     _C_o_n_t_r_o_l returns SYSERR if _d_e_v is incorrect or if the func-
+     tion cannot be performed.  The values returned otherwise are
+     device dependent.  For example, there is a control function
+     for "tty" devices that returns the number of characters
+     waiting in the input queue.
+
+SEE ALSO
+     close(2), getc(2), open(2), putc(2), read(2), seek(2),
+     write(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

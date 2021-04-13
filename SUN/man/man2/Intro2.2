@@ -1,0 +1,45 @@
+.ds Sh "System Calls
+.ds Sa "Section 2
+.bp
+.tm ==== .Sc "" "\*(Sh" \n%
+.ds Sn "INTRO(\|2\|)
+.ds Sf "Xinu Programmer's Manual
+.in 0i
+.sp 8
+.ps +4
+.B
+.ce
+Section 2: System Calls
+.IX "system call"
+.SX "Xinu" "system calls"
+.sp 3
+.ps 10
+.PP
+The Xinu operating system kernel consists of a set of run-time procedures
+to implement operating system services on a Sun 3 workstation.
+The system supports multiple processes, I/O, synchronization
+based on counting semaphores, preemptive scheduling, and
+communication with other machines.
+Each page in this section describes a system routine that can be
+called by a user process.
+.PP
+Each page describes one system call,
+giving the number and types of arguments
+that must be passed to the procedure under the
+heading "SYNOPSIS"
+(by giving their declaration
+in C syntax).
+The heading "SEE ALSO" suggests the names of other system
+calls that may be related to the described function.
+For example, the "SEE ALSO" entry for system call \f2wait\f1
+suggests that the programmer may want to look at
+the page for \f2signal\f1 because both routines operate on
+semaphores.
+.PP
+In general, Xinu blocks processes when requested services are
+not available.
+Unless the manual page suggests otherwise, the programmer should
+assume that the process requesting system services may be delayed
+until the request can be satisfied.
+For example, calling \f2read\f1 may cause an arbitrary delay until
+data can be obtained from the device.

@@ -1,0 +1,132 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     Section 2: System Calls
+
+
+
+The Xinu operating system kernel consists of a  set  of  run-time
+procedures  to  implement  operating  system  services on a Sun 3
+workstation.   The  system  supports  multiple  processes,   I/O,
+synchronization   based   on   counting   semaphores,  preemptive
+scheduling, and communication with other machines.  Each page  in
+this  section  describes a system routine that can be called by a
+user process.  Each page describes one system  call,  giving  the
+number  and  types  of  arguments  that  must  be  passed  to the
+procedure  under  the  heading  "SYNOPSIS"   (by   giving   their
+declaration  in  C  syntax).  The heading "SEE ALSO" suggests the
+names of other system calls that may be related to the  described
+function.  For example, the "SEE ALSO" entry for system call _w_a_i_t
+suggests that the programmer may want to look  at  the  page  for
+_s_i_g_n_a_l  because both routines operate on semaphores.  In general,
+Xinu blocks processes when requested services are not  available.
+Unless  the manual page suggests otherwise, the programmer should
+assume that the process requesting system services may be delayed
+until  the  request  can be satisfied.  For example, calling _r_e_a_d
+may cause an arbitrary delay until data can be obtained from  the
+device.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

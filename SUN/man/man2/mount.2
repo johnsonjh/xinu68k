@@ -1,0 +1,29 @@
+.TH MOUNT 2
+.SH NAME
+mount \- add a prefix mapping to the namespace
+.SH SYNOPSIS
+.nf
+.B int mount(prefix, dev, replace)
+.B char *prefix;
+.B int  dev;
+.B char *replace;
+.fi
+.SH DESCRIPTION
+.I Mount
+adds a prefix mapping to the syntactic namespace, inserting it just
+prior to the last entry.
+Argument \f2prefix\f1 points to a string that contains a null-terminated
+prefix string,
+argument \f2dev\f1 gives the device id of the device to which
+the prefix maps, and
+argument \f2replace\f1 points to a null-terminated replacement
+string.
+As a special case, \f2dev\f1 can specify the value SYSERR to indicate
+that names matching the prefix cannot be mapped or accessed.
+.PP
+If the namespace table is full, or if the specified prefix or
+replacement strings exceed the allowed size,
+\f2mount\f1 returns SYSERR.
+Otherwise it returns OK.
+.SH SEE ALSO
+open(2), nammap(2), namrepl(2), unmount(2), namespace(4)

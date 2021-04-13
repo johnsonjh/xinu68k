@@ -1,0 +1,299 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.2
+date	91.11.25.05.27.59;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.04.06;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@/* 
+ * support.c - Support routines for reading the machines database
+ * 
+ * Author:	Steve Chapin/Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 10 11:33:19 1988
+ *
+ * Copyright (c) 1988 Steve Chapin/Jim Griffioen
+ */
+
+
+#include <stdio.h>
+#include <sys/file.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+#include "bed.h"
+#include "bedata.h"
+#include "tokens.h"
+
+extern char *xmalloc();
+extern char *tkvalue();
+extern char *matchtoken();
+
+static char * staticFilename;
+
+/*----------------------------------------------------------------------
+ * getbeconfig - returns a pointer to the bedata structure
+ *		for backend bename
+ *----------------------------------------------------------------------
+ */
+struct bedata *
+getbeconfig( bedata, bename )
+     struct bedata *bedata;
+     char *bename;
+{
+	for (; bedata != NULL; bedata = bedata->next ) {
+		if ( strcmp( bedata->data.bename, bename ) == 0 ) {
+			return( bedata );
+		}
+	}
+	return( NULL );
+}
+
+/*
+ *---------------------------------------------------------------------------
+ * readbedata(pnum):
+ * 	int *pnum;
+ *
+ * will fill the table from the machines database, and then
+ * will return the table and count of entries read.
+ *---------------------------------------------------------------------------
+ */
+struct bedata *
+readbedata( filename )
+     char * filename;
+{
+	struct bedata *ptbl, *scan;
+	int savedFd, newFd;
+	
+	staticFilename = filename;
+	
+	if ( ( savedFd = dup( 0 ) ) < 0 ) {
+		Error( "readbedata(): dup(0) failed\n" );
+	}
+	if ( ( newFd = open( filename, O_RDONLY, 0644 ) ) < 0 ) {
+		Error("readbedata(): error opening %s", filename );
+	}
+	if ( dup2( newFd, 0 ) < 0 ) {
+		Error( "readbedata(): error dup2( newFd, 0 )\n" );
+	}
+	
+	ptbl = scan = makebedata();
+	while ( scan != NULL ) {
+		scan->next = makebedata();
+		scan = scan->next;
+	}
+	
+	if ( dup2( savedFd, 0 ) < 0 ) {
+		Error( "readbedata(): dup2(savedFd, 0)\n" );
+	}
+	close( newFd );
+	return( ptbl );
+}
+
+/*
+ *---------------------------------------------------------------------------
+ * struct bedata *makebedata()
+ *
+ * read the NUM_BE_ARG strings 
+ *
+ *---------------------------------------------------------------------------
+ */
+struct bedata *
+makebedata()
+{
+	struct bedata *mdata;
+	int tk;
+	char * tv;
+	
+	while ( ( tk = tknext() ) == TKNEWLINE ) {
+		/* NULL STATEMENT */;
+			    }
+	if ( tk == TKEOF ) {
+		return( NULL );
+	}
+	if ( tk != TKSTRING ) {
+		Error( "Error in '%s' file", staticFilename );
+	}
+	tv = tkvalue();
+	if ( tv[ strlen( tv ) - 1 ] == ':' ) {
+		tv[ strlen( tv ) -1 ] = '\0';
+		if ( ! ismyname( tv ) ) {
+			while ( ( ( tk = tknext() ) != TKNEWLINE ) &&
+			       ( tk != TKEOF ) ) {
+				/* NULL STATEMENT */;
+					    }
+			return( makebedata() );
+		}
+		tk = tknext();
+		if ( tk != TKSTRING ) {
+			Error( "Error in '%s' file", staticFilename );
+		}
+	}
+	
+	mdata = (struct bedata *) xmalloc( sizeof( struct bedata ) );
+	mdata->data.ttyname = tkvalue();
+	
+	mdata->data.ttyrate = matchtoken( TKSTRING );
+	mdata->data.bename = matchtoken( TKSTRING );
+	mdata->data.beclass = matchtoken( TKSTRING );
+	mdata->data.betype = matchtoken( TKSTRING );
+	mdata->data.dloaddpath = matchtoken( TKSTRING );
+	mdata->data.dloaddmethod = matchtoken( TKSTRING );
+	mdata->data.dloadfile = matchtoken( TKSTRING );
+	mdata->data.odtdpath = matchtoken( TKSTRING );
+	mdata->data.odtdmethod = matchtoken( TKSTRING );
+	mdata->data.max_reservation = matchtoken( TKSTRING );
+	
+	tk = tknext();
+	if ( tk != TKNEWLINE && tk != TKEOF )  {
+		Error( "Error in '%s' file", staticFilename );
+	}
+	
+	mdata->next = NULL;
+	mdata->lock.locked = FALSE;
+	mdata->lock.pidodt = BADPID;
+	mdata->lock.piddown= BADPID;
+	strcpy( mdata->lock.user, NOBODY );
+	
+	if ( ( mdata->lock.fd = open( mdata->data.ttyname, O_RDONLY, 0644 ) )
+	    < 0 ) {
+		Error( "error: open(%s) failed", mdata->data.ttyname );
+	}
+	touchit( mdata );
+	return( mdata );
+}
+
+char *
+matchtoken( tk )
+     int tk;
+{
+	if ( tk != tknext() ) {
+		Error( "Error in '%s' file", staticFilename );
+	}
+	return( tkvalue() );
+}
+
+
+extern YYSTYPE yylval;
+extern int yylex();
+
+int
+tknext()
+{
+	return( yylex() );
+}
+
+char *
+tkvalue()
+{
+	return( yylval.sb );
+}
+
+/* 
+ * test.c - is this MY name
+ * 
+ * Author:	Shawn Ostermann
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Tue Jul 30 12:36:38 1991
+ *
+ * Copyright (c) 1991 Shawn Ostermann
+ */
+ismyname( name )
+     char * name;
+{
+	static char myrealname[ 100 ];
+	static amnesia = 1;
+	struct hostent *he;
+	
+	if (amnesia) {
+		/* see who I am */
+		char myname[ 100 ];
+		
+		gethostname( myname, sizeof( myname ) );
+		he = gethostbyname( myname );
+		strcpy( myrealname, he->h_name );
+		amnesia = 0;
+	}
+	if ( ( he = gethostbyname( name ) ) == (struct hostent *) 0 ) {
+		return( 0 );
+	}
+	return( strcmp( myrealname, he->h_name ) == 0 );
+}
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d35 1
+a35 1
+getbeconfig( bedata , bename )
+d40 1
+a40 1
+		if ( strcmp( bedata->data.bename , bename ) == 0 ) {
+d68 2
+a69 2
+	if ( ( newFd = open( filename , O_RDONLY , 0644 ) ) < 0 ) {
+		Error("readbedata(): error opening %s" , filename );
+d71 1
+a71 1
+	if ( dup2( newFd , 0 ) < 0 ) {
+d81 1
+a81 1
+	if ( dup2( savedFd , 0 ) < 0 ) {
+d110 1
+a110 1
+		Error( "Error in '%s' file" , staticFilename );
+d124 1
+a124 1
+			Error( "Error in '%s' file" , staticFilename );
+d144 1
+a144 1
+		Error( "Error in '%s' file" , staticFilename );
+d151 1
+a151 1
+	strcpy( mdata->lock.user , NOBODY );
+d153 1
+a153 1
+	if ( ( mdata->lock.fd = open( mdata->data.ttyname , O_RDONLY , 0644 ) )
+d155 1
+a155 1
+		Error( "error: open(%s) failed" , mdata->data.ttyname );
+d166 1
+a166 1
+		Error( "Error in '%s' file" , staticFilename );
+d208 1
+a208 1
+		gethostname( myname , sizeof( myname ) );
+d210 1
+a210 1
+		strcpy( myrealname , he->h_name );
+d216 1
+a216 1
+	return( strcmp( myrealname , he->h_name ) == 0 );
+@

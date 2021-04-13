@@ -1,0 +1,66 @@
+
+
+
+PUTS(3)             Xinu Programmer's Manual              PUTS(3)
+
+
+
+NAME
+     puts, fputs - write a string to a device
+
+SYNOPSIS
+     puts(s)
+     char *s;
+
+     fputs(dev, s)
+     int dev;
+     char *s;
+
+DESCRIPTION
+     _P_u_t_s writes the null-terminated string _s on the output dev-
+     ice CONSOLE and appends a newline character.
+
+     _F_p_u_t_s writes the null-terminated string _s on device _d_e_v.
+
+     Neither routine writes the terminal null character.  They
+     return SYSERR if _d_e_v is invalid.
+
+SEE ALSO
+     gets(3), putc(3), printf(3), read(2), write(2)
+
+BUGS
+     _P_u_t_s appends a newline, _f_p_u_t_s does not; there is no good
+     reason for this.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

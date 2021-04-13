@@ -1,0 +1,27 @@
+.TH FS 1
+.SH NAME
+fs \- invoke server side of Xinu remote file system
+.SH SYNOPSIS
+.B fs
+[ \f3\-p\f1port  ]
+.SH DESCRIPTION
+.I Fs
+invokes the Xinu remote file system server on a \s-2UNIX\s0
+host.
+The server executes with permissions set to that of the invoking
+user, or user ``xinu'' if it is able to change user id.
+Typically, the host machine invokes \f2fs\f1 at system startup, making
+it available always.
+.PP
+Option \f3\-p\f1 allows the user to specify a \f2UDP\f1 port number
+to which the server will respond.
+If \f3\-p\f1 is omitted, \|\f2fs\f1 uses a default port number.
+Thus, it is possible to have several versions of the server in use
+simultaneously, with each version using a unique UDP port.
+.PP
+When started, \f2fs\f1 forks a child in background to become the file
+server.
+The background process executes forever, but the foreground process
+exits.
+Thus, the \f2fs\f1 command appears to complete instantly even though
+the server is still executing.

@@ -1,0 +1,23 @@
+.TH SENDF 2
+.SH NAME
+sendf \- send a (one-word) message to a process, forcing delivery
+.SH SYNOPSIS
+.nf
+.B int sendf(pid, msg)
+.B int pid;
+.B int msg;
+.fi
+.SH DESCRIPTION
+.I Sendf
+sends the one-word message
+.I msg
+to the process with id
+.I pid.
+A process may have at most one outstanding message that has
+not been received.
+.I Sendf
+returns SYSERR if process id \f2pid\f1 is
+invalid.
+Otherwise, it returns OK.
+.SH SEE ALSO
+receive(2), recvtim(2), recvclr(2), preceive(2), psend(2)

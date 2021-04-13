@@ -1,0 +1,32 @@
+.TH SEEK 2
+.SH NAME
+seek \- device independent position seeking routine
+.SH SYNOPSIS
+.nf
+.B int seek(dev, position)
+.B int dev;
+.B char *buffer;
+.B long position;
+.fi
+.SH DESCRIPTION
+.I Seek
+will position the device given by
+.I dev
+after the
+.I position
+byte.
+It returns SYSERR if
+.I dev
+is incorrect, or if it is not possible to position
+.I dev
+as specified.
+.PP
+.I Seek
+cannot be used with devices connected to terminals.
+.PP
+Note that the position argument is declared
+.I long
+rather than
+.I int.
+.SH SEE ALSO
+close(2), control(2), getc(2), open(2), putc(2), read(2), write(2)

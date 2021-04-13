@@ -1,0 +1,21 @@
+.TH ACCESS 2
+.SH NAME
+access \- determine whether a file is accessible
+.SH SYNOPSIS
+.B int access(filename, mode)
+.br
+.B char	*filename;
+.br
+.B char	*mode;
+.fi
+.SH DESCRIPTION
+.I Access
+examines file with name \f2filename\f1 to determine if it is
+accessible according to the modes specified in the mode string
+\f2mode\f1.
+Valid characters in the mode string are \f3r\f1 (check for read access)
+\f3w\f1 (check for write access), \f3n\f1 (check to see if a new  file can
+be created), and \f3o\f1 (check to see if file exists).
+If neither \f3r\f1 nor \f3w\f1 is specified, both are assumed.
+.SH SEE ALSO
+open(2), ckmode(3)

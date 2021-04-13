@@ -1,0 +1,24 @@
+.TH STATUS 1
+.SH NAME
+status \- list both frontend and backend status
+.SH SYNOPSIS
+.B status
+.SH DESCRIPTION
+.I Status
+is really a combination of
+.I fusers
+and
+.I busers.
+It prints the status of each frontend and its associated backends.  For
+each frontend running a BED server it prints the number of users, the load
+average, and the number of backends.  For each backend connected to the
+frontend it prints the backend machine's name, the class it belongs to, the
+tty line it is connected to, the user who has it reserved, and the idle time.
+.SH "SEE ALSO"
+busers(1), fusers(1)
+.SH BUGS
+\f2Status\f1 lists reservations and idle time based on lock
+file times which may not be quite accurate.
+Machines with more than 10 minutes of idle time are listed even though
+the reservation software considers the reservation to have
+expired.

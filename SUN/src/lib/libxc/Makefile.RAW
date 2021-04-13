@@ -1,0 +1,57 @@
+#
+#  Make the Xinu version of the C run-time support library
+#
+
+DIR	=	{Xinu-directory}
+CFLAGS	=	-O -c -I../../sys/h
+SFLAGS	=	-I../../sys/h
+AR	=	/bin/ar
+LIB	=	${DIR}/lib
+
+
+.s.o:
+		$(AS) -o $@ $(AFLAGS) $<
+
+.c.o:
+		$(CC) $(CFLAGS) $<
+
+CFILES	=	abs.c atof.c atoi.c atol.c bzero.c	\
+		ctype_.c doprnt.c doscan.c ecvt.c	\
+		fgets.c fprintf.c fputs.c gets.c	\
+		index.c printf.c puts.c qsort.c		\
+		rand.c rindex.c scanf.c sprintf.c	\
+		strcat.c strcmp.c strcpy.c strlen.c	\
+		strncat.c strncmp.c strncpy.c swab.c	
+
+SFILES	=	aldiv.s almul.s alrem.s auldiv.s	\
+		aulmul.s aulrem.s blt.s clear.s		\
+		float.s ldiv.s lmul.s lrem.s 		\
+		mcount.s setjmp.s uldiv.s ulmul.s 	\
+		ulrem.s
+
+OFILES	=	abs.o aldiv.o almul.o alrem.o		\
+		atof.o atoi.o atol.o auldiv.o bzero.o	\
+		aulmul.o aulrem.o blt.o clear.o		\
+		ctype_.o doprnt.o doscan.o ecvt.o	\
+		fgets.o float.o fprintf.o fputs.o	\
+		gets.o index.o ldiv.o lmul.o		\
+		lrem.o mcount.o printf.o puts.o		\
+		qsort.o rand.o rindex.o scanf.o		\
+		setjmp.o sprintf.o strcat.o strcmp.o	\
+		strcpy.o strlen.o strncat.o strncmp.o	\
+		strncpy.o swab.o uldiv.o ulmul.o	\
+		ulrem.o	
+
+all:		libxc.a
+
+libxc.a:	${OFILES}
+		rm -f libxc.a
+		ar cr libxc.a $(OFILES)
+		ranlib libxc.a
+
+install:	libxc.a
+		cp libxc.a $(LIB)/libxc.a
+		ranlib $(LIB)/libxc.a
+		
+clean:
+		rm -f ${OFILES}

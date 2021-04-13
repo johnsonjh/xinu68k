@@ -1,0 +1,16 @@
+.TH BEDREBOOT 1
+.SH NAME
+bedreboot \- reboot the BED on the specified frontend
+.SH SYNOPSIS
+.B bedreboot
+[ frontend\-machine ] ...
+.SH DESCRIPTION
+.I Bedreboot
+restarts the BED process on all frontends specified on the command line.  This
+is useful if it appears that a particular BED is functioning incorrectly and
+needs to be restarted.  In addition, the BED process re-reads its machine 
+database.
+to be reread.
+.SH "SEE ALSO"
+bed(1), bedkill(1), bedkillall(1)
+

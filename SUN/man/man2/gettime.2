@@ -1,0 +1,28 @@
+.TH GETTIME 2
+.SH NAME
+gettime \- obtain the current local time in seconds past the epoch date
+.SH SYNOPSIS
+.nf
+.B int gettime(timvar)
+.B long *timvar;
+.fi
+.SH DESCRIPTION
+.I Gettime
+obtains the local time measured in seconds past the epoch date, and places
+it in the longword pointed to by argument \f2timvar\f1.
+The epoch is taken to be zero seconds past Jan 1, 1970.
+.PP
+The correct time is usually kept by the real-time clock, but
+\f2gettime\f1  may contact a time server on the network if the local
+time has not been initialized.
+.PP
+If \f2gettime\f1 cannot obtain the current time, it returns SYSERR
+to the caller.
+Otherwise, \f2gettime\f1 returns OK.
+.SH SEE ALSO
+getutim(2)
+.SH BUGS
+Local time computation does not take daylight savings into account.
+The local clock may drift, especially under heavy CPU activity or
+activities that require the operating system to mask interrupts for
+extended periods.

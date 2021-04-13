@@ -1,0 +1,37 @@
+
+README file for Distributed Postmortem Debugger
+------------------------------------------------
+
+	The distributed postmortem debugger was just added recently and was
+done so in a rather hurried fashion.  Also, it has a number of system
+specific constants and will only upload xinu images compiled with those
+constants. This is unfortunate, however at the moment we do not really have
+the time or manpower to do it correctly.  If you change the system specific
+constants in the header files and in the make files, it should still work
+for you.
+
+The most crucial thing that must be modified is the make file.  The
+postmortem debugger needs to know exactly what a xinu image looks like.
+That is, it needs to know the size of the process table, the semaphore
+table, etc.  This information is all found in the xinu header files.  So
+you should change the makefile so that the include files come from the xinu
+header file directory as well as this directory.  The makefile will then be
+able to make the file called "x.h" which will include all the xinu specific
+information and will be included in the postmortem debugger.
+
+This version is simply a modification of the original postmortem debugger.
+The original postmortem debugger thought it ran on a physically connected
+machine and thus it simply opened a tty line and began to talk over it.
+Distributed pm must now talk over the network.  We simply replaced the tty
+line code of the orginal with new code (found in sun3.c  and connectsun.c)
+which makes an odt connection to the BED server and then lets pm talk over
+the odt connection just like it was talking over a tty line.  We also link
+in a few or the routines used by the reservation system so that pm can find
+free backend machines and lock them just like odt and download do. 
+
+
+So modify the makefile, then remove x.h and remake it, and them make pm.
+
+
+Note: We have never tried to get this code to run on a VAX, but is works
+      on sun3's 

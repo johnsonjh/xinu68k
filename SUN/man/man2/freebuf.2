@@ -1,0 +1,18 @@
+.TH FREEBUF 2
+.SH NAME
+freebuf \- free a buffer by returning it to its buffer pool
+.SH SYNOPSIS
+.nf
+.B int freebuf(buf)
+.B char *buf;
+.fi
+.SH DESCRIPTION
+.I Freebuf
+returns a previously allocated buffer to its buffer pool, making it
+available for other processes to use.
+.I Freebuf
+returns SYSERR if the buffer address is invalid or if the pool
+id has been corrupted (this version stores pool ids in the integer
+preceding the buffer address).
+.SH SEE ALSO
+getbuf(2),  mkpool(2), getmem(2), freemem(2)

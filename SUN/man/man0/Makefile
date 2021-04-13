@@ -1,0 +1,35 @@
+#
+#  Make Xinu Manual Pages - only FILES change between man[0123]
+#
+
+
+DIR	=	/usr/xinu7
+MACROS	=	$(DIR)/lib/tmac.an
+
+.SUFFIXES:	.ms .doc .1 .2 .3 .4
+
+.ms.doc:
+		nroff -ms $< > ,$* ; mv ,$* $*.doc
+
+.2.doc:
+		nroff $(MACROS) $< > ,$* ; mv ,$* $*.doc
+
+.3.doc:
+		nroff $(MACROS) $< > ,$* ; mv ,$* $*.doc
+
+
+FILES	=	$(MACROS)	\
+		Notes.doc
+
+all:		$(FILES)
+
+install:
+		@echo no installation possible - use "'make print'"
+
+clean:
+		rm -rf *.doc core ,*
+
+print:		listings
+
+listings:	$(FILES)
+		cat *.doc | sed '1,2d;s/^/	/' | lpr

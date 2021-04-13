@@ -1,0 +1,94 @@
+.TH QUEUE 3
+.SH NAME
+queue - q-structure predicates and list manipulation procedures
+.SH SYNOPSIS
+.B #include <q.h>
+.PP
+.nf
+.B int enqueue(proc, tail)
+.B int dequeue(proc)
+.B int firstid(head)
+.B int firstkey(head)
+.B int getfirst(head)
+.B int getlast(tail)
+.B int insert(proc, head, key)
+.B int insertd(proc, head, key)
+.B Bool isempty(head)
+.B int lastkey(tail)
+.B Bool nonempty(head)
+.br
+.sp
+.B int head, tail;
+.br
+.B int proc;
+.br
+.B int key;
+.br
+.SH DESCRIPTION
+The \f2q\f1 structure holds doubly-linked lists of processes,
+including lists of processes that are ready, sleeping, and waiting
+on a semaphore.
+These routines manipulate lists in the \f2q\f1 structure as follows.
+.TP
+.B enqueue
+Add a process to a FIFO list given the process id in argument \f2proc\f1
+and the \f2q\f1 index of the tail of the list in argument \f2tail\f1.
+\f2Enqueue\f1 returns argument \f2proc\f1 to its caller.
+.TP
+.B dequeue
+Remove a process from a list given the process id.
+The list on which the process is found need not be specified because
+it can be determined from the \f2q\f1 structure.
+\f2Dequeue\f1 will remove a process from both FIFO and ordered lists.
+It returns its argument to the caller.
+.TP
+.B firstid
+Return the process id of the first process on a list given the
+\f2q\f1 index of the list head in argument \f2head\f1.
+.TP
+.B firstkey
+Return the integer key associated with the first entry on a list
+given the \f2q\f1 index of the list in argument \f2head\f1.
+.TP
+.B getfirst
+Remove the first process from a list and return its process id given
+the \f2q\f1 index of the head of the list in argument \f2head\f1.
+\f2Getfirst\f1 returns EMPTY if the list is empty, and a process
+id otherwise.
+.TP
+.B getlast
+Remove the last process on a list and return its process id given
+the \f2q\f1 index of the tail of the list in argument \f2tail\f1.
+\f2Getlast\f1 returns EMPTY if the list is empty, and a process
+id otherwise.
+.TP
+.B insert
+Insert a process into an ordered list given the process id in argument
+\f2proc\f1, the \f2q\f1 index of the head of the list in argument \f2head\f1,
+and an integer key for the process in argument \f2key\f1.
+Ordered lists are always ordered by increasing key values.
+\f2Insert\f1 returns OK.
+.TP
+.B insertd
+Insert a process in a delta list given the process id in argument
+\f2proc\f1, the \f2q\f1 index of the head of the list in argument \f2head\f1,
+and an integer key in argument \f2key\f1.
+\f2Insertd\f1 returns OK.
+.TP
+.B isempty
+Return TRUE if there are no processes on a list, FALSE
+otherwise,
+given the \f2q\f1 index of the head of the list in argument \f2head\f1.
+.TP
+.B lastkey
+Return the key of the last process in a list given the \f2q\f1 index of
+the tail of the list in argument \f2tail\f1.
+.TP
+.B nonempty
+Return TRUE if there is at least one process on a list, FALSE
+otherwise,
+given the \f2q\f1 index of the head of the list in argument \f2head\f1.
+.SH BUGS
+Most of these routines do not check for valid arguments or valid lists.
+Also, they assume interrupts are disabled when called, and will corrupt
+the list structure if the caller fails to disable interrupts.

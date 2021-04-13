@@ -1,0 +1,58 @@
+.TH BUFFER 3
+.SH NAME
+freebuf, getbuf, mkpool, poolinit \- buffer pool routines
+.SH SYNOPSIS
+.nf
+.B int freebuf(buf);
+.B char *buf;
+.sp
+.B char *getbuf(poolid);
+.B int poolid;
+.sp
+.B int mkpool(bufsiz, numbufs)
+.B int bufsiz, numbufs;
+.sp
+.B int poolinit()
+.fi
+.SH DESCRIPTION
+The routine
+.I poolinit
+initializes the entire buffer pool manager.
+It may be ignored as long as the MEMMARK option has been
+included in the Xinu Configuration file.
+Without MEMMARK,
+.I poolinit
+must be called once, before any other buffer manipulatiion routines.
+.PP
+.I Mkpool
+creates a pool of
+.I numbufs
+buffers, each of size
+.I bufsiz,
+and returns an integer identifying the pool.
+If no more pools can be created, or if the arguments are incorrect,
+.I mkpool
+returns SYSERR.
+.PP
+Once a pool has been created,
+.I getbuf
+obtains a free buffer from the pool given by
+.I poolid,
+and returns a pointer to the first word of the buffer.
+If all buffers in the specified pool are in use, the
+calling process will be blocked until a buffer becomes
+available.
+If the argument
+.I poolid
+does not specify a valid pool,
+getbuf returns SYSERR.
+.PP
+.I Freebuf
+returns a buffer to the pool from which it was allocated.
+.I Freebuf
+returns OK for normal completion, SYSERR if
+.I buf
+does not point to a valid buffer from a buffer pool.
+.SH BUGS
+At present there is no way to reclaim space from buffer pools once
+they are no longer needed.

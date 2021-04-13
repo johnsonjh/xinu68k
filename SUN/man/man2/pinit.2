@@ -1,0 +1,17 @@
+.TH PINIT 2
+.SH NAME
+pinit \- initialize the ports table at system startup
+.SH SYNOPSIS
+.nf
+.B int pinit(maxmsgs)
+.B int maxmsgs;
+.fi
+.SH DESCRIPTION
+.I Pinit
+initializes the ports mechanism by clearing the ports table and
+allocating memory for messages.
+It should be called only once (usually at system startup).
+Argument \f2maxmsgs\f1 specifies an upper bound on the number
+of simultaneously outstanding messages at all ports.
+.SH SEE ALSO
+pcreate(2), pdelete(2), psend(2), preceive(2)

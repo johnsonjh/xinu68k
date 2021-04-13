@@ -1,0 +1,267 @@
+#include "pm.h"
+
+/*
+ * pm - traceback routines
+ */
+
+
+struct nlist	symbol;
+INT		lastframe;
+INT		lastpc;
+INT		cntflg;
+INT		cntval;
+
+/* symbol management */
+L_INT		localval;
+
+char		lastc;
+extern	struct	pentry	*proctb;
+
+
+/* general printing routines  */
+
+printtrace(regs, base, pid)
+unsigned INT	regs[PNREGS];
+unsigned INT	base;
+unsigned INT	pid;
+{
+	unsigned	INT	currpc;
+	int		narg, rcnt;
+	int		gfpcnt;
+	unsigned INT	frame, argp;
+	unsigned INT	indx;
+	
+	frame = regs[14];
+	argp = regs[14]+8;
+	currpc = regs[PC];
+
+#ifdef DEBUG
+	printf("top frame pointer: 0x%x\n",frame);
+	printf("      arg pointer: 0x%x\n",argp);
+	printf("          last PC: 0x%x\n",currpc);
+#endif	
+	
+	rcnt = 0;	/* recursion count limit */
+	gfpcnt = 0;	/* possible garbage frame pointer counter */
+	while(1){
+	    ++rcnt;
+	    if (frame == INITREG) { /* process passed to create() */
+		findsym(proctb[pid].paddr, N_TEXT);
+		if (symbol.n_un.n_strx)
+		    printf("	%s<0x%x>(", strtab+symbol.n_un.n_strx, symbol.n_value);
+		narg = proctb[pid].pargs;
+		argp = proctb[pid].pbase-(narg*4);
+		if(--narg >= 0)
+		    printf("%d", StackInt(argp));
+		while(--narg >= 0){
+		    argp += 4;
+		    printf(", %d", StackInt(argp));
+		}
+		printf(")");
+		if(narg > 0)
+		    printf(" plus %d possible argument%s",
+			   narg, narg==1?"":"s");
+			
+		return;
+	    }
+	    if(rcnt > RECLIMIT){
+		printf("	recursion limit of %d reached\n", RECLIMIT);
+		return;
+	    }
+	    findroutine(currpc); /* fills in symbol */
+	    if(errflg){
+		printf("non-C function: ");
+		rcnt++;
+	    }
+	    if (symbol.n_un.n_strx)
+		printf("	%s<0x%x>(", strtab+symbol.n_un.n_strx,currpc);
+	    else
+		printf("	UNKNOWN(");
+
+	    /* print POSSIBLE arguments */
+	    for (narg=0; narg<4; ++narg) {
+		printf("%d, ", StackInt(argp));
+		argp += 4;
+	    }
+	    printf("...)\n");
+
+	    if (frame >= (base - 4))
+		break;
+
+	    /* obtain return address; move frame ptr to previous frame */
+
+	    currpc = StackInt(frame+4);
+	    frame = StackInt(frame);
+	    argp = frame+8;
+
+#ifdef DEBUG	    
+	    printf("previous frame pointer: 0x%x\n",frame);
+    	    printf("      prev arg pointer: 0x%x\n",argp);
+	    printf("               prev PC: 0x%x\n",currpc);
+#endif	    
+
+	    if (frame != INITREG)
+		if (frame < proctb[pid].plimit
+		    || frame >= proctb[pid].pbase) {
+		    printf("	...possible stack corruption, FP: 0x%x\n",frame);
+		    if (++gfpcnt>GARBAGELIMIT) {
+			printf("Garbage limit exceeded\n");
+			break;
+		    }
+		}
+	}
+}
+
+printregs(regs)
+unsigned INT	regs[];
+{
+    register struct reglist *p;
+    INT			v;
+    int r;
+
+    for (r=0; r<8; ++r) {
+	switch (r) {
+	  case 0:
+	    printf("	D%1d: 0x%08x	A%1d: 0x%08x	PC: 0x%08x	(",
+		   r,regs[r],r,regs[r+8], regs[PC]);
+	    printpc(regs[PC]);
+	    printf("\n");
+	    break;
+	  case 1:
+	    printf("	D%1d: 0x%08x	A%1d: 0x%08x	SR: 0x%04x	(%s)\n",
+		   r,regs[r],r,regs[r+8], regs[PS],
+		   ((regs[PS] & 0x0700) == 0x0700)?"disabled":"enabled");
+	    break;
+	  case 2:
+	    printf("	D%1d: 0x%08x	A%1d: 0x%08x	SP: 0x%08x\n",
+		   r,regs[r],r,regs[r+8], regs[SSP]);
+	    break;
+	  case 3:
+	    printf("	D%1d: 0x%08x	A%1d: 0x%08x	FP: 0x%08x\n",
+		   r,regs[r],r,regs[r+8], regs[14]);
+	    break;
+	  default:
+	    printf("	D%1d: 0x%08x	A%1d: 0x%08x\n",
+		   r,regs[r],r,regs[r+8]);
+	}
+    }
+}
+
+/*
+ * Print a value v symbolically, if it has a reasonable
+ * interpretation as name+offset. If not, print nothing.
+ */
+
+valpr(v, idsp)
+unsigned INT	v;
+{
+	long	findsym(), d;
+
+	d = findsym(v, idsp);
+	if(d >= MAXOFF)
+		return;
+	if (symbol.n_un.n_strx) {
+		printf("%s", strtab+symbol.n_un.n_strx);
+		if(d)
+			printf("+0x%x", d);
+	}
+}
+
+/*
+ * printpc - print the word pointed to by the pc both
+ * symbolically and as an instruction
+ */
+printpc(pc)
+INT	pc;
+{
+	psymoff(pc, ")", N_TEXT);
+}
+
+/*
+ * findroutine - find the name of the routine pointed
+ * to by the current frame. Leave its symbol table entry in
+ * symbol as a side effect.
+ *
+ */
+
+findroutine(currpc)
+unsigned INT	currpc;
+{
+	int	nargs;
+
+	errflg = FALSE;
+	if(findsym(currpc, N_TEXT) == -1) {
+		errflg = TRUE;
+		symbol.n_un.n_name = NULL;
+		symbol.n_value = 0;
+	}
+	return(0);
+}
+
+/*
+ * find the closest symbol to val, and return the 
+ * difference between val and the symbol found.
+ * leave the symbol table entry in 'symbol' as a side effect.
+ */
+
+long
+findsym(val, type)
+INT	val;
+INT	type;
+{
+	long			diff;
+	register struct nlist	*sp, *cursym;
+
+	diff = 0377777L;
+	cursym = &symbol;
+	symbol.n_un.n_name = NULL;
+	symbol.n_value = 0;
+
+	for(sp = ssymtab; sp < essymtab; sp++){
+		switch(type){
+		case N_TEXT:
+			if((sp->n_type & N_TYPE) != type)
+				continue;
+			break;
+
+		case N_DATA:
+			if((sp->n_type & N_TYPE) != N_DATA 
+			   && (sp->n_type & N_TYPE) != N_BSS)
+				break;
+			continue;
+
+		default:
+			fprintf(stderr, "bad type in findsym\n");
+		}
+		if(sp->n_value <= val && sp->n_value > cursym->n_value)
+			cursym = sp;
+	}
+	if(cursym->n_un.n_name)
+		symbol = *cursym;
+	else
+		symbol.n_un.n_name = NULL;
+	return(val - symbol.n_value);
+}
+
+/*
+ * psymoff - basically call findsym and print the result
+ */
+
+psymoff(val, str, space)
+INT	val;
+char	*str;
+{
+	long findsym(), d;
+
+	d = findsym(val, space);
+	if(d > MAXOFF)
+		printf("0x%x", val);
+	else{
+		if (symbol.n_un.n_strx)
+			printf("%s", strtab+symbol.n_un.n_strx);
+		if(d)
+			printf("+0x%x", d);
+	}
+	printf(str);
+}
+

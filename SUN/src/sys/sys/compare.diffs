@@ -1,0 +1,2692 @@
+======================== arp_in.c =========================
+29a30,36
+> #ifdef DEBUG		
+> 	        kprintf("arp_in: resolved addr for %d.%d.%d.%d\n",
+> 			apacptr->ar_spa[0]&0xff,
+> 			apacptr->ar_spa[1]&0xff,
+> 			apacptr->ar_spa[2]&0xff,
+> 			apacptr->ar_spa[3]&0xff);
+> #endif		
+======================== arpfind.c =========================
+======================== arpinit.c =========================
+======================== autostart.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/autostart.c: No such file or directory
+======================== blkcopy.c =========================
+======================== blkequ.c =========================
+======================== chprio.c =========================
+14a15
+> 	int	ps;
+17d17
+<         char    ps;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("chprio",&pid,2);
+> #endif
+> 	disable();
+22c25
+< 		restore(ps);
+---
+> 		restore();
+35c38
+< 	restore(ps);
+---
+> 	restore();
+======================== ckmode.c =========================
+======================== cksum.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/cksum.c: No such file or directory
+======================== clkinit.c =========================
+6c6,10
+< 
+---
+> #include <cpu.addrs.h>    
+> #include <clock.h>
+> #include <interreg.h>
+> #include <sunromvec.h>
+>     
+8c12
+< 
+---
+>     
+11c15
+< int	count10;		/* counts in 10ths of a second 10-0	*/
+---
+> int	count10;		/* counts in 10ths of second 10-0	*/
+18c22
+< 				/* the sleep queue if slnempty==TRUE	*/
+---
+> 				/* the sleep queue if slnonempty==TRUE	*/
+21a26
+> #ifdef	RTCLOCK
+35c40,41
+< 	int *vector;
+---
+> 	int junk;
+> 	WORD *vector;
+37,40c43,49
+< 	vector = (int *) CVECTOR;	/* set up interrupt vector	*/
+< 	*vector++ = clkint;
+< 	*vector = DISABLE;
+< 	setclkr();
+---
+> 	int Asm_clkint();
+> 
+> 	set_evec((int) CVECTOR, Asm_clkint);
+> 
+> 	/* setclkr(); */
+> 	clkruns = 1;
+> 	clockq = newqueue();
+42,49c51,98
+< 	count6 = 6;			/* 60ths of a sec. counter	*/
+< 	count10 = 10;			/* 10ths of a sec. counter	*/
+< 	clmutex = screate(1);		/* semaphore for tod clock	*/
+< 	clktime = 0L;			/* initially a low number	*/
+< 	slnempty = FALSE;		/* initially, no process asleep	*/
+< 	clkdiff = 0;			/* zero deferred ticks		*/
+< 	defclk = 0;			/* clock is not deferred	*/
+< 	clockq = newqueue();		/* allocate clock queue in q	*/
+---
+> 	
+> 	/*
+> 	 * This hardware is sufficiently delicate that we need to follow
+> 	 * this order:
+> 	 *	Reset interrupt-catching flops
+> 	 *	Clear and disable TOD chip interrupts
+> 	 *	Enable interrupt-catching flop(s)
+> 	 *	Enable TOD chip interrupts
+> 	 */
+> 	CLOCK_BASE->clk_cmd = CLK_CMD_NORMAL; 
+> 	*INTERRUPT_BASE &= ~(IR_ENA_CLK7 | IR_ENA_CLK5);  /* Unhang flops */
+>         CLOCK_BASE->clk_intrreg = 0;			 /* Disable TOD ints */
+> 	junk = CLOCK_BASE->clk_intrreg;			/* Maybe clr pending int */
+>         *INTERRUPT_BASE |=  IR_ENA_CLK5;		/* Prime the flops */
+> 	CLOCK_BASE->clk_intrreg = CLK_INT_TSEC;		/* allow TOD ints every 1/10 sec*/
+> }
+> #endif
+> 
+> 
+> #define set_leds(x) (romp->v_set_leds)((char) x)
+> 
+> /* set the pattern to use in blinking the LEDs */
+> char ledpattern[] = {
+>     0x00,	/* ---- ---- */
+>     0x18,	/* ---X X--- */
+>     0x3c,	/* --XX XX-- */
+>     0x7e,	/* -XXX XXX- */
+>     0xff,	/* XXXX XXXX */
+>     0xe7,	/* XXX- -XXX */
+>     0xc3,	/* XX-- --XX */
+>     0x81,	/* X--- ---X */
+>     0x00,	/* ---- ---- */
+>     0x81,	/* X--- ---X */
+>     0xc3,	/* XX-- --XX */
+>     0xe7,	/* XXX- -XXX */
+>     0xff,	/* XXXX XXXX */
+>     0x7e,	/* -XXX XXX- */
+>     0x3c,	/* --XX XX-- */
+>     0x18	/* ---X X--- */
+>     };
+> 
+> int pled = 0;
+> updateleds()
+> {
+> 	/* play with the led's */
+> 	pled = (pled+1) % sizeof(ledpattern);
+> 	
+> 	set_leds(~(ledpattern[pled])); 
+======================== close.c =========================
+======================== concntl.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/concntl.c: No such file or directory
+======================== conf.c =========================
+21c21
+< ttyinit, ttyopen, ionull,
+---
+> ttyinit, ionull, ionull,
+24,25c24,25
+< 0177560, 0060, 0064,
+< ttyiin, ttyoin, NULLPTR, 0,
+---
+> 01770020004, 0170, 0170,
+> ioerr, ioerr, NULLPTR, 0,
+33c33
+< 0174440, 0400, 0400,
+---
+> 01770200000, 0154, 0154,
+======================== coniin.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/coniin.c: No such file or directory
+======================== coninit.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/coninit.c: No such file or directory
+======================== coninput.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/coninput.c: No such file or directory
+======================== conoutput.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/conoutput.c: No such file or directory
+======================== console.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/console.c: No such file or directory
+======================== control.c =========================
+11c11
+< SYSCALL	control(descrp, func, addr, addr2)
+---
+> control(descrp, func, addr, addr2)
+======================== create.c =========================
+2a3,5
+>     
+> 
+>     
+5a9
+> #include <sem.h>
+16c20
+< 	int	priority;		/* process priority > 0		*/
+---
+> 	int	priority;		/* process priority >= 0	*/
+19c23
+< 	int	args;			/* arguments (treated like an	*/
+---
+> 	WORD	args;			/* arguments (treated like an	*/
+21a26
+> 	int	ps;
+25,27c30,32
+< 	int	*a;			/* points to list of args	*/
+< 	int	*saddr;			/* stack address		*/
+< 	char	ps;			/* saved processor status	*/
+---
+> 	WORD	*a;			/* points to list of args	*/
+> 	WORD	*saddr;			/* stack address		*/
+> 	WORD    *getstk();
+29,31c34,46
+< 	disable(ps);
+< 	ssize = roundew(ssize);
+< 	if ( ssize < MINSTK || ((saddr=getstk(ssize)) == SYSERR ) ||
+---
+> 
+> #ifdef	DEBUG
+> 	kprintf("create called:\n");
+> 	kprintf("    proc addr: 0x%lx\n",(long) procaddr);
+> 	kprintf("    ssize: %d\n",ssize);
+> 	kprintf("    priority: %d\n",priority);
+> 	kprintf("    name: %s\n",name);
+> 	kprintf("    nargs: %d\n",nargs);
+> 	/* dotrace("create", procaddr, 5 + nargs); */
+> #endif
+> 	disable();
+> 	ssize = (int) roundew(ssize);
+> 	if ( ssize < MINSTK || ((saddr = getstk(ssize)) == (WORD *)SYSERR ) ||
+34c49
+< 		restore(ps);
+---
+> 		restore();
+36a52,56
+> #ifdef DEBUG
+> 	kprintf("    assigned pid %d\n",pid);
+> 	kprintf("    stack base: 0x%lx\n",(long) saddr);
+> #endif
+> 	
+38a59,66
+> 
+> 	pptr->fildes[0] = 0;	/* stdin set to console */
+> 	pptr->fildes[1] = 0;	/* stdout set to console */
+> 	pptr->fildes[2] = 0;	/* stderr set to console */
+> 
+> 	for (i=3; i < _NFILE; i++)	/* others set to unused */
+> 		pptr->fildes[i] = FDFREE;
+> 
+40c68
+< 	for (i=0 ; i<PNMLEN && (pptr->pname[i]=name[i])!=0 ; i++)
+---
+> 	for (i=0 ; i<PNMLEN && (int)(pptr->pname[i]=name[i])!=0 ; i++)
+43c71
+< 	pptr->pbase = (short)saddr;
+---
+> 	pptr->pbase = (WORD) saddr;
+47c75,76
+< 	pptr->plimit = (short)((unsigned)saddr - ssize + sizeof(int));
+---
+> 	pptr->plimit = pptr->pbase - ssize + sizeof (WORD);	
+> 		/* Bottom of stack */
+49a79
+> 	pptr->phasps = 0;
+52c82
+< 	pptr->pregs[PC] = pptr->paddr = (short)procaddr;
+---
+> 	pptr->pregs[PC] = pptr->paddr = (WORD)procaddr;
+57,61c87,94
+< 	for ( ; nargs > 0 ; nargs--)	/* machine dependent; copy args	*/
+< 		*saddr-- = *a--;	/* onto created process' stack	*/
+< 	*saddr = (int)INITRET;		/* push on return address	*/
+< 	pptr->pregs[SP] = (int)saddr;
+< 	restore(ps);
+---
+> 	for ( ; nargs > 0 ; nargs--) {	/* machine dependent; copy args	*/
+> 		*saddr-- = *a--;
+> 	}
+> 					/* onto created process' stack	*/
+> 	*saddr = (WORD)INITRET;	/* push on return address	*/
+> 	pptr->pregs[SSP] = (WORD)saddr;
+> 
+> 	restore();
+73a107,109
+> #ifdef	DEBUG
+> 	dotrace("newpid", NULL, 0);
+> #endif
+======================== dgalloc.c =========================
+======================== dgclose.c =========================
+======================== dgcntl.c =========================
+======================== dgdump.c =========================
+======================== dginit.c =========================
+======================== dgmcntl.c =========================
+======================== dgmopen.c =========================
+======================== dgparse.c =========================
+======================== dgread.c =========================
+======================== dgwrite.c =========================
+======================== dinkled.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/dinkled.c: No such file or directory
+======================== dma.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/dma.c: No such file or directory
+======================== dot2ip.c =========================
+======================== dotrace.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/dotrace.c: No such file or directory
+======================== ethinit.c =========================
+5a6,8
+> #include <idprom.h>
+>  
+> struct idprom idprom;
+6a10,12
+> int Asm_ethint();
+> 
+> 
+14,19c20,25
+< 	struct	etblk	*etptr;
+< 	struct	dqregs	*dqptr;
+< 	struct	dcmd	*dcmptr;
+< 	short	*iptr;
+< 	int	i;
+< 	struct	dqsetu	setup;
+---
+>     struct	etblk	*etptr;
+>     register struct le_device *le;
+>     register struct le_init_block *ib;
+>     struct le_md *pmdrecv, *pmdxmit;
+>     int w;
+>     unsigned short status;
+21,28c27,29
+< 	etptr = &eth[devptr->dvminor];
+< 	devptr->dvioblk = (char *) etptr;
+< 	iosetvec(devptr->dvnum, etptr, etptr);
+< 	etptr->eioaddr = dqptr = (struct dqregs *) devptr->dvcsr;
+< 	etptr->etdev = devptr;
+< 	etptr->etrsem = screate(1);
+< 	etptr->etwsem = screate(1);
+< 	etptr->etrpid = 0;
+---
+> #ifdef DEBUG
+>     kprintf("ethinit(dev) called\n");
+> #endif    
+30c31,36
+< 	/* establish read and write buffer descriptor lists */
+---
+>     /* read the ID prom */
+>     getidprom(&idprom,sizeof (struct idprom));
+>     if (idprom.id_format != 1) {
+> 	panic("Can't read ID prom\n");
+>     }
+>     
+32,35c38,40
+< 	dcmptr = &etptr->ercmd[1];
+< 	dcmptr->dc_flag = DC_NUSED;
+< 	dcmptr->dc_bufh = DC_ENDL;
+< 	dcmptr->dc_buf = (short) NULL;
+---
+>     le = (struct le_device *) devptr->dvcsr;
+>     ib = (struct le_init_block *) getdmem(sizeof(struct le_init_block)+1);
+>     ib = (struct le_init_block *) (((long) ib + 1) & ~(unsigned long)1);
+37,41c42,57
+< 	dcmptr = &etptr->ewcmd[1];
+< 	dcmptr->dc_flag = DC_NUSED;
+< 	dcmptr->dc_bufh = DC_ENDL;
+< 	dcmptr->dc_buf = (short) NULL;
+< 	dcmptr->dc_st1 = dcmptr->dc_st2 = DC_INIT;
+---
+>     /* allocate the ring buffers */
+>     /* we fudge, because these MUST be on a 4 word boundry */
+>     pmdrecv = (struct le_md *)
+>       ((getdmem(sizeof(struct le_md))+7) & ~(unsigned long) 7);
+>     pmdxmit = (struct le_md *)
+>       ((getdmem(sizeof(struct le_md))+7) & ~(unsigned long) 7);
+>        
+>     
+> #ifdef DEBUG
+>     kprintf("Lance device at address 0x%x\n",(unsigned long) le);
+>     kprintf("Interrupt vector: 0x%x\n",devptr->dvivec);
+>     kprintf("Init block at 0x%lx\n",(unsigned long) ib);
+>     kprintf("recv ring at 0x%lx\n",(unsigned long) pmdrecv);
+>     kprintf("xmit ring at 0x%lx\n",(unsigned long) pmdxmit);
+>     kprintf("\n");
+> #endif    
+43c59,62
+< 	/* extract physical ethernet address */
+---
+>     /* zero-out the init block and ring pointers */
+>     bzero(ib,sizeof(struct le_init_block));
+>     bzero(pmdrecv,sizeof(struct le_md));
+>     bzero(pmdxmit,sizeof(struct le_md));
+45,46c64,70
+< 	for (iptr=(short *)dqptr ,i=0 ; i<EPADLEN ; i++)
+< 		etptr->etpaddr[i] = LOWBYTE & *iptr++;
+---
+>     /* set the physical address for this machine */
+>     ib->ib_padr[0] = idprom.id_ether[1]; /* must byte swap */
+>     ib->ib_padr[1] = idprom.id_ether[0];
+>     ib->ib_padr[2] = idprom.id_ether[3];
+>     ib->ib_padr[3] = idprom.id_ether[2];
+>     ib->ib_padr[4] = idprom.id_ether[5];
+>     ib->ib_padr[5] = idprom.id_ether[4];
+48,49c72,169
+< 	ethstrt(etptr, &setup);
+< 	return(OK);
+---
+>     /* put my physical address into the eth structure */
+>     for (w=0; w<EPADLEN; ++w) 
+>         eth->etpaddr[w] = idprom.id_ether[w];
+> 
+>     /* set up receive ring */
+>     ib->ib_rdrp.drp_len = 0;	/* 0 means 2^^0 == 1 buffer in ring	*/
+>     ib->ib_rdrp.drp_laddr = low16((long)pmdrecv&DMA_MASK);
+>     ib->ib_rdrp.drp_haddr = hi8((long)pmdrecv&DMA_MASK);
+>     
+>     /* set up xmit ring */
+>     ib->ib_tdrp.drp_len = 0;	/* 0 means 2^^0 == 1 buffer in ring	*/
+>     ib->ib_tdrp.drp_laddr = low16((long)pmdxmit&DMA_MASK);
+>     ib->ib_tdrp.drp_haddr = hi8((long)pmdxmit&DMA_MASK);
+> 
+>     /* set up the receive ring buffer */
+>     pmdrecv->lmd_ladr = 0;
+>     pmdrecv->lmd_hadr = 0;
+>     pmdrecv->lmd_bcnt = -EMAXPAK;
+>     pmdrecv->lmd_mcnt = 0;
+>     pmdrecv->lmd_flags = 0x00;
+>     
+>     /* set up the xmit ring buffer */
+>     pmdxmit->lmd_ladr = 0;
+>     pmdxmit->lmd_hadr = 0;
+>     pmdxmit->lmd_bcnt = -EMAXPAK;
+>     pmdxmit->lmd_mcnt = 0;
+>     pmdxmit->lmd_flags = 0x00;
+> 
+>     /* freeze the chip */
+>     le->le_rap = LE_CSR0;
+>     le->le_rdp = LE_STOP;
+> 
+>     /* set the interrupt vector */
+>     set_evec( devptr->dvivec, Asm_ethint);
+> 
+>     /* freeze the chip */
+>     le->le_rap = LE_CSR0;
+>     le->le_rdp = LE_STOP;
+> 	
+>     /* hand the init block to the chip */
+>     le->le_rap = LE_CSR1;
+>     le->le_rdp = low16((long)ib&DMA_MASK);
+>     le->le_rap = LE_CSR2;
+>     le->le_rdp = hi8((long)ib&DMA_MASK);
+>     
+>     le->le_rap = LE_CSR3;
+>     le->le_rdp = LE_BSWP;	/* set to byte swap	*/
+>     
+> #ifdef DEBUG
+>     printcsr0(le,"before init");
+> #endif    
+> 
+>     /* initialize the chip */
+>     le->le_rap = LE_CSR0;
+>     le->le_rdp = LE_INIT;
+> 
+> #ifdef DEBUG
+>     printcsr0(le,"just after init");
+> #endif    
+> 
+>     /* wait for init to complete */
+>     le->le_rap = LE_CSR0;
+>     status = le->le_rdp;
+>     for (w=10000; (w >= 0) && (!(status & LE_IDON)); --w) {
+> 	if (w==0) {
+> 	    printcsr0(le,"last condition");
+> 	    panic("Unable to initialize Ethernet chip");
+> 	}
+> 	status = le->le_rdp;
+>     }
+> 
+> #ifdef DEBUG
+>     printcsr0(le,"init finished");
+> #endif    
+>     
+>     /* reset the interrupt */
+>     le->le_rap = LE_CSR0;
+>     le->le_csr = LE_IDON;
+> 
+>     /* start the chip */
+>     le->le_rap = LE_CSR0;
+>     le->le_csr = LE_STRT | LE_INEA;
+>   
+> 
+>     /* set up global information */
+>     etptr = &eth[devptr->dvminor];
+>     devptr->dvioblk = (char *) etptr;
+>     etptr->etle   = le;
+>     etptr->etib   = ib;
+>     etptr->etmdr  = pmdrecv;
+>     etptr->etmdt  = pmdxmit;
+>     etptr->etdev  = devptr;
+>     etptr->etrsem = screate(1);
+>     etptr->etwsem = screate(1);
+>     etptr->etrpid = 0;
+> 
+>     return(OK);
+> 
+54a175,193
+> 
+> 
+> printcsr0(le,msg)
+>      struct le_device *le;
+>      char *msg;
+> {
+>     register short status;
+> 
+>     le->le_rap = LE_CSR0;
+>     status = le->le_rdp;
+>   
+>     kprintf("%s:  (%04b %04b %04b %04b)\n",
+> 	    msg,
+> 	    (int) ((status >>12) & 0x0f),
+> 	    (int) ((status >>8) & 0x0f),
+> 	    (int) ((status >>4) & 0x0f),
+> 	    (int) (status & 0x0f)
+> 	    );
+> }
+======================== ethinter.c =========================
+7a8
+> 
+15,16c16,19
+< 	struct	dqregs	*dqptr;
+< 	register struct	dcmd	*dcmptr;
+---
+> 	register struct le_device *le;
+> 	int i;
+> 	struct	le_md	*pmdrecv;
+> 	struct	le_md	*pmdxmit;
+18a22,23
+>     
+> 	le = etptr->etle;
+20,21c25
+< 	dqptr = etptr->eioaddr;
+< 	dqptr->d_csr = csr = dqptr->d_csr;	/* clear RINT, XINT */
+---
+> 	le->le_rap = LE_CSR0;
+22a27,41
+> 	if ( (csr = (le->le_rdp)&LE_ERR) != 0) {
+> 		if (csr&LE_BABL)
+> 		  kprintf("LEerr: Babbling xmitter");
+> 		if (csr&LE_CERR)
+> 		  kprintf("LEerr: Collision error");
+> 		if (csr&LE_MISS)
+> 		  kprintf("LEerr: Missed packet");
+> 		if (csr&LE_MERR)
+> 		  kprintf("LEerr: Memory error");
+> 		printcsr0(le," : ");
+>     	        /* reset the interrupt */
+> 	        le->le_csr = LE_BABL|LE_CERR|LE_MISS|LE_MERR|LE_INEA;
+> 	}
+> 		
+> 
+25,27c44,46
+< 	if (csr & DQ_RINT) {
+< 		dcmptr = etptr->ercmd;
+< 		if ( (dcmptr->dc_st1 & DC_LUSE) != DC_ERRU) {
+---
+> 	if ( (csr = (le->le_rdp) & LE_RINT) != 0) {
+> 		pmdrecv = etptr->etmdr;
+> 		if ( (pmdrecv->lmd_flags&LMD_ERR) == 0) {
+32,35c51,55
+< 			dcmptr->dc_st1 = dcmptr->dc_st2 = DC_INIT;
+< 			dcmptr->dc_flag = DC_NUSED;
+< 			dqptr->d_rcmd = (short) dcmptr;
+< 			dqptr->d_rcmdh = (short) NULL;
+---
+> 			kprintf("ethinter: flags: 0x%x, retrying read\n",
+> 				pmdrecv->lmd_flags);
+> 			pmdrecv->lmd_flags = LMD_OWN;
+> 			pmdrecv->lmd_bcnt  = 0;
+> 			le->le_csr = LE_INEA;
+36a57,58
+>     	        /* reset the interrupt */
+> 	        le->le_csr = LE_RINT|LE_INEA;
+38,45c60,65
+< 	if (csr & DQ_XINT) {
+< 		dcmptr = etptr->ewcmd;
+< 		if ( (dcmptr->dc_st1 & DC_LUSE) != DC_ERRU) {
+< 			if (etptr->etsetup == DC_NORM) {
+< 				etptr->etlen = 0;
+< 				freebuf( dcmptr->dc_buf );
+< 				signal(etptr->etwsem);
+< 			}
+---
+> 	if ( (csr = (le->le_rdp) & LE_TINT) != 0) {
+> 		pmdxmit = etptr->etmdt;
+> 		if ( (pmdxmit->lmd_flags&LMD_ERR) == 0) {
+> 			etptr->etlen = 0;
+> 			freebuf( etptr->etwbuf );
+> 			signal(etptr->etwsem);
+47,52c67,74
+< 			while (! (dqptr->d_csr & DQ_XLI) )
+< 				;
+< 			dcmptr->dc_st1 = dcmptr->dc_st2 = DC_INIT;
+< 			dcmptr->dc_flag = DC_NUSED;
+< 			dqptr->d_wcmd = (short) dcmptr;
+< 			dqptr->d_wcmdh = (short) NULL;
+---
+> 			kprintf("ethinter: flags: 0x%x, retrying write\n",
+> 				pmdxmit->lmd_flags);
+> 			kprintf("ethinter: flags3: 0x%x, retrying write\n",
+> 				pmdxmit->lmd_flags3);
+> 			pmdxmit->lmd_flags = LMD_OWN;
+> 			pmdxmit->lmd_bcnt  = 0;
+> 			pmdxmit->lmd_flags = LMD_OWN | LMD_STP | LMD_ENP;
+> 			le->le_csr = LE_TDMD | LE_INEA;
+54,57c76,78
+< 			if (etptr->etsetup == DC_NORM) {
+< 				freebuf(dcmptr->dc_buf);
+< 				signal(etptr->etwsem);
+< 			}
+---
+> 			kprintf("ethinter: too many retries\n");
+> 			freebuf( etptr->etwbuf );
+> 			signal(etptr->etwsem);
+58a80,81
+>     	        /* reset the interrupt */
+> 	        le->le_csr = LE_TINT|LE_INEA;
+======================== ethread.c =========================
+17d16
+< 	char	ps;
+20,21c19,21
+< 	struct	dcmd	*dcmptr;
+< 	struct	dqregs	*dqptr;
+---
+> 	struct	le_device	*le;
+> 	struct	le_md	*pmdrecv;
+> 	int errs;
+22a23,27
+> 	if ((unsigned long) buff < (unsigned long) DMA_VM_START) {
+> 		kprintf("ethread passed buffer outside DMA space\n");
+> 		return(SYSERR);
+> 	}
+> 
+24,25c29,30
+< 	dcmptr = etptr->ercmd;
+< 	dqptr = etptr->eioaddr;
+---
+> 	le = etptr->etle;
+> 	pmdrecv = etptr->etmdr;
+27c32
+< 	disable(ps);
+---
+> 	disable();
+28a34
+> 	etptr->etrbuf = buff;
+31,33c37
+< 	while (recvtim(DQ_RTO) == TIMEOUT) {
+< 		wbuff = (dcmptr=etptr->ewcmd)->dc_buf;
+< 		ethstrt(etptr, buff);
+---
+> 	while (recvtim(ETH_RTO) == TIMEOUT) {
+35,37d38
+< 		if (etptr->etlen != 0) {
+< 			ethwstrt(etptr, wbuff, etptr->etlen, DC_NORM);
+< 		}
+39c40,49
+< 	if ( (dcmptr->dc_st1 & DC_LUSE) == DC_ERRU) {
+---
+> 	errs = pmdrecv->lmd_flags & (RMD_FRAM|RMD_OFLO|RMD_CRC|RMD_BUFF);
+> 	if ( errs != 0) {
+> 	        if (errs & RMD_FRAM)
+> 		  kprintf("ethread: framing error\n");
+> 	        if (errs & RMD_OFLO)
+> 		  kprintf("ethread: buffer overflow\n");
+> 	        if (errs & RMD_CRC)
+> 		  kprintf("ethread: CRC error\n");
+> 	        if (errs & RMD_BUFF)
+> 		  kprintf("ethread: don't own next buffer\n");
+42,43c52
+< 		len = (dcmptr->dc_st1&DC_HLEN)|(dcmptr->dc_st2 & DC_LLEN);
+< 		len += DC_XLEN;
+---
+> 		len = pmdrecv->lmd_mcnt;
+46c55
+< 	restore(ps);
+---
+> 	restore();
+======================== ethrstrt.c =========================
+17,18c17,18
+< 	struct	dcmd	*dcmptr;
+< 	struct	dqregs	*dqptr;
+---
+> 	struct	le_device	*le;
+> 	struct	le_md		*pmdrecv;
+20,28c20,27
+< 	dcmptr = etptr->ercmd;
+< 	dcmptr->dc_bufh = DC_VALID;
+< 	dcmptr->dc_buf  = (short) buf;
+< 	dcmptr->dc_len = dqlen(len);
+< 	dcmptr->dc_st1 = dcmptr->dc_st2 = DC_INIT;
+< 	dcmptr->dc_flag = DC_NUSED;
+< 	dqptr = etptr->eioaddr;
+< 	dqptr->d_rcmd = (short) dcmptr;
+< 	dqptr->d_rcmdh = (short) NULL;
+---
+> 	le = etptr->etle;
+> 	pmdrecv = eth->etmdr;
+> 	pmdrecv->lmd_ladr = low16(buf)&DMA_MASK;
+> 	pmdrecv->lmd_hadr = hi8(buf)&DMA_MASK;
+> 	pmdrecv->lmd_bcnt = -len;
+> 	pmdrecv->lmd_mcnt = 0;
+> 	pmdrecv->lmd_flags = LMD_OWN;
+> 
+======================== ethwrite.c =========================
+18,19c18
+< 	struct	etblk	*etptr;
+< 	char	ps;
+---
+>         struct	etblk	*etptr;
+20a20,27
+> #ifdef DEBUG
+> 	kprintf("ethwrite(devptr,0x%lx,%d) called\n", (unsigned long) buff, len);
+> #endif	
+> 
+> 	if ((unsigned long) buff < (unsigned long) DMA_VM_START) {
+> 		kprintf("ethwrite passed buffer outside DMA space\n");
+> 		return(SYSERR);
+> 	}
+24a32
+> 	
+27c35
+< 	disable(ps);
+---
+> 	disable();
+29,30c37,38
+< 	ethwstrt(etptr, buff, etptr->etlen = len, DC_NORM);
+< 	restore(ps);
+---
+> 	ethwstrt(etptr, buff, etptr->etlen = len);
+> 	restore();
+======================== ethwstrt.c =========================
+13c13
+< ethwstrt(etptr, buf, len, setup)
+---
+> ethwstrt(etptr, buf, len)
+17d16
+< 	int	setup;
+19,20c18,22
+< 	register struct	dcmd	*dcmptr;
+< 	register struct	dqregs	*dqptr;
+---
+> 	struct	le_device	*le;
+> 	struct	le_md		*pmdxmit;
+>   
+> 	le = etptr->etle;
+> 	pmdxmit = eth->etmdt;
+22,35c24,32
+< 	dqptr = etptr->eioaddr;
+< 	while (! (dqptr->d_csr & DQ_XLI) )
+< 		;
+< 	etptr->etwtry = EXRETRY;
+< 	dcmptr = etptr->ewcmd;
+< 	dcmptr->dc_bufh = DC_VALID | DC_ENDM | (etptr->etsetup = setup);
+< 	if (isodd(len))
+< 		dcmptr->dc_bufh |= DC_LBIT;
+< 	dcmptr->dc_buf  = (short) buf;
+< 	dcmptr->dc_len = dqlen(len);
+< 	dcmptr->dc_st1 = dcmptr->dc_st2 = DC_INIT;
+< 	dcmptr->dc_flag = DC_NUSED;
+< 	dqptr->d_wcmd = (short) dcmptr;
+< 	dqptr->d_wcmdh = (short) NULL;
+---
+> 	etptr->etwbuf = buf;
+> 
+> 	pmdxmit->lmd_ladr = low16(buf)&DMA_MASK;
+> 	pmdxmit->lmd_hadr = hi8(buf)&DMA_MASK;
+> 	pmdxmit->lmd_bcnt = -len;
+> 	pmdxmit->lmd_mcnt = 0;
+> 	pmdxmit->lmd_flags = LMD_OWN | LMD_STP | LMD_ENP;
+> 
+>         le->le_csr = LE_TDMD | LE_INEA;
+======================== evec.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/evec.c: No such file or directory
+======================== freebuf.c =========================
+12c12
+< SYSCALL	freebuf(buf)
+---
+> freebuf(buf)
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+17a18,20
+> #ifdef	DEBUG
+> 	dotrace("freebuf", &buf, 1);
+> #endif
+25c28
+< 	disable(ps);
+---
+> 	disable();
+28c31
+< 	restore(ps);
+---
+> 	restore();
+======================== freemem.c =========================
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+18a19,21
+> #ifdef	DEBUG
+> 	dotrace("freemem", &block, 2);
+> #endif
+20c23
+< 		    || ((unsigned)block)<((unsigned)&end))
+---
+> 	    || ((unsigned)block)<((unsigned) &end))
+23,25c26,29
+< 	disable(ps);
+< 	for( p=memlist.mnext,q= &memlist ; (char *)p!=NULL && p<block ;
+< 		    q=p,p=p->mnext )
+---
+> 	disable();
+> 	for( p=memlist.mnext,q= &memlist;
+> 	     p != (struct mblock *) NULL && p < block ;
+> 	     q=p,p=p->mnext )
+28,29c32,33
+< 		(char *)p!=NULL && (size+(unsigned)block) > (unsigned)p) {
+< 		restore(ps);
+---
+> 	    p!=NULL && (size+(unsigned)block) > (unsigned)p ) {
+> 		restore();
+33c37
+< 		q->mlen += size;
+---
+> 			q->mlen += size;
+44c48
+< 	restore(ps);
+---
+> 	restore();
+======================== getaddr.c =========================
+======================== getbuf.c =========================
+12c12
+< SYSCALL	*getbuf(poolid)
+---
+> int *getbuf(poolid)
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+17a18,20
+> #ifdef	DEBUG
+> 	dotrace("getbuf", &poolid, 1);
+> #endif
+20c23
+< 		return((int *)SYSERR);
+---
+> 		return((int *) SYSERR);
+23c26
+< 		return((int *)SYSERR);
+---
+> 		return((int *) SYSERR);
+25c28
+< 	disable(ps);
+---
+> 	disable();
+28c31
+< 	restore(ps);
+---
+> 	restore();
+30c33
+< 	return(buf);
+---
+> 	return( (int *) buf );
+======================== getc.c =========================
+======================== getdmem.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/getdmem.c: No such file or directory
+======================== getitem.c =========================
+======================== getmem.c =========================
+8c8
+<  * getmem  --  allocate heap storage, returning lowest integer address
+---
+>  * getmem  --  allocate heap storage, returning lowest WORD address
+11c11
+< SYSCALL	*getmem(nbytes)
+---
+> WORD	*getmem(nbytes)
+14c14
+< 	char	ps;
+---
+> 	int	ps;
+17,20c17,23
+< 	disable(ps);
+< 	if (nbytes==0 || memlist.mnext==NULL) {
+< 		restore(ps);
+< 		return( (int *)SYSERR);
+---
+> #ifdef	DEBUG
+> 	dotrace("getmem", &nbytes, 1);
+> #endif
+> 	disable();
+> 	if (nbytes==0 || memlist.mnext== (struct mblock *) NULL) {
+> 		restore();
+> 		return( (WORD *)SYSERR);
+22,23c25,28
+< 	nbytes = (unsigned) roundew(nbytes);
+< 	for (q= &memlist,p=memlist.mnext ; p!=NULL ; q=p,p=p->mnext)
+---
+> 	nbytes = (unsigned int) roundew(nbytes);
+> 	for (q= &memlist,p=memlist.mnext ;
+> 	     p != (struct mblock *) NULL ;
+> 	     q=p,p=p->mnext)
+26,27c31,32
+< 			restore(ps);
+< 			return( (int *)p );
+---
+> 			restore();
+> 			return( (WORD *)p );
+33,34c38,39
+< 			restore(ps);
+< 			return( (int *)p );
+---
+> 			restore();
+> 			return( (WORD *)p );
+36,37c41,42
+< 	restore(ps);
+< 	return( (int *)SYSERR );
+---
+> 	restore();
+> 	return( (WORD *)SYSERR );
+======================== getname.c =========================
+======================== getnet.c =========================
+======================== getpath.c =========================
+======================== getpid.c =========================
+12a13,15
+> #ifdef	DEBUG
+> 	dotrace("getpid", NULL, 0);
+> #endif
+======================== getprio.c =========================
+15d14
+< 	char	ps;
+17c16
+< 	disable(ps);
+---
+> 	disable();
+19c18
+< 		restore(ps);
+---
+> 		restore();
+22c21
+< 	restore(ps);
+---
+> 	restore();
+======================== getstk.c =========================
+8c8
+<  * getstk  --  allocate stack memory, returning address of topmost int
+---
+>  * getstk  --  allocate stack memory, returning address of topmost WORD
+11c11
+< SYSCALL	*getstk(nbytes)
+---
+> WORD	*getstk(nbytes)
+14c14
+< 	char	ps;
+---
+> 	int	ps;
+17c17
+< 	unsigned len;
+---
+> 	WORD	len;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("getstk", &nbytes, 1);
+> #endif
+> 	disable();
+21,22c24,25
+< 		restore(ps);
+< 		return( (int *)SYSERR );
+---
+> 		restore();
+> 		return( (WORD *)SYSERR );
+24,25c27,28
+< 	nbytes = (unsigned)roundew(nbytes);
+< 	fits = NULL;
+---
+> 	nbytes = (unsigned int) roundew(nbytes);
+> 	fits = (struct mblock *) NULL;
+27c30
+< 	for (p = q->mnext ; p != NULL ; q = p,p = p->mnext)
+---
+> 	for (p = q->mnext ; p !=(struct mblock *) NULL ; q = p,p = p->mnext)
+32,34c35,37
+< 	if (fits == NULL) {
+< 		restore(ps);
+< 		return( (int *)SYSERR );
+---
+> 	if (fits == (struct mblock *) NULL) {
+> 		restore();
+> 		return( (WORD *)SYSERR );
+41,43c44,47
+< 	fits = ((unsigned)fits) + len - sizeof(int);
+< 	restore(ps);
+< 	return( (int *)fits );
+---
+> 	fits = (struct mblock *) ((WORD) fits + len - sizeof(WORD));
+> 	*((WORD *) fits) = nbytes;
+> 	restore();
+> 	return( (WORD *) fits);
+======================== gettime.c =========================
+======================== getutim.c =========================
+======================== icmp_in.c =========================
+33c33
+< 		if (pcount(icmpp) < lim)
+---
+> 		if (pcount(icmpp) < lim) {
+35c35,36
+< 		else
+---
+> 		}
+> 		else {
+36a38
+> 		}
+======================== init.c =========================
+16,17c16,18
+< 	if (isbaddev(descrp) )
+< 		return(SYSERR);
+---
+> 	if (isbaddev(descrp) ) {
+> 	    return(SYSERR);
+> 	}
+======================== initevec.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/initevec.c: No such file or directory
+======================== initialize.c =========================
+7c7
+< #include <sleep.h>
+---
+> #include <sleep.h>    
+12,13c12
+< #include <disk.h>
+< #include <network.h>
+---
+> #include <network.h>    
+16a16,17
+> extern	int	start();		/* startup code */
+> 
+22c23
+< int	nextsem;		/* next semaphore slot to use in screate*/
+---
+> int	nextsem;		/* next sempahore slot to use in screate*/
+25c26
+< int	*maxaddr;		/* max memory address (set by sizmem)	*/
+---
+> WORD	*maxaddr;		/* max memory address (set by sizmem)	*/
+32a34,36
+> int	leveltab[HINTLEV][MAXSER];	
+> 				/* level table for autovector   LL	*/
+> int	index[HINTLEV];		/* index to the leveltab	LL	*/
+40c44
+< int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
+---
+> int	rdyhead,rdytail;	/* head/tail of ready list (q indicies)	*/
+42a47,54
+> /* These variables were defined in usrmain. */
+> 
+> int	sem;
+> int	pid1, pid2;
+> int	ptid;
+> int	ps;
+> 
+> 
+63,64c75
+< 	int	userpid;
+< 	char	ps;
+---
+>         int userpid;
+71,76d81
+< 	sysinit();			/* initialize all of Xinu */
+< 	kprintf("%u real mem\n",(unsigned)maxaddr+(unsigned)sizeof(int));
+< 	kprintf("%u avail mem\n",
+< 		(unsigned)maxaddr-(unsigned)(&end)+(unsigned)sizeof(int));
+< 	kprintf("clock %sabled\n\n", clkruns==1?"en":"dis");
+< 	enable();			/* enable interrupts */
+78c83,84
+< 	/* create a process to execute the user's main program */
+---
+> 	initevec();
+> 	sysinit();
+79a86,112
+> 	kprintf("%d bytes real mem\n",
+> 		(unsigned long) maxaddr+1);
+> #ifdef DETAIL	
+> 	kprintf("    %d", (unsigned long) 0);
+> 	kprintf(" to %d\n", (unsigned long) (maxaddr) );
+> #endif	
+> 
+> 	kprintf("%d bytes Xinu code\n",
+> 		(unsigned long) ((unsigned long) &end - (unsigned long) start));
+> #ifdef DETAIL	
+> 	kprintf("    %d", (unsigned long) 0x4000);
+> 	kprintf(" to %d\n", (unsigned long) &end );
+> #endif
+> 
+> #ifdef DETAIL	
+> 	kprintf("%d bytes user stack/heap space\n",
+> 		(unsigned long) ((unsigned long) maxaddr - (unsigned long) &end));
+> 	kprintf("    %d", (unsigned long) &end);
+> 	kprintf(" to %d\n", (unsigned long) maxaddr);
+> #endif	
+> 	
+> 	kprintf("clock %sabled\n", clkruns == 1?"en":"dis");
+> 
+> 	enable();		/* enable interrupts */
+> 
+> 
+> 	/* create a process to execute the user's main program */
+81a115
+> 
+90,92c124,126
+< 
+< 	while (TRUE) {			/* run forever without actually */
+< 		pause();		/*  executing instructions	*/
+---
+> 	
+> 	while (TRUE) {		/* run forever without actually */
+> 	    pause();		/* executing instructions */
+97c131
+<  *  sysinit  --  initialize all Xinu data structures and devices
+---
+>  *  sysinit  --  initialize all Xinu data structeres and devices
+102c136,137
+< 	int	i;
+---
+> 
+> 	int	i,j;
+107c142
+< 	numproc  = 0;			/* initialize system variables */
+---
+> 	numproc = 0;			/* initialize system variables */
+109,110c144,145
+< 	nextsem  = NSEM-1;
+< 	nextqueue= NPROC;		/* q[0..NPROC-1] are processes */
+---
+> 	nextsem = NSEM-1;
+> 	nextqueue = NPROC;		/* q[0..NPROC-1] are processes */
+115c150,152
+< 	mptr->mlen = truncew((unsigned)maxaddr-NULLSTK-(unsigned)&end);
+---
+> 	mptr->mlen = (int) truncew((unsigned)maxaddr
+> 	      -NULLSTK-(unsigned)&end);
+> 	
+119a157,162
+> 	for (i=1 ; i<HINTLEV ; i++)  {
+> 		index[i]=1;
+> 		for (j=1; j<MAXSER; j++)
+> 			leveltab[i][j] = -1;
+> 	}
+> 
+122,125c165,168
+< 	pptr->pprio = 0;
+< 	strcpy(pptr->pname, "prnull");
+< 	pptr->plimit = ( (int)maxaddr ) - NULLSTK - sizeof(int);
+< 	pptr->pbase = maxaddr;
+---
+> 	for (j=0; j<7; j++)
+> 		pptr->pname[j] = "prnull"[j];
+> 	pptr->plimit = (WORD)(maxaddr + 1) - NULLSTK;
+> 	pptr->pbase = (WORD) maxaddr;
+127,128c170
+< 	pptr->paddr = nulluser;
+< 	pptr->phasmsg = FALSE;
+---
+> 	pptr->paddr = (WORD) nulluser;
+129a172,174
+> 	pptr->phasps = 0;
+> 	pptr->pprio = 0;
+> 	pptr->pregs[SSP] = 10;
+145,147c190,194
+< #ifdef	Ndsk
+< 	dskdbp= mkpool(DBUFSIZ,NDBUFF);	/* initialize disk buffers */
+< 	dskrbp= mkpool(DREQSIZ,NDREQ);
+---
+> 
+> #ifdef NDEVS
+> 	for ( i=0 ; i<NDEVS ; i++ ) {
+> 	    init(i);
+> 	}
+149,150c196,201
+< 	for ( i=0 ; i<NDEVS ; i++ )	/* initialize devices */
+< 		init(i);
+---
+> 
+> 	
+> #ifdef	NNETS
+> 	netinit();
+> #endif
+> 
+======================== insert.c =========================
+18a19,21
+> #ifdef	DEBUG
+> 	dotrace("insert", &proc, 3);
+> #endif
+20c23
+< 	while (q[next].qkey < key)	/* tail has MAXINT as key	*/
+---
+> 	while (q[next].qkey < key)	/* tail has maxint as key	*/
+======================== insertd.c =========================
+18a19,21
+> #ifdef	DEBUG
+> 	dotrace("insertd", &pid, 3);
+> #endif
+======================== ioerr.c =========================
+======================== ionull.c =========================
+======================== ip2name.c =========================
+======================== ip_in.c =========================
+28a29,31
+> #ifdef DEBUG
+> 	        kprintf("    ICMP\n");
+> #endif		
+31a35,37
+> #ifdef DEBUG
+> 		      kprintf("    UDP\n");
+> #endif		
+======================== ipsend.c =========================
+======================== kill.c =========================
+19c19
+< 	char	ps;
+---
+> 	int	ps;
+21c21,24
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("kill", &pid, 1);
+> #endif
+> 	disable();
+23c26
+< 		restore(ps);
+---
+> 		restore();
+27a31
+> 
+34a39
+> 
+38c43
+< 	  case PRCURR:	pptr->pstate = PRFREE;	/* suicide */
+---
+> 	case PRCURR:	pptr->pstate = PRFREE;	/* suicide */
+41,43c46,48
+< 	  case PRWAIT:	semaph[pptr->psem].semcnt++;
+< 						/* fall through */
+< 	  case PRREADY:	dequeue(pid);
+---
+> 	case PRWAIT:	semaph[pptr->psem].semcnt++;
+> 
+> 	case PRREADY:	dequeue(pid);
+47,48c52,53
+< 	  case PRSLEEP:
+< 	  case PRTRECV:	unsleep(pid);
+---
+> 	case PRSLEEP:
+> 	case PRTRECV:	unsleep(pid);
+50c55
+< 	  default:	pptr->pstate = PRFREE;
+---
+> 	default:	pptr->pstate = PRFREE;
+52c57
+< 	restore(ps);
+---
+> 	restore();
+======================== kprintf.c =========================
+2a3
+> #include <sunromvec.h>
+6d6
+< #include <slu.h>
+8a9,10
+> #define prputchar(x) (romp->v_putchar)((unsigned char) x)
+> 
+14c16,17
+<         char *fmt;		/* Flow control added by Steve Munson	*/
+---
+> char *fmt;
+> int args;
+15a19
+> 	int	ps;
+18c22
+<         savestate(CONSOLE);
+---
+>         disable();
+20c24
+<         rststate();
+---
+>         restore();
+24d27
+< #define DELAY	100
+29c32
+< LOCAL	kputc(device ,c)
+---
+> kputc(device ,c)
+31c34
+< 	register char c;	/* character to print from _doprnt	*/
+---
+> 	register unsigned char c;	/* character to print from _doprnt	*/
+33,37d35
+< 	struct	csr	*csrptr;
+< 	struct	tty	*ttyptr;
+< 	int	slowdown;	/* added to delay polling, because	*/
+< 				/*   polling immediately after a	*/
+< 				/*   transmit seems to cause trouble	*/
+40,51c38,42
+< 	if ( c == NEWLINE )
+< 		kputc( device, RETURN );
+< 	csrptr = (struct csr *)devtab[device].dvcsr;	/* dev.	address	*/
+< 	ttyptr = (struct tty *)devtab[device].dvioblk;	/* control block*/
+< 
+< 	if (ttyptr && (ttyptr->oheld || (ttyptr->oflow&&/* flow control	*/
+< 		(csrptr->crstat & SLUREADY) &&
+< 		(csrptr->crbuf & SLUCHMASK) == ttyptr->ostop))) {
+< 		do {
+< 		    while (!(csrptr->crstat&SLUREADY)) ;/* wait for char*/
+< 		} while ((csrptr->crbuf&SLUCHMASK) == ttyptr->ostop);
+< 		ttyptr->oheld = FALSE;
+---
+> 	if ( c > 127 ) {
+> 	    prputchar('M');		/* do what "cat -v" does */
+> 	    prputchar('-');		/* prom routine dies otherwise */
+> 	    prputchar((char) (c & 0x007f) );
+> 	    return;
+54,58c45,46
+< 	while (!(csrptr->ctstat & SLUREADY)) ;		/* poll for idle*/
+< 	csrptr->ctbuf = c;				/* transmit char*/
+< 	for (slowdown=0;slowdown<DELAY;slowdown++) ;	/* wait a bit	*/
+< 	while (!(csrptr->ctstat & SLUREADY)) ;		/* poll for idle*/
+< }
+---
+> 	if (c==NEWLINE)
+> 	    prputchar(RETURN);
+60,79c48
+< LOCAL	int	savedev, savecrstat, savectstat;
+< LOCAL	char	saveps;
+< /*------------------------------------------------------------------------
+<  *  savestate  --  save the console control and status register
+<  *------------------------------------------------------------------------
+<  */
+< LOCAL	savestate(device)
+< 	int	device;
+< {
+< 	char ps;
+< 
+< 	disable(ps);
+< 	saveps = ps;
+< 	savedev = device;
+< 	savecrstat = ((struct csr *)devtab[device].dvcsr)->crstat
+< 		& SLUENABLE;
+< 	((struct csr *)devtab[device].dvcsr)->crstat = SLUDISABLE;
+< 	savectstat = ((struct csr *)devtab[device].dvcsr)->ctstat
+< 		& SLUENABLE;
+< 	((struct csr *)devtab[device].dvcsr)->ctstat = SLUDISABLE;
+---
+> 	prputchar(c);
+82,94d50
+< /*------------------------------------------------------------------------
+<  *  rststate  --  restore the console output control and status register
+<  *------------------------------------------------------------------------
+<  */
+< LOCAL	rststate()
+< {
+< 	char ps;
+< 
+< 	((struct csr *)devtab[savedev].dvcsr)->crstat = savecrstat;
+< 	((struct csr *)devtab[savedev].dvcsr)->ctstat = savectstat;
+< 	ps = saveps;
+< 	restore(ps);
+< }
+======================== mark.c =========================
+6a7
+> 
+17a19,21
+> #ifdef	DEBUG
+> 	dotrace("_mkinit", NULL, 0);
+> #endif
+28,29c32,33
+< SYSCALL	mark(loc)
+< int	*loc;
+---
+> mark(loc)
+> int *loc;
+30a35,38
+> 
+> #ifdef	DEBUG
+> 	dotrace("mark", &loc, 1);
+> #endif
+======================== mkarp.c =========================
+======================== mkdpool.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/mkdpool.c: No such file or directory
+======================== mkpool.c =========================
+12c12
+< SYSCALL	mkpool(bufsiz, numbufs)
+---
+> mkpool(bufsiz, numbufs)
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+17a18
+> 	int	*getmem();
+18a20,22
+> #ifdef	DEBUG
+> 	dotrace("mkpool", &bufsiz, 2);
+> #endif
+23c27
+< 	disable(ps);
+---
+> 	disable();
+27,29c31,32
+< 	    || (where=(char *)getmem((bufsiz+sizeof(int))*numbufs)) ==
+< 	       SYSERR) {
+< 		restore(ps);
+---
+> 	    || (where= (char *) getmem((bufsiz+sizeof(int))*numbufs)) == (char *) SYSERR) {
+> 		restore();
+40c43
+< 	restore(ps);
+---
+> 	restore();
+======================== mount.c =========================
+======================== naminit.c =========================
+======================== nammap.c =========================
+======================== namopen.c =========================
+======================== namrepl.c =========================
+======================== netdump.c =========================
+======================== netin.c =========================
+6a7,8
+> #include <mark.h>
+> #include <bufpool.h>
+21a24
+> 	
+26a30,32
+> #ifdef DEBUG
+> 		kprintf("read (%d)\n",scount(bptab[Net.netpool].bpsem));
+> #endif		
+27a34
+> 			kprintf("bad return from read\n");
+31c38
+< 		switch (net2hs(packet->ep_hdr.e_ptype)) {
+---
+> 		switch ((unsigned short) net2hs(packet->ep_hdr.e_ptype)) {
+33a41,43
+> #ifdef DEBUG		  
+> 		        kprintf("ARP\n");
+> #endif			
+38a49,51
+> #ifdef DEBUG
+> 			      kprintf("RARP\n");
+> #endif			
+43a57,59
+> #ifdef DEBUG
+> 			      kprintf("IP\n");
+> #endif			
+48a65,66
+> 			kprintf("?? 0x%x\n",
+> 				(unsigned short) net2hs(packet->ep_hdr.e_ptype));
+======================== netinit.c =========================
+21c21
+< 	Net.netpool = mkpool(EMAXPAK, NETBUFS);
+---
+> 	Net.netpool = mkdpool(EMAXPAK, NETBUFS);
+36a37,41
+> 
+> 
+> 
+> 
+> 
+======================== netnum.c =========================
+======================== netout.c =========================
+22a23,30
+> 	kprintf("Using physical address  %02x:%02x:%02x:%02x:%02x:%02x\n",
+> 		eth[0].etpaddr[0]&0xff,
+> 		eth[0].etpaddr[1]&0xff,
+> 		eth[0].etpaddr[2]&0xff,
+> 		eth[0].etpaddr[3]&0xff,
+> 		eth[0].etpaddr[4]&0xff,
+> 		eth[0].etpaddr[5]&0xff);
+> 	
+23a32,37
+> 	kprintf("Using IP address %d.%d.%d.%d\n",
+> 		(unsigned short) Net.myaddr[0]&0xff,
+> 		(unsigned short) Net.myaddr[1]&0xff,
+> 		(unsigned short) Net.myaddr[2]&0xff,
+> 		(unsigned short) Net.myaddr[3]&0xff);
+> 
+25c39,42
+< 	getname(&nam);
+---
+> 	
+> 	getname(nam);
+> 	kprintf("My name is %s\n",nam);
+> 
+======================== newqueue.c =========================
+13,15c13,15
+< 	struct	qent	*hptr;		/* address of new list head	*/
+< 	struct	qent	*tptr;		/* address of new list tail	*/
+< 	int	hindex, tindex;		/* head and tail indexes	*/
+---
+> 	struct	qent	*hptr;
+> 	struct	qent	*tptr;
+> 	int	hindex, tindex;
+17,18c17,18
+< 	hptr = &q[ hindex=nextqueue++ ];/* nextqueue is global variable	*/
+< 	tptr = &q[ tindex=nextqueue++ ];/*  giving next used q pos.	*/
+---
+> 	hptr = &q[ hindex=nextqueue++]; /* assign and rememeber queue	*/
+> 	tptr = &q[ tindex=nextqueue++]; /* index values for head&tail	*/
+======================== nqalloc.c =========================
+======================== open.c =========================
+11c11
+< SYSCALL	open(descrp, nam, mode)
+---
+> open(descrp, nam, mode)
+======================== panic.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/panic.c: No such file or directory
+======================== pcount.c =========================
+17d16
+< 	char	ps;
+20c19
+< 	disable(ps);
+---
+> 	disable();
+26c25
+< 			restore(ps);
+---
+> 			restore();
+32c31
+< 	restore(ps);
+---
+> 	restore();
+======================== pcreate.c =========================
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+18a19,21
+> #ifdef	DEBUG
+> 	dotrace("pcreate", &count, 1);
+> #endif
+21c24
+< 	disable(ps);
+---
+> 	disable();
+33,34c36
+< 			ptptr->pthead = ptptr->pttail
+< 				= (struct ptnode *)NULL;
+---
+> 			ptptr->pthead = ptptr->pttail = (struct ptnode *)NULL;
+37c39
+< 			restore(ps);
+---
+> 			restore();
+41c43
+< 	restore(ps);
+---
+> 	restore();
+======================== pdelete.c =========================
+16c16
+< 	char	ps;
+---
+> 	int	ps;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("pdelete", &portid, 2);
+> #endif
+> 	disable();
+25c28
+< 		restore(ps);
+---
+> 		restore();
+29c32
+< 	restore(ps);
+---
+> 	restore();
+======================== pinit.c =========================
+25,28c25,30
+< 	ptfree = (struct ptnode *) getmem(maxmsgs*sizeof(struct ptnode));
+< 	if ( (int)ptfree == SYSERR )
+< 		panic("pinit: no  memory");
+< 	for (i=0 ; i<NPORTS ; i++) {
+---
+> #ifdef	DEBUG
+> 	dotrace("pinit", &maxmsgs, 1);
+> #endif
+> 	if ( (ptfree=(struct ptnode *) getmem(maxmsgs*sizeof(struct ptnode)))==(struct ptnode *) SYSERR )
+> 		panic("pinit - insufficient memory");
+> 	for (i=0 ; i<NPORTS ; i++)
+30,31d31
+< 		ports[i].ptseq = 0;
+< 	}
+======================== poolinit.c =========================
+20a21
+> 	int	ps;
+22c23
+< 	char	ps;
+---
+> #endif
+24c25,30
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("poolinit", NULL, 0);
+> #endif
+> 
+> #ifdef	MEMMARK
+> 	disable();
+28c34
+< 	restore(ps);
+---
+> 	restore();
+34a41,46
+> 
+> 
+> 
+> 
+> 
+> 
+======================== preceive.c =========================
+15c15
+< 	char	ps;
+---
+> 	int	ps;
+18c18
+< 	int	msg;
+---
+> 	WORD	msg;
+21c21,24
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("preceive", &portid, 1);
+> #endif
+> 	disable();
+27c30
+< 		restore(ps);
+---
+> 		restore();
+36c39
+< 		restore(ps);
+---
+> 		restore();
+45c48
+< 		ptptr->pthead = ptptr->pttail = (struct ptnode *) NULL;
+---
+> 		ptptr->pthead = ptptr->pttail = (struct ptnode *)NULL;
+51c54
+< 	restore(ps);
+---
+> 	restore();
+======================== preset.c =========================
+16c16
+< 	char	ps;
+---
+> 	int	ps;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("preset", &portid, 2);
+> #endif
+> 	disable();
+25c28
+< 		restore(ps);
+---
+> 		restore();
+29c32
+< 	restore(ps);
+---
+> 	restore();
+======================== printq.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/printq.c: No such file or directory
+======================== psend.c =========================
+14c14
+< int	msg;
+---
+> WORD	msg;
+16c16
+< 	char	ps;
+---
+> 	int	ps;
+22c22,25
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("psend", &portid, 2);
+> #endif
+> 	disable();
+28c31
+< 		restore(ps);
+---
+> 		restore();
+38c41
+< 		restore(ps);
+---
+> 		restore();
+41,42c44,45
+< 	if (ptfree == (struct ptnode *)NULL)
+< 		panic("psend: out of nodes");
+---
+> 	if (ptfree == NULL)
+> 		panic("Ports  -  out of nodes");
+45c48
+< 	freenode->ptnext = (struct ptnode *)NULL;
+---
+> 	freenode->ptnext = (struct ptnode *) NULL;
+47c50
+< 	if (ptptr->pttail == (struct ptnode *)NULL)	/* empty queue */
+---
+> 	if (ptptr->pttail == (struct ptnode *) NULL)	/* empty queue */
+54c57
+< 	restore(ps);
+---
+> 	restore();
+======================== ptclear.c =========================
+21a22,24
+> #ifdef	DEBUG
+> 	dotrace("_ptclear", &ptptr, 3);
+> #endif
+25c28
+< 		for(; p != (struct ptnode *)NULL ; p=p->ptnext)
+---
+> 		for(; p != (struct ptnode *) NULL ; p=p->ptnext)
+31c34
+< 		ptptr->pttail = ptptr->pthead = (struct ptnode *)NULL;
+---
+> 		ptptr->pttail = ptptr->pthead = (struct ptnode *) NULL;
+======================== putc.c =========================
+16c16
+< 
+---
+> 	
+======================== queue.c =========================
+17a18,20
+> #ifdef	DEBUG
+> 	dotrace("enqueue", &item, 2);
+> #endif
+29c32
+<  *  dequeue  --  remove an item from a list and return it
+---
+>  *  dequeue  --  remove an item from the head of a list and return it
+36a40,42
+> #ifdef	DEBUG
+> 	dotrace("dequeue", &item, 1);
+> #endif
+======================== rarp_in.c =========================
+16d15
+< 	char	ps;
+28c27
+< 			disable(ps);
+---
+> 			disable();
+35c34
+< 			restore(ps);
+---
+> 			restore();
+39c38
+< 		ret = SYSERR;
+---
+> 	  ret = SYSERR;
+======================== read.c =========================
+11c11
+< SYSCALL	read(descrp, buff, count)
+---
+> read(descrp, buff, count)
+======================== ready.c =========================
+17a18,20
+> #ifdef	DEBUG
+> 	dotrace("ready", &pid, 2);
+> #endif
+======================== receive.c =========================
+14,15c14,15
+< 	int	msg;
+< 	char	ps;
+---
+> 	WORD	msg;
+> 	int	ps;
+17c17
+< 	disable(ps);
+---
+> 	disable();
+25c25
+< 	restore(ps);
+---
+> 	restore();
+======================== recvclr.c =========================
+13,14c13,14
+< 	char	ps;
+< 	int	msg;
+---
+> 	int	ps;
+> 	WORD	msg;
+16,18c16,18
+< 	disable(ps);
+< 	if ( proctab[currpid].phasmsg ) {	/* existing message?	*/
+< 		proctab[currpid].phasmsg = FALSE;
+---
+> 	disable();
+> 	if (proctab[currpid].phasmsg) {
+> 		proctab[currpid].phasmsg = 0;
+22c22
+< 	restore(ps);
+---
+> 	restore();
+======================== recvtim.c =========================
+======================== remove.c =========================
+======================== rename.c =========================
+======================== resched.c =========================
+7a8,9
+> unsigned long currSP;	/* REAL sp of current process */    
+> 
+13c15
+<  *			current process if other than PRCURR.
+---
+>  *			current process if other than PRREADY.
+22a25,27
+> #ifdef	DEBUG
+> 	dotrace("resched", NULL, 0);
+> #endif
+24c29
+< 	   (lastkey(rdytail)<optr->pprio))
+---
+> 	   (lastkey(rdytail)<optr->pprio)) {
+25a31,43
+> 	}
+> 	
+> #ifdef STKCHK
+> 	/* make sure CURRENT process is within it's stack (sdo) */
+> 	asm("movl	sp,_currSP");
+> 	if ( currSP < ((unsigned)optr->plimit) ) {
+> 		kprintf("Bad SP current process, pid=%d (%s), lim=0x%lx, currently 0x%lx\n",
+> 			currpid, optr->pname,
+> 			(unsigned long) optr->plimit,
+> 			(unsigned long) currSP);
+> 		panic("current process stack overflow");
+> 	}
+> #endif	
+40,41c58,62
+< 		kprintf("Bad magic pid=%d, value=%o, at %o\n",
+< 			currpid, *( (int *)nptr->pbase ), nptr->pbase);
+---
+> 		kprintf("Bad magic pid=%d (%s), value=0x%lx, at 0x%lx\n",
+> 			currpid,
+> 			(unsigned long) *( (int *)nptr->pname ),
+> 			(unsigned long) *( (int *)nptr->pbase ),
+> 			(unsigned long) nptr->pbase);
+44,47c65,69
+< 	if ( ((unsigned)nptr->pregs[SP]) < ((unsigned)nptr->plimit) ) {
+< 		kprintf("Bad SP pid=%d (%s), lim=%o will be %o\n",
+< 			currpid, nptr->pname, nptr->plimit,
+< 			nptr->pregs[SP]);
+---
+> 	if ( ((unsigned)nptr->pregs[SSP]) < ((unsigned)nptr->plimit) ) {
+> 		kprintf("Bad SP pid=%d (%s), lim=0x%lx will be 0x%lx\n",
+> 			currpid, nptr->pname,
+> 			(unsigned long) nptr->plimit,
+> 			(unsigned long) nptr->pregs[SSP]);
+53a76,80
+> #ifdef	DEBUG
+> 	kprintf("ctxsw(%x,%x)\n",optr->pregs, nptr->pregs);
+> 	PrintSaved(nptr);
+> #endif
+> 	
+55c82
+< 
+---
+> 	
+58a86,107
+> 
+> 
+> 
+> #ifdef DEBUG
+> 
+> /* passed the pointer to the regs in the process entry */
+> PrintSaved(ptr)
+>     struct pentry *ptr;
+> {
+>     unsigned int i;
+>     
+>     kprintf("\nSaved context listing for process '%s'\n",ptr->pname);
+>     for (i=0; i<8; ++i) {
+> 	kprintf("     D%d: 0x%08lx	",i,(unsigned long) ptr->pregs[i]);
+> 	kprintf("A%d: 0x%08lx\n",i,(unsigned long) ptr->pregs[i+8]);
+>     }
+>     kprintf("         PC: 0x%lx",(unsigned long) ptr->pregs[PC]);
+>     kprintf("  SP: 0x%lx",(unsigned long) ptr->pregs[SSP]);
+>     kprintf("  PS: 0x%lx\n",(unsigned long) ptr->pregs[PS]);
+> }
+> 
+> #endif
+======================== resume.c =========================
+14c14
+< 	char	ps;			/* saved processor status	*/
+---
+> 	int	ps;
+18,20c18,23
+< 	disable(ps);
+< 	if (isbadpid(pid) || (pptr = &proctab[pid])->pstate != PRSUSP) {
+< 		restore(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("resume", &pid, 1);
+> #endif
+> 	disable();
+> 	if (isbadpid(pid) || (pptr= &proctab[pid])->pstate!=PRSUSP) {
+> 		restore();
+25c28
+< 	restore(ps);
+---
+> 	restore();
+======================== ret_mon.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/ret_mon.c: No such file or directory
+======================== rfalloc.c =========================
+======================== rfclose.c =========================
+======================== rfcntl.c =========================
+======================== rfdump.c =========================
+======================== rfgetc.c =========================
+======================== rfinit.c =========================
+======================== rfio.c =========================
+======================== rfmkpac.c =========================
+======================== rfopen.c =========================
+======================== rfputc.c =========================
+======================== rfread.c =========================
+======================== rfseek.c =========================
+======================== rfsend.c =========================
+======================== rfwrite.c =========================
+======================== route.c =========================
+======================== rwho.c =========================
+======================== rwhod.c =========================
+======================== rwhoind.c =========================
+======================== scount.c =========================
+13a14
+> extern	struct	sentry	semaph[];
+======================== screate.c =========================
+16c16
+< 	char	ps;
+---
+> 	int	ps;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("screate",&count, 1);
+> #endif
+> 	disable();
+21c24
+< 		restore(ps);
+---
+> 		restore();
+26c29
+< 	restore(ps);
+---
+> 	restore();
+38a42,44
+> #ifdef	DEBUG
+> 	dotrace("newsem", NULL, 0);
+> #endif
+======================== sdelete.c =========================
+16c16
+< 	char	ps;
+---
+> 	int	ps;
+18c18
+< 	struct	sentry	*sptr;		/* address of sem to free	*/
+---
+> 	struct	sentry	*sptr;
+20c20,23
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("sdelete", &sem, 1);
+> #endif
+> 	disable();
+22c25
+< 		restore(ps);
+---
+> 		restore();
+27c30
+< 	if (nonempty(sptr->sqhead)) {	/* free waiting processes	*/
+---
+> 	if (nonempty(sptr->sqhead)) {
+32c35
+< 	restore(ps);
+---
+> 	restore();
+======================== seek.c =========================
+11c11
+< SYSCALL	seek(descrp, pos)
+---
+> seek(descrp, pos)
+======================== send.c =========================
+13c13
+< int	msg;
+---
+> WORD	msg;
+15,16c15,16
+< 	struct	pentry	*pptr;		/* receiver's proc. table addr.	*/
+< 	char	ps;
+---
+> 	struct	pentry	*pptr;
+> 	int	ps;
+18c18
+< 	disable(ps);
+---
+> 	disable();
+20,21c20,21
+< 	   || pptr->phasmsg) {
+< 		restore(ps);
+---
+> 	   || pptr->phasmsg != 0) {
+> 		restore();
+24c24
+< 	pptr->pmsg = msg;		/* deposit message		*/
+---
+> 	pptr->pmsg = msg;
+32c32
+< 	restore(ps);
+---
+> 	restore();
+======================== sendf.c =========================
+16d15
+< 	char	ps;
+18c17
+< 	disable(ps);
+---
+> 	disable();
+20c19
+< 		restore(ps);
+---
+> 		restore();
+24c23
+< 	pptr->phasmsg = TRUE;
+---
+> 	pptr->phasmsg++;
+27,31c26
+< 	else if (pptr->pstate == PRTRECV) {
+< 		unsleep(pid);
+< 		ready(pid, RESCHYES);
+< 	}
+< 	restore(ps);
+---
+> 	restore();
+======================== setdev.c =========================
+======================== setnok.c =========================
+======================== signal.c =========================
+14c14
+< register int	sem;
+---
+> 	int	sem;
+15a16
+> 	int	ps;
+17d17
+< 	char	ps;
+19c19,22
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("signal", &sem, 1);
+> #endif
+> 	disable();
+21c24
+< 		restore(ps);
+---
+> 		restore();
+26c29
+< 	restore(ps);
+---
+> 	restore();
+======================== signaln.c =========================
+18c18,20
+< 	char	ps;
+---
+> #ifdef DEBUG
+>         kprintf("In signaln(%d,%d)\n",sem,count);
+> #endif	
+20c22
+< 	disable(ps);
+---
+> 	disable();
+22c24
+< 		restore(ps);
+---
+> 		restore();
+30c32
+< 	restore(ps);
+---
+> 	restore();
+======================== sleep.c =========================
+16,17c16,18
+< 	char	ps;
+< 
+---
+> #ifdef	DEBUG
+> 	dotrace("sleep", &n, 1);
+> #endif
+21d21
+< 		disable(ps);
+23d22
+< 		restore(ps);
+======================== sleep10.c =========================
+14c14
+< 	int n;
+---
+> 	int	n;
+16,17c16,19
+< 	char ps;
+< 
+---
+> 	int	ps;
+> #ifdef	DEBUG
+> 	dotrace("sleep10", &n, 1);
+> #endif
+20,27c22,24
+<         disable(ps);
+< 	if (n == 0) {			/* sleep10(0) -> end time slice	*/
+< 		;
+< 	} else {
+< 	        insertd(currpid,clockq,n);
+< 		slnempty = TRUE;
+< 		sltop = (int *) & q[q[clockq].qnext].qkey;
+< 	        proctab[currpid].pstate = PRSLEEP;
+---
+> 	if (n == 0) {
+> 		resched();		/* sleep10(0) -> end time slice */
+> 		return(OK);
+28a26,30
+>         disable();
+>         insertd(currpid,clockq,n);
+> 	slnempty = TRUE;
+> 	sltop = &q[q[clockq].qnext].qkey;
+>         proctab[currpid].pstate = PRSLEEP;
+30c32
+<         restore(ps);
+---
+>         restore();
+======================== sndrarp.c =========================
+======================== sreset.c =========================
+16a17
+> 	int	ps;
+18d18
+< 	char	ps;
+22c22,25
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("sreset", &sem, 1);
+> #endif
+> 	disable();
+24c27
+< 		restore(ps);
+---
+> 		restore();
+33c36
+< 	restore(ps);
+---
+> 	restore();
+======================== ssclock.c =========================
+8a9,10
+> #ifdef	RTCLOCK
+> 
+24d25
+< 	char ps;
+28c29
+< 	disable(ps);
+---
+> 	disable();
+30c31
+< 		restore(ps);
+---
+> 		restore();
+48,49c49,50
+< 		resched();
+< 	restore(ps);
+---
+> 	resched();
+> 	restore();
+50a52
+> #endif
+======================== suspend.c =========================
+13a14
+> 	int	ps;
+15d15
+< 	char	ps;			/* saved processor status	*/
+18c18,21
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("suspend", &pid, 1);
+> #endif
+> 	disable();
+21c24
+< 		restore(ps);
+---
+> 		restore();
+24a28
+> 		pptr->pstate = PRSUSP;
+25a30,31
+> 	}
+> 	else {
+27,28d32
+< 	} else {
+< 		pptr->pstate = PRSUSP;
+32c36
+< 	restore(ps);
+---
+> 	restore();
+======================== test.c =========================
+22a23
+> 
+27a29
+> 
+======================== ttycntl.c =========================
+13c13
+< ttycntl(devptr, func)
+---
+> ttycntl(devptr, func, addr)
+15a16
+> char *addr;
+19,20d19
+< 	char	ps;
+< 
+22a22
+> #ifdef OLD
+28a29
+> #endif    
+30c31
+< 		disable(ps);
+---
+> 		disable();
+33c34
+< 		restore(ps);
+---
+> 		restore();
+53,59d53
+< 	case TCINT:
+< 		ttyp->iintr = TRUE;
+< 		ttyp->iintpid = getpid();
+< 		break;
+< 	case TCNOINT:
+< 		ttyp->iintr = FALSE;
+< 		break;
+======================== ttygetc.c =========================
+======================== ttyiin.c =========================
+7a8
+> #include <zsreg.h>
+8a10
+> 
+16c18,19
+< 	register struct	csr *cptr;
+---
+>     
+> 	register struct	zscc_device *zptr;
+17a21,22
+> 	int	err;
+> 	int	cerr;
+18a24
+> 	int	R0;
+20,22c26,72
+< 	cptr = iptr->ioaddr;
+< 	if ( (ch=cptr->crbuf) & SLUERMASK)	/* read char from device*/
+< 		return;				/* discard if error	*/
+---
+> 
+> 	zptr = iptr->ioaddr;
+>         ch = zptr->zscc_data;
+> 
+>         if (ch == '\000') {
+> 	    /* get the contents of RR0 */
+> 	    zptr->zscc_control = 0;
+> 	    DELAY(2);
+> 	    R0 = zptr->zscc_control;
+> 	    if (R0 & ZSRR0_BREAK) {
+> 		disable();
+> 		kprintf("\n\nSerial line BREAK detected.\n");
+> 		ret_mon();
+> 		enable();
+> 		return;
+> 	    }
+> 	}
+> 
+> 	/* get the contents of RR1 */
+> 	zptr->zscc_control = 1;
+> 	DELAY(2);
+> 	err = zptr->zscc_control;
+> 
+> 	/* check for Parity, Overrun, and Framing errors */
+> 	err &= (ZSRR1_PE | ZSRR1_DO | ZSRR1_FE);
+> 
+> 	cerr = 0;
+> 	if (err != 0) {
+> #ifdef PRINTERRORS	    
+> 	    kprintf("recv error, ch: 0x%x ", (unsigned int) ch);
+> 	    if (err & ZSRR1_PE)
+> 		kprintf(", Parity Error");
+> 	    if (err & ZSRR1_DO)
+> 		kprintf(", Data Overrun");
+> 	    if (err & ZSRR1_PE)
+> 		kprintf(", Framing Error");
+> 	    kprintf("\n");
+> #endif	    
+> 	    cerr = IOCHERR;
+> 	    zptr->zscc_control = ZSWR0_RESET_ERRORS;	/* reset the error */
+> 	}
+> #ifdef DEBUG	
+> 	kprintf("\n<%c,%x,%x,%x>	",
+> 		ch,(unsigned int) ch, (unsigned int) err,
+> 		(unsigned int) cerr);
+> #endif	
+> 	
+24,25c74,75
+< 		if (scount(iptr->isem) >= IBUFLEN) {
+< 			return;			/* discard if no space	*/
+---
+> 		if (scount(iptr->isem) >= IBUFLEN){
+> 			return;
+27c77
+< 		iptr->ibuff[iptr->ihead++] = ch & SLUCHMASK;
+---
+> 		iptr->ibuff[iptr->ihead++] = ch | cerr;
+32d81
+< 		ch &= SLUCHMASK;
+35,39d83
+< 		if (iptr->iintr && ch == iptr->iintrc) {
+< 			send(iptr->iintpid, INTRMSG);
+< 			eputc(ch, iptr, cptr);
+< 			return;
+< 		}
+43c87
+< 				cptr->ctstat = SLUENABLE;
+---
+> 				sluenable(iptr);
+54c98
+< 				eputc(iptr->ifullc,iptr,cptr);
+---
+> 				eputc(iptr->ifullc,iptr,zptr);
+57c101
+< 			iptr->ibuff[iptr->ihead++] = ch;
+---
+> 			iptr->ibuff[iptr->ihead++] = ch	| cerr;
+61c105
+< 				echoch(ch,iptr,cptr);
+---
+> 				echoch(ch,iptr,zptr);
+70,71c114,115
+< 				eputc(RETURN,iptr,cptr);
+< 				eputc(NEWLINE,iptr,cptr);
+---
+> 				eputc(RETURN,iptr,zptr);
+> 				eputc(NEWLINE,iptr,zptr);
+77c121
+< 					erase1(iptr,cptr);
+---
+> 					erase1(iptr,zptr);
+81,88c125,128
+< 			if (ch == NEWLINE || ch == RETURN ||
+< 				(iptr->ieof && ch == iptr->ieofc)) {
+< 				if (iptr->iecho) {
+< 					echoch(ch,iptr,cptr);
+< 					if (ch == iptr->ieofc)
+< 						echoch(NEWLINE,iptr,cptr);
+< 				}
+< 				iptr->ibuff[iptr->ihead++] = ch;
+---
+> 			if (ch == NEWLINE || ch == RETURN) {
+> 				if (iptr->iecho)
+> 					echoch(ch,iptr,zptr);
+> 				iptr->ibuff[iptr->ihead++] = ch	| cerr;
+99c139
+< 				eputc(iptr->ifullc,iptr,cptr);
+---
+> 				eputc(iptr->ifullc,iptr,zptr);
+103c143
+< 				echoch(ch,iptr,cptr);
+---
+> 				echoch(ch,iptr,zptr);
+105c145
+< 			iptr->ibuff[iptr->ihead++] = ch;
+---
+> 			iptr->ibuff[iptr->ihead++] = ch	| cerr;
+116c156
+< LOCAL erase1(iptr,cptr)
+---
+> LOCAL erase1(iptr,zptr)
+118c158
+< 	struct	csr	*cptr;
+---
+> 	struct	zscc_device	*zptr;
+128c168
+< 				eputc(BACKSP,iptr,cptr);
+---
+> 				eputc(BACKSP,iptr,zptr);
+130,131c170,171
+< 					eputc(BLANK,iptr,cptr);
+< 					eputc(BACKSP,iptr,cptr);
+---
+> 					eputc(BLANK,iptr,zptr);
+> 					eputc(BACKSP,iptr,zptr);
+134c174
+< 			eputc(BACKSP,iptr,cptr);
+---
+> 			eputc(BACKSP,iptr,zptr);
+136,137c176,177
+< 				eputc(BLANK,iptr,cptr);
+< 				eputc(BACKSP,iptr,cptr);
+---
+> 				eputc(BLANK,iptr,zptr);
+> 				eputc(BACKSP,iptr,zptr);
+140c180
+< 			eputc(BACKSP,iptr,cptr);
+---
+> 			eputc(BACKSP,iptr,zptr);
+142,143c182,183
+< 				eputc(BLANK,iptr,cptr);
+< 				eputc(BACKSP,iptr,cptr);
+---
+> 				eputc(BLANK,iptr,zptr);
+> 				eputc(BACKSP,iptr,zptr);
+146,147c186,188
+< 	} else
+< 		cptr->ctstat = SLUENABLE;
+---
+> 	} 
+>         else
+>             sluenable(iptr);
+149a191,193
+> 
+> 
+> 
+154c198
+< LOCAL echoch(ch, iptr, cptr)
+---
+> LOCAL echoch(ch, iptr, zptr)
+157c201
+< 	struct	csr	*cptr;	/* csr address for this devptr		*/
+---
+> 	struct	zscc_device	*zptr;	/* zscc_device address for this devptr		*/
+160,161c204,205
+< 		eputc(RETURN,iptr,cptr);
+< 		eputc(NEWLINE,iptr,cptr);
+---
+> 		eputc(RETURN,iptr,zptr);
+> 		eputc(NEWLINE,iptr,zptr);
+163,164c207,208
+< 		eputc(UPARROW,iptr,cptr);
+< 		eputc(ch+0100,iptr,cptr);	/* make it printable	*/
+---
+> 		eputc(UPARROW,iptr,zptr);
+> 		eputc(ch+0100,iptr,zptr);	/* make it printable	*/
+166c210
+< 		eputc(ch,iptr,cptr);
+---
+> 		eputc(ch,iptr,zptr);
+174c218
+< LOCAL eputc(ch,iptr,cptr)
+---
+> LOCAL eputc(ch,iptr,zptr)
+177c221
+< 	struct	csr	*cptr;
+---
+> 	struct	zscc_device *zptr;
+182c226
+< 	cptr->ctstat = SLUENABLE;
+---
+> 	sluenable(iptr);
+183a228
+> 
+======================== ttyinit.c =========================
+5d4
+< #include <proc.h>
+8c7,8
+< #include <slu.h>
+---
+> #include <slu.h>    
+> #include <zsreg.h>
+19a20
+> 	int Asm_ttyint();
+21a23
+> 	set_evec( (int) SVECTOR, Asm_ttyint);
+22a25
+> 	/* set up tty parameters */
+24,26c27
+< 	iosetvec(devptr->dvnum, (int)iptr, (int)iptr);
+< 
+< 	devptr->dvioblk = (char *)iptr;		/* fill tty control blk	*/
+---
+> 	devptr->dvioblk = (char *) iptr;	/* fill tty control blk	*/
+28c29,30
+< 	iptr->ioaddr = (struct csr *)devptr->dvcsr;/* copy in csr addr.	*/
+---
+> 	iptr->ioaddr = (struct zscc_device *) devptr->dvcsr;
+> 						/* copy in chip address	*/
+40,46c42,44
+< 	iptr->ocrlf = iptr->oflow = isconsole;	/* map RETURN on output	*/
+< 	iptr->ieof  = iptr->ikill = isconsole;	/* set line kill == @	*/
+< 	iptr->iintr = FALSE;
+< 	iptr->iintrc = INTRCH;
+< 	iptr->iintpid = BADPID;
+< 	iptr->ikillc = KILLCH;
+< 	iptr->ieofc = EOFC;
+---
+> 	iptr->ocrlf = iptr->oflow = isconsole;
+> 	iptr->ikill = isconsole;		/* set line kill == @	*/
+> 	iptr->ikillc = ATSIGN;
+52,55c50,104
+< 	cptr = (struct csr *)devptr->dvcsr;
+< 	junk = cptr->crbuf;			/* clear receiver and	*/
+< 	cptr->crstat = SLUENABLE;		/* enable in. interrupts*/
+< 	cptr->ctstat = SLUDISABLE;		/* disable out.   "	*/
+---
+> 
+> 	/* set up the chip */
+> 	initSerial(devptr->dvcsr);
+> }
+> 
+> 
+> 
+> /*
+>  *	UART initialization sequence.  This is written to both 
+>  *	halves of the UART in a little loop.
+>  */
+> unsigned char	uart_init[] = {
+> 	/* Set up all the elements on the chip: */
+>     	3,	0,			/* disable receives */
+> 	0,	ZSWR0_RESET_STATUS,	/* Reset ext status int */
+> 	0,	ZSWR0_RESET_ERRORS,	/* (sdo) Reset read errors */
+> 	2,	EVEC_LEVEL6,		/* (sdo) Int vector = level 6 autovec */
+> 	15,	ZSR15_BREAK,		/* (sdo) interrupt on break */
+> 	1,	/* ZSWR1_SIE|		/* (sdo) turn on interrupts */
+> 	    	ZSWR1_TIE|
+> 		ZSWR1_RIE,
+> 	4,	ZSWR4_PARITY_EVEN|	/* Async mode, etc, etc, etc */
+> 		ZSWR4_1_STOP|
+> 		ZSWR4_X16_CLK,
+> 	3,	ZSWR3_RX_8|
+> 	    	ZSWR3_RX_ENABLE,	/* 8 char recvs, enable recvs */
+> 	5,	ZSWR5_RTS|
+> 		ZSWR5_TX_8|
+> 		ZSWR5_TX_ENABLE|
+> 		ZSWR5_DTR,
+> 	11,	ZSWR11_TXCLK_BAUD|
+> 		ZSWR11_RXCLK_BAUD,
+> 	9,	ZSWR9_MASTER_IE,	/* (sdo) master interrupt enable */
+> 
+> 	12,	ZSTimeConst(ZSCC_PCLK, 9600),	/* Default baud rate */
+> 	13,	(ZSTimeConst(ZSCC_PCLK, 9600))/256,	/* Ditto, high order */
+> 	14,	ZSWR14_BAUD_FROM_PCLK|
+> 	    	ZSWR14_BAUD_ENA,
+> };
+> 
+> 
+> initSerial(addrc)
+> 	register unsigned char *addrc;
+> {
+> 	register unsigned char *p = uart_init;
+> 
+> #ifdef DEBUG
+> 	kprintf("initserial called for address 0x%lx\n",(unsigned long) addrc);
+> #endif	
+> 
+> 	for (; p < &uart_init[sizeof(uart_init)] ;) {
+> 		DELAY(2);
+> 		*addrc = *p++;
+> 		DELAY(2);
+> 	}
+======================== ttyoin.c =========================
+7a8
+> #include <zsreg.h>
+16c17
+< 	register struct	csr	*cptr;
+---
+> 	register struct	zscc_device	*zptr;
+19c20,23
+< 	cptr = iptr->ioaddr;
+---
+> 	zptr = iptr->ioaddr;
+> #ifdef DEBUG
+> 	kprintf("XMIT \n");
+> #endif	
+21c25,29
+< 		cptr->ctbuf = iptr->ebuff[iptr->etail++];
+---
+> #ifdef DEBUG	    
+> 	        kprintf("trying to echo '%c', tail: %d head: %d\n",
+> 			iptr->ebuff[iptr->etail], iptr->etail, iptr->ehead);
+> #endif		
+> 		zptr->zscc_data = iptr->ebuff[iptr->etail++];
+27c35
+< 		cptr->ctstat = SLUDISABLE;
+---
+> 		sludisable(iptr);
+31c39,43
+< 		cptr->ctbuf = iptr->obuff[iptr->otail++];
+---
+> #ifdef DEBUG	    
+> 	        kprintf("trying to print '%c', count: %d\n",
+> 			iptr->obuff[iptr->otail], ct);
+> #endif		
+> 		zptr->zscc_data = iptr->obuff[iptr->otail++];
+40,41c52,54
+< 	} else
+< 		cptr->ctstat = SLUDISABLE;
+---
+> 	} else {
+> 		sludisable(iptr);
+> 	    }
+======================== ttyputc.c =========================
+7a8
+> #include <zsreg.h>
+18d18
+< 	char	ps;
+23d22
+< 	disable(ps);
+24a24
+> 	disable();
+28,29c28,29
+< 	(iptr->ioaddr)->ctstat = SLUENABLE;
+< 	restore(ps);
+---
+> 	sluenable(iptr);
+> 	restore();
+======================== ttyread.c =========================
+======================== ttyutils.c =========================
+diff: /u5/xinu/xinu7/src/sys/sys/ttyutils.c: No such file or directory
+======================== ttywrite.c =========================
+66c66
+< 	(ttyp->ioaddr)->ctstat = SLUENABLE;
+---
+> 	sluenable(ttyp);
+======================== udpecho.c =========================
+======================== udpnxtp.c =========================
+======================== udpsend.c =========================
+======================== unmount.c =========================
+======================== unsleep.c =========================
+20d19
+< 	char	ps;
+22c21
+<         disable(ps);
+---
+>         disable();
+26c25
+< 		restore(ps);
+---
+> 		restore();
+38c37
+<         restore(ps);
+---
+>         restore();
+======================== userret.c =========================
+11a12,14
+> #ifdef	DEBUG
+> 	dotrace("userret",NULL, 0);
+> #endif
+======================== wait.c =========================
+16,18c16,18
+< 	char	ps;
+< 	register struct	sentry	*sptr;
+< 	register struct	pentry	*pptr;
+---
+> 	int	ps;
+> 	struct	sentry	*sptr;
+> 	struct	pentry	*pptr;
+20c20,23
+< 	disable(ps);
+---
+> #ifdef	DEBUG
+> 	dotrace("wait", &sem, 1);
+> #endif
+> 	disable();
+22c25
+< 		restore(ps);
+---
+> 		restore();
+24a28,30
+> #ifdef DEBUG
+> 	kprintf("wait sem = %d cnt = %d\n", sem, sptr->semcnt - 1);
+> #endif
+31c37
+< 	restore(ps);
+---
+> 	restore();
+======================== wakeup.c =========================
+18c18
+< 		sltop = (int *) & q[q[clockq].qnext].qkey;
+---
+> 		sltop = & q[q[clockq].qnext].qkey;
+======================== write.c =========================
+11c11
+< SYSCALL	write(descrp, buff, count)
+---
+> write(descrp, buff, count)
+======================== xdone.c =========================
+1a2
+> #include <kernel.h>
+9c10
+<         printf("\n\nAll user processes have completed.\n\n");
+---
+>     kprintf("\n\nAll user processes have completed.\n\n");
+10a12,19
+> #ifdef RET_WHEN_DONE    
+> 	
+>     /* loop in case we <C>ontinue from the monitor */
+>     while (TRUE) {
+> 	ret_mon();
+>         kprintf("\n\nNo Xinu user processes remaining.\n\n");
+>     }
+> #endif    

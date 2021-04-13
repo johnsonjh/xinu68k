@@ -1,0 +1,24 @@
+.TH GETNAME 2
+.SH NAME
+getname \- return the official Internet domain name of the local host
+.SH SYNOPSIS
+.B int *getname(name)
+.br
+.B char *name;
+.fi
+.SH DESCRIPTION
+\f2Getname\f1 returns the least\-significant component of the
+official Internet domain name of the local host using GETADDR(2) to
+obtain the host's IP address, and IP2NAME(2) to translate the
+IP address into a domain name.
+For example, when executed on host \f2merlin.cs.purdue.edu\f1,
+\f2getname\f1 returns the string \f2merlin\f1.
+.PP
+Argument \f2name\f1 gives the starting address of an area in which the
+name should be placed.
+\f2Getname\f1 writes the name as a contiguous, null\-terminated
+byte string.
+.SH SEE ALSO
+ip2name(2), getaddr(2)
+.SH BUGS
+There is no way to force \f2getname\f1 to return the full domain name.

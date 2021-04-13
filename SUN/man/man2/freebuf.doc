@@ -1,0 +1,66 @@
+
+
+
+FREEBUF(2)          Xinu Programmer's Manual           FREEBUF(2)
+
+
+
+NAME
+     freebuf - free a buffer by returning it to its buffer pool
+
+SYNOPSIS
+     int freebuf(buf)
+     char *buf;
+
+DESCRIPTION
+     _F_r_e_e_b_u_f returns a previously allocated buffer to its buffer
+     pool, making it available for other processes to use.
+     _F_r_e_e_b_u_f returns SYSERR if the buffer address is invalid or
+     if the pool id has been corrupted (this version stores pool
+     ids in the integer preceding the buffer address).
+
+SEE ALSO
+     getbuf(2),  mkpool(2), getmem(2), freemem(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

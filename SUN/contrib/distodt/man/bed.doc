@@ -1,0 +1,66 @@
+
+
+
+BED(1)              UNIX Programmer's Manual               BED(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     bed - backend daemon process that runs on frontend machine
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     bbbbeeeedddd
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _B_e_d is the BBBBackEEEEnd DDDDaemon that runs on the frontend machine.
+     It accepts status, odt, and download requests from other
+     frontends and then services these requests.  It reads the
+     configuration of the backend machines it needs to service
+     from a _M_a_c_h_i_n_e_s _d_a_t_a_b_a_s_e, and it keeps lock files for each
+     reserved backend machine.
+
+     _B_e_d can be run by anyone - it is not a setuid program.  It
+     runs in the background, so after typing _b_e_d it returns
+     immediately.  _B_e_d actually starts 2 processes running in the
+     background, a parent process and one child process.  The
+     parent process simply starts the child process and then
+     waits for it to die.  The child process is the _r_e_a_l BED pro-
+     cess.  It is the one that services requests from other fron-
+     tends.  If for some reason the child process dies the parent
+     detects it and restarts a new child process as the BED pro-
+     cess.  This insures that the BED process will always be run-
+     ning.
+
+     _S_t_a_t_u_s requests are replied to immediately, but _o_d_t and
+     _d_o_w_n_l_o_a_d requests cause a new process to be forked off to
+     handle the request. Currently the _o_d_t and _d_o_w_n_l_o_a_d built
+     into the BED only work when connected to a backend SSSSUUUUNNNN.
+     Thus the BED process should only be run on frontends that
+     have a SSSSUUUUNNNN as one of the backends.  A -v (verbose) option
+     has been added to aid in debugging if problems are encoun-
+     tered.
+
+FFFFIIIILLLLEEEESSSS
+     /usr/xinu/database/machine  Backend machines database
+     /tmp/xinu/*  Backend reservation lock files
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     bedkill(1), bedreboot(1)
+
+BBBBUUUUGGGGSSSS
+     Currently the _o_d_t and _d_o_w_n_l_o_a_d built into the BED only work
+     when connected to a backend SSSSUUUUNNNN.  Thus the BED process
+     should only be run on frontends that have a SSSSUUUUNNNN as one of
+     the backends.
+
+
+
+
+
+
+
+
+Printed 1/16/89                                                 1
+
+
+

@@ -1,0 +1,66 @@
+
+
+
+CVT(1)              Xinu Programmer's Manual               CVT(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     cvt - Convert disable/restore assembler macros to standard
+     assembler
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ccccvvvvtttt _i_n_f_i_l_e
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _C_v_t is a special-purpose filter used to convert nonstandard
+     assembler language code to standard form.  The nonstandard
+     code arises from the _d_i_s_a_b_l_e and _r_e_s_t_o_r_e macro definitions,
+     which insert literal text into the assembler language output
+     of _c_c_1_1 without resolving symbolic references.  When
+     invoked, _c_v_t reads the assembler language contained in
+     _i_n_f_i_l_e, remembering the offset of the local variable _p_s.  It
+     replaces symbolic references to _p_s with the correct offset.
+
+     _C_v_t detects possible misuse of _d_i_s_a_b_l_e and _r_e_s_t_o_r_e by
+     returning a nonzero exit code if it finds references to
+     local variable _p_s without finding a definition.
+
+BBBBUUUUGGGGSSSS
+     When multiple procedures have been compiled into one assem-
+     bler file, _c_v_t may fail to detect missing declarations of _p_s
+     in later procedures because it treats the entire input file
+     as a single text file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b              Printed 10/24/87                        1
+
+
+

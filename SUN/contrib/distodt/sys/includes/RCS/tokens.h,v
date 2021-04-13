@@ -1,0 +1,31 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	91.11.25.02.06.50;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@typedef union {
+    char * sb;
+} YYSTYPE;
+
+#define TKSTRING  257
+#define TKNEWLINE 258
+#define TKEOF	  0
+
+@

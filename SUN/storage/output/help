@@ -1,0 +1,10 @@
+Commands are:
+  bpool           echo            ps              time            
+  cat             exit            reboot          unmount         
+  close           help            rf              uptime          
+  conf            kill            rls             who             
+  cp              logout          rm              worm            
+  create          mem             routes          ?               
+  date            mount           ruptime         
+  devs            mv              sleep           
+  dg              netstat         snap            

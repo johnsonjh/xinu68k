@@ -1,0 +1,26 @@
+.TH CONTROL 2
+.SH NAME
+control \- device independent control routine
+.SH SYNOPSIS
+.B int
+.B control(dev, function, arg1, arg2)
+.nf
+.B int dev;
+.B int function;
+.B int arg1, arg2;
+.fi
+.SH DESCRIPTION
+.I Control
+is the mechanism used to send control information to devices and
+device drivers, or to interrogate their status.
+(Data normally flows through GETC(2), PUTC(2), READ(2), and WRITE(2).)
+.PP
+.I Control
+returns SYSERR if
+.I dev
+is incorrect or if the function cannot be performed.
+The values returned otherwise are device dependent.
+For example, there is a control function for "tty" devices
+that returns the number of characters waiting in the input queue.
+.SH SEE ALSO
+close(2), getc(2), open(2), putc(2), read(2), seek(2), write(2)

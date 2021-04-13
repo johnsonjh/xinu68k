@@ -1,0 +1,132 @@
+
+
+
+ODTUNLOCK(1)        UNIX Programmer's Manual         ODTUNLOCK(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     odtunlock - release lock on a backend machine
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ooooddddttttuuuunnnnlllloooocccckkkk [ ----cccc_C_L_A_S_S ] [ ----mmmm_M_A_C_H ] [ ----rrrr ]
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _O_d_t_u_n_l_o_c_k releases the caller's currently reserved SUN, mak-
+     ing it available for others to use.  Mutual exclusion locks
+     are created automatically by _o_d_t and _d_o_w_n_l_o_a_d, and are
+     reported by _b_u_s_e_r_s and _s_t_a_t_u_s.  Reservations may expire
+     after some idle time even if _o_d_t_u_n_l_o_c_k is not used.  _O_d_t or
+     _d_o_w_n_l_o_a_d may reclaim a backend SUN if the reservation has
+     expired.
+
+     Reservations are recorded in two places: once with the BED
+     in charge of the specified backend, and once on the user's
+     local machine.  The reservation on the BED's frontend is the
+     _o_f_f_i_c_i_a_l reservation.  The reservation recorded on the
+     user's local machine is simply a _h_i_n_t that tells which back-
+     end machine the user _p_r_o_b_a_b_l_y has reserved.  _O_d_t_u_n_l_o_c_k
+     removes the reservation on the BED's frontend, however, by
+     default it does not remove the local reservation.  The next
+     time the user uses _o_d_t or _d_o_w_n_l_o_a_d it will check the local
+     reservation and then try to connect to the same backend the
+     user used the last time.  If that backend is not available,
+     _o_d_t and _d_o_w_n_l_o_a_d will then find a new free backend and
+     change the local reservation to the new backend.  The ----rrrr
+     argument causes the local reservation to be removed as well
+     as the reservation on the BED's frontend.
+
+     Without arguments, _o_d_t_u_n_l_o_c_k removes the reservation on the
+     backend machine most recently accessed by the caller (in the
+     window the command is issued from, if working in a windowing
+     environment).
+
+     Argument ----cccc_C_L_A_S_S can be used to specify a _C_L_A_S_S, in which
+     case _o_d_t_u_n_l_o_c_k removes the user's most recently held reser-
+     vation in that class.
+
+     Argument ----mmmm_M_A_C_H forces _o_d_t_u_n_l_o_c_k to cancel the reservation
+     for machine _M_A_C_H within the selected class.
+
+     Argument ----rrrr removes the local reservation lock.
+
+     Argument ----vvvv prints messages indicating what the program is
+     doing.
+
+     Xinu's reservation system is a friendly, cooperative
+     mutual-exclusion mechanism.  All software that accesses
+     backend SUNs is expected to adhere to the reservation system
+     to prevent multiple users from trying to access the same
+
+
+
+Printed 1/16/89                                                 1
+
+
+
+
+
+
+ODTUNLOCK(1)        UNIX Programmer's Manual         ODTUNLOCK(1)
+
+
+
+     machine simultaneously.
+
+FFFFIIIILLLLEEEESSSS
+     /tmp/xinu/*   Local lock files. Named by user's login id
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     busers(1), odt(1), download(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 1/16/89                                                 2
+
+
+

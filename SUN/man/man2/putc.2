@@ -1,0 +1,27 @@
+.TH PUTC 2
+.SH NAME
+putc \- device independent character output routine
+.SH SYNOPSIS
+.nf
+.B int putc(dev, ch)
+.B int dev;
+.B char	ch;
+.fi
+.SH DESCRIPTION
+.I Putc
+will write the character
+.I ch
+on the I/O device given by
+.I dev.
+It returns SYSERR if
+.I dev
+is incorrect, OK otherwise.
+.PP
+By convention,
+.I printf
+calls
+.I putc
+on device CONSOLE to write formatted output.
+Usually CONSOLE is device zero.
+.SH SEE ALSO
+close(2), control(2), getc(2), open(2), read(2), seek(2), write(2)

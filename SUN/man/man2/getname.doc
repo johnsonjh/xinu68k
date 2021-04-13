@@ -1,0 +1,66 @@
+
+
+
+GETNAME(2)          Xinu Programmer's Manual           GETNAME(2)
+
+
+
+NAME
+     getname - return the official Internet domain name of the
+     local host
+
+SYNOPSIS
+     int *getname(name)
+     char *name;
+
+DESCRIPTION
+     _G_e_t_n_a_m_e returns the least-significant component of the offi-
+     cial Internet domain name of the local host using GETADDR(2)
+     to obtain the host's IP address, and IP2NAME(2) to translate
+     the IP address into a domain name.  For example, when exe-
+     cuted on host _m_e_r_l_i_n._c_s._p_u_r_d_u_e._e_d_u, _g_e_t_n_a_m_e returns the
+     string _m_e_r_l_i_n.
+
+     Argument _n_a_m_e gives the starting address of an area in which
+     the name should be placed.  _G_e_t_n_a_m_e writes the name as a
+     contiguous, null-terminated byte string.
+
+SEE ALSO
+     ip2name(2), getaddr(2)
+
+BUGS
+     There is no way to force _g_e_t_n_a_m_e to return the full domain
+     name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

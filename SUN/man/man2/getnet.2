@@ -1,0 +1,23 @@
+.TH GETNET 2
+.SH NAME
+getnet \- obtain the Internet (IP) address of local machine's network
+.SH SYNOPSIS
+.nf
+.B int getnet(ip)
+.B IPaddr ip;
+.fi
+.SH DESCRIPTION
+.I Getnet
+obtains the Internet (IP) address of the local machine's
+primary network, and stores
+it in the 4-byte array specified by argument \f2ip\f1.
+Calling \f2getnet\f1 may trigger a Reverse Address Resolution Protocol
+(RARP) broadcast to find the address.
+If RARP succeeds, the address is kept locally for successive lookup
+requests.
+If RARP fails, \f2getnet\f1 calls \f2panic\f1 to halt processing.
+.SH SEE ALSO
+getaddr(2), getname(2), getnet(2)
+.SH BUGS
+There is no provision to obtain multiple addresses for machines that
+connect to multiple networks.

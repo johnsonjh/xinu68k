@@ -1,0 +1,28 @@
+.TH SUSPEND 2
+.SH NAME
+suspend \- suspend a process to keep it from executing
+.SH SYNOPSIS
+.nf
+.B int suspend(pid)
+.B int pid;
+.fi
+.SH DESCRIPTION
+.I Suspend
+places process
+.I pid
+in a state of hibernation.
+If
+.I pid
+is illegal, or the process is not currently running or on the ready list,
+.I suspend
+returns SYSERR.
+Otherwise it returns the priority of the suspended process.
+A process may suspend itself, in which case the call returns the priority
+at which the process is resumed.
+.PP
+Note that hibernation differs from sleeping because a
+hibernating process can remain on I/O or semaphore queues.
+A process can put another into hibernation; a process can
+only put itself to sleep.
+.SH SEE ALSO
+resume(2), sleep(2), send(2), receive(2)

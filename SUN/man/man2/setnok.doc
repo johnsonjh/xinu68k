@@ -1,0 +1,66 @@
+
+
+
+SETNOK(2)           Xinu Programmer's Manual            SETNOK(2)
+
+
+
+NAME
+     setnok - set next-of-kin for a specified process
+
+SYNOPSIS
+     int setnok(nok, pid)
+     int nok;
+     int pid;
+
+DESCRIPTION
+     _S_e_t_n_o_k sets _n_o_k to be the next-of-kin for process _p_i_d by
+     recording _n_o_k in the process table entry for process _p_i_d.  A
+     call to _s_e_t_n_o_k overwrites any previous information in the
+     process table entry.
+
+     The next-of-kin for a process, _P, is another process, _Q,
+     that the system notifies when _P dies (i.e., exits).  Notifi-
+     cation consists of a message sent to _Q containing only the
+     process id, _P.
+
+     Both arguments to _s_e_t_n_o_k must be valid process ids.  _S_e_t_n_o_k
+     returns SYSERR to report errors in its arguments, and OK
+     otherwise.
+
+SEE ALSO
+     kill(2)
+
+BUGS
+     There is no check to ensure that the next-of-kin remains in
+     existence between the call to _s_e_t_n_o_k and the termination of
+     a process.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

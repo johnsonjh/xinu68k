@@ -1,0 +1,261 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	91.11.25.19.02.37;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.05.28.01;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.04.22.45;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.04.06;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@/* 
+ * sysstat.c - These routines gets the system load average and num users
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Wed Oct  7 1987
+ * Copyright (c) 1987 Jim Griffioen/Raj Yavatkar
+ *
+ * Revised: June 1988 - revised to work with backend daemon program (bed)
+ */
+
+
+#include <sys/param.h>
+#include <nlist.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <utmp.h>
+
+
+struct	nlist nl[] = {
+	{ "_proc" },
+#define	X_PROC		0
+	{ "_swapdev" },
+#define	X_SWAPDEV	1
+	{ "_Usrptmap" },
+#define	X_USRPTMA	2
+	{ "_usrpt" },
+#define	X_USRPT		3
+	{ "_nswap" },
+#define	X_NSWAP		4
+	{ "_avenrun" },
+#define	X_AVENRUN	5
+	{ "_boottime" },
+#define	X_BOOTTIME	6
+	{ "_nproc" },
+#define	X_NPROC		7
+	{ "_dmmin" },
+#define	X_DMMIN		8
+	{ "_dmmax" },
+#define	X_DMMAX		9
+	{ "" },
+};
+
+/* 
+ *--------------------------------------------------------------------------- 
+ * getloadaver(ldaver)
+ *	This routine gets the 1, 5, and 15 minute load average of the
+ *	system.
+ *--------------------------------------------------------------------------- 
+ */
+void
+getloadaver( ldaver )
+     double ldaver[];
+{
+#ifndef DEC	/* handle later */
+	
+	int	kmem;
+	int	i;
+#if defined(VAX) || defined(SEQ) || defined(DEC) || defined(HPPA)
+	double	avenrun[3];
+#endif
+#if defined(SUN)
+	long	avenrun[3];
+#endif
+	
+	ldaver[ 0 ] = 0.0;
+	ldaver[ 1 ] = 0.0;
+	ldaver[ 2 ] = 0.0;
+	
+	if ( ( kmem = open( "/dev/kmem", 0 ) ) < 0 ) {
+		Log( "getloadaver: No /dev/kmem" );
+		return;
+	}
+	nlist( "/vmunix", nl );
+	if ( nl[ X_AVENRUN ].n_type == 0 ) {
+		Log( "getloadaver: No namelist" );
+		close( kmem );
+		return;
+	}
+	
+	/*
+	 * Find 1, 5, and 15 minute load averages.
+	 * (Found by looking in kernel for avenrun).
+	 */
+	lseek( kmem, (long) nl[ X_AVENRUN ].n_value, 0 );
+	read( kmem, avenrun, sizeof( avenrun ) );
+	for ( i = 0; i < ( sizeof( avenrun )/sizeof( avenrun[ 0 ] ) ); i++ ) {
+		
+#if defined(SEQ) || defined(VAX) || defined(DEC) || defined(HPPA)
+		ldaver[ i ] = avenrun[ i ];
+#endif
+#if defined(SUN)
+		ldaver[ i ] = (double) avenrun[ i ]/FSCALE;
+#endif
+		
+	}
+	close( kmem );
+
+#else
+	
+	ldaver[ 0 ] = 0.0;
+	ldaver[ 1 ] = 0.0;
+	ldaver[ 2 ] = 0.0;
+
+#endif
+	
+}
+
+
+/*---------------------------------------------------------------------------
+ * getnumusers - This gets the number of users from the front end
+ *---------------------------------------------------------------------------
+ */
+int
+getnumusers()
+{
+	int nusers;
+	FILE * ut;
+	struct utmp utmp;
+	
+	ut = fopen( "/etc/utmp", "r" );
+	if ( ut == (FILE *) NULL ) {
+		Log( "getnumusers: error opening /etc/utmp" );
+		return( 0 );
+	}
+	
+	nusers = 0;
+	while ( fread( &utmp, sizeof( utmp ), 1, ut ) ) {
+#if defined(SEQ) || defined(VAX) || defined(DEC) || defined(HPPA)
+		if ( utmp.ut_name[ 0] != '\0' )  {
+			nusers++;
+		}
+#endif
+#if defined(SUN)
+		if ( utmp.ut_name[ 0 ] != '\0' && !nonuser( utmp ) )  {
+			nusers++;
+		}
+#endif
+	}
+	fclose( ut );
+	return( nusers );
+}
+
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@d100 8
+a107 1
+#endif	/* DEC */
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d71 1
+a71 1
+	if ( ( kmem = open( "/dev/kmem" , 0 ) ) < 0 ) {
+d75 1
+a75 1
+	nlist( "/vmunix" , nl );
+d86 2
+a87 2
+	lseek( kmem , (long) nl[ X_AVENRUN ].n_value , 0 );
+	read( kmem , avenrun , sizeof( avenrun ) );
+d115 1
+a115 1
+	ut = fopen( "/etc/utmp" , "r" );
+d122 1
+a122 1
+	while ( fread( &utmp , sizeof( utmp ) , 1 , ut ) ) {
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a44 3
+FILE	*ut;
+struct utmp utmp;
+
+d56 2
+d60 1
+a60 1
+#if defined(VAX) || defined(SEQ) || defined(DEC)
+a62 1
+	
+a70 4
+#if defined(DEC)
+	return;
+#endif
+	
+d90 1
+a90 1
+#if     defined(SEQ) || defined(VAX) || defined(DEC)
+a92 1
+		
+d99 2
+d112 2
+d123 4
+a126 2
+#if defined(SEQ) || defined(VAX) || defined(DEC)
+		if ( utmp.ut_name[ 0] != '\0' ) 
+d129 1
+a129 3
+		if ( utmp.ut_name[ 0 ] != '\0' && !nonuser( utmp ) ) 
+#endif
+		{
+d132 1
+a132 2
+		fclose( ut );
+		return( nusers );
+d134 2
+@

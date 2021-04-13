@@ -1,0 +1,44 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	91.11.25.02.06.50;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@
+/* 
+ * bmutils.h - Definitions for bm structure utilities
+ * 
+ * Author:	Shawn Oostermann/Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 10 16:04:11 1988char
+ *
+ * Copyright (c) 1988char *CmdToSb (); Shawn Oostermann/Jim Griffioen
+ */
+
+char *UidToSb ();
+char *ServToSb ();
+char *DescToSb ();
+char *OmToSb ();
+char *BmToSb();
+char *SbToBm();
+
+#define BITMASK(n) (1<<(n))
+
+@

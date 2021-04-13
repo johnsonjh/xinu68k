@@ -1,0 +1,66 @@
+
+
+
+GETMEM(2)           Xinu Programmer's Manual            GETMEM(2)
+
+
+
+NAME
+     getmem, getstk - get a block of main memory
+
+SYNOPSIS
+     char *getmem(nbytes)
+     int nbytes;
+
+     char *getstk(nbytes)
+     int nbytes;
+
+DESCRIPTION
+     In either form, _g_e_t_m_e_m rounds the number of bytes, _n_b_y_t_e_s,
+     to an even-word multiple, and allocates a block of _n_b_y_t_e_s
+     bytes of memory for the caller.  _G_e_t_m_e_m returns the lowest
+     word address in the allocated block; _g_e_t_s_t_k returns the
+     highest word address in the allocated block.  If less than
+     _n_b_y_t_e_s bytes remain, the call returns SYSERR.
+
+     _G_e_t_m_e_m allocates memory starting with the end of the loaded
+     program.  _G_e_t_s_t_k allocates memory from the stack area down-
+     ward.  The routines cooperate so they never allocate over-
+     lapping regions.
+
+SEE ALSO
+     freemem(2) getbuf(2), freebuf(2)
+
+BUGS
+     There is no way to protect memory, so the active stack may
+     write into regions returned by either call; allocations
+     returned by _g_e_t_s_t_k are more prone to disaster because they
+     lie closest to the dynamic stack areas of other processes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

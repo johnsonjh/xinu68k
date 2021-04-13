@@ -1,0 +1,66 @@
+
+
+
+PDELETE(2)          Xinu Programmer's Manual           PDELETE(2)
+
+
+
+NAME
+     pdelete - delete a port
+
+SYNOPSIS
+     int pdelete(portid, dispose)
+     int portid;
+     int (*dispose)();
+
+DESCRIPTION
+     _P_d_e_l_e_t_e deallocates port _p_o_r_t_i_d. The call returns SYSERR if
+     _p_o_r_t_i_d is illegal or is not currently allocated.
+
+     The command has several effects, depending on the state of
+     the port at the time the call is issued.  If processes are
+     waiting for messages from portid, they are made ready and
+     return SYSERR to their caller. If messages exist in the
+     port, they are disposed of by procedure _d_i_s_p_o_s_e.  If
+     processes are waiting to place messages in the port, they
+     are made ready and given SYSERR indications (just as if the
+     port never existed).  _P_d_e_l_e_t_e performs the same function of
+     clearing messages and processes from a port as PRESET(2)
+     except that _p_d_e_l_e_t_e also deallocates the port.
+
+SEE ALSO
+     pcount(2), pcreate(2), preceive(2), preset(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

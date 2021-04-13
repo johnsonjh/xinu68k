@@ -1,0 +1,66 @@
+
+
+
+SIGNAL(2)           Xinu Programmer's Manual            SIGNAL(2)
+
+
+
+NAME
+     signal, signaln - signal a semaphore
+
+SYNOPSIS
+     int signal(sem)
+     int signaln(sem, count)
+     int sem;
+     int count;
+
+DESCRIPTION
+     In either form, _s_i_g_n_a_l signals semaphore _s_e_m and returns
+     SYSERR if the semaphore does not exist, OK otherwise.  The
+     form _s_i_g_n_a_l increments the count of _s_e_m by 1 and frees the
+     next process if any are waiting.  The form _s_i_g_n_a_l_n incre-
+     ments the semaphore by _c_o_u_n_t and frees up to _c_o_u_n_t processes
+     if that many are waiting.  Note that _s_i_g_n_a_l_n(sem, x) is
+     equivalent to executing _s_i_g_n_a_l(sem) x times.
+
+SEE ALSO
+     scount(2), screate(2), sdelete(2), sreset(2), wait(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

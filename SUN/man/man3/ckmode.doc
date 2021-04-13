@@ -1,0 +1,66 @@
+
+
+
+CKMODE(3)           Xinu Programmer's Manual            CKMODE(3)
+
+
+
+NAME
+     ckmode - check a file mode string and convert to integer
+     representation
+
+SYNOPSIS
+     #include <file.h>
+
+     int chmode(mode)
+     char *mode;
+
+DESCRIPTION
+     _C_k_m_o_d_e parses a null-terminated string, _m_o_d_e, containing
+     characters that represent file modes, and produces an
+     integer with mode bits set.  The possible mode characters
+     are:
+
+     r    The file is to be opened for reading (i.e., input).
+
+     w    The file is to be opened for writing (i.e., output).
+
+     n    The file must be new.  That is, it must not already
+          exist.
+
+     o    The file must be old.  That is, it must already exist.
+
+     The file mode string, _m_o_d_e, can specify that the file is to
+     be accessed for both reading and writing, but it cannot
+     specify the mode to be both old and new.  If neither reading
+     nor writing is specified, _c_k_m_o_d_e assumes the file will be
+     used for both.  Similarly, if neither old or new files are
+     specified, _c_k_m_o_d_e assumes either is allowed.
+
+     Given a legal mode string, _c_k_m_o_d_e returns an integer with
+     bits _F_L_R_E_A_D, FLWRITE, FLOLD, and FLNEW set according to the
+     argument, _m_o_d_e.  _C_k_m_o_d_e returns SYSERR if it finds illegal
+     or duplicated characters in the argument string, or if the
+     mode string specifies that the file must be both old and
+     new.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

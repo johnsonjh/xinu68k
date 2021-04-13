@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# This shell script runs the busers command,
+# extracts only the class SUN entries, and
+# then sorts the resulting list
+
+busers | bm SUN | sort

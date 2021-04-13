@@ -1,0 +1,66 @@
+
+
+
+GETUTIM(2)          Xinu Programmer's Manual           GETUTIM(2)
+
+
+
+NAME
+     getutim - obtain current universal time in seconds past the
+     epoch
+
+SYNOPSIS
+     int getutim(timvar)
+     long *timvar;
+
+DESCRIPTION
+     _G_e_t_u_t_i_m obtains the current time measured in seconds past
+     the epoch date, and places it in the longword pointed to by
+     argument _t_i_m_v_a_r.  The correct time is usually kept by the
+     real-time clock, but _g_e_t_t_i_m_e  may contact a time server on
+     the network if the local time has not been initialized.
+
+     The epoch is taken to be zero seconds past Jan 1, 1970.
+     Universal time, formerly called Greenwich Mean Time, is the
+     mean solar time of the meridian in Greenwich, England, and
+     is used throughout the world as a standard for measuring
+     time.
+
+     If _g_e_t_u_t_i_m cannot obtain the current time, it returns SYSERR
+     to the caller.  Otherwise, _g_e_t_u_t_i_m returns OK.
+
+SEE ALSO
+     gettime(2)
+
+BUGS
+     The local clock may drift, especially under heavy CPU
+     activity or activities that require the operating system to
+     mask interrupts for extended periods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

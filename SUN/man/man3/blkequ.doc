@@ -1,0 +1,66 @@
+
+
+
+BLKEQU(3)           Xinu Programmer's Manual            BLKEQU(3)
+
+
+
+NAME
+     blkequ -  compare two contiguous blocks of memory for equal-
+     ity
+
+SYNOPSIS
+     Bool blkequ(first, second, nbytes)
+     char *first;
+     char *second;
+     int nbytes;
+
+DESCRIPTION
+     _B_l_k_e_q_u compares two blocks of memory for equality.  Each
+     block contains exactly _n_b_y_t_e_s bytes.  _B_l_k_e_q_u returns FALSE
+     if the two blocks differ, and TRUE if the blocks are equal.
+     _B_l_k_e_q_u compares all byte values including null (zero).
+
+SEE ALSO
+     blkcopy(3), string(3)
+
+BUGS
+     _B_l_k_e_q_u does not check for valid memory addresses.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

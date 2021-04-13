@@ -1,0 +1,66 @@
+
+
+
+CREATE(2)           Xinu Programmer's Manual            CREATE(2)
+
+
+
+NAME
+     create - create a new process
+
+SYNOPSIS
+     int create(caddr,ssize,prio,name,nargs[,argument]*)
+     char *caddr;
+     int ssize;
+     int prio;
+     char *name;
+     int nargs;
+     int argument;  /* actually, type machine word */
+
+DESCRIPTION
+     _C_r_e_a_t_e creates a new process that will begin execution at
+     location _c_a_d_d_r, with a stack of _s_s_i_z_e words, initial prior-
+     ity _p_r_i_o, and identifying name _n_a_m_e. _C_a_d_d_r should be the
+     address of a procedure or main program, If the creation is
+     successful, the (nonnegative) process id of the new process
+     is returned to the caller.  The created process is left in
+     the suspended state; it will not begin execution until
+     started by a resume command.  If the arguments are
+     incorrect, or if there are no free process slots, the value
+     SYSERR is returned.  The new process has its own stack, but
+     shares global data with other processes according to the
+     scope rules of C.  If the procedure attempts to return, its
+     process will be terminated (see KILL(2)).
+
+     The caller can pass a variable number of arguments to the
+     created process which are accessed through formal parame-
+     ters.  The integer _n_a_r_g_s specifies how many argument values
+     follow.  _N_a_r_g_s values from the _a_r_g_u_m_e_n_t_s list will be passed
+     to the created process.  The type and number of such argu-
+     ments is not checked; each is treated as a single machine
+     word.  The user is cautioned against passing the address of
+     any dynamically allocated datum to a process because such
+     objects may be deallocated from the creator's run-time stack
+     even though the created process retains a pointer.
+
+SEE ALSO
+     kill(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,66 @@
+
+
+
+SDELETE(2)          Xinu Programmer's Manual           SDELETE(2)
+
+
+
+NAME
+     sdelete - delete a semaphore
+
+SYNOPSIS
+     int sdelete(sem)
+     int sem;
+
+DESCRIPTION
+     _S_d_e_l_e_t_e removes semaphore _s_e_m from the system and returns
+     processes that were waiting for it to the ready state.  The
+     call returns SYSERR if _s_e_m is not a legal semaphore; it
+     returns OK if the deletion was successful.
+
+SEE ALSO
+     scount(2), screate(2), signal(2), sreset(2), wait(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

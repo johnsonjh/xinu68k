@@ -1,0 +1,66 @@
+
+
+
+READ(2)             Xinu Programmer's Manual              READ(2)
+
+
+
+NAME
+     read - device independent input routine
+
+SYNOPSIS
+     int read(dev, buffer, numchars)
+     int dev;
+     char *buffer;
+     int numchars;
+
+DESCRIPTION
+     _R_e_a_d will read up to _n_u_m_c_h_a_r_s bytes from the I/O device
+     given by _d_e_v. It returns SYSERR if _d_e_v is incorrect.  It
+     returns the number of characters read if successful.  The
+     number of bytes actually returned depends on the device.
+     For example, when reading from a device of type "tty", each
+     read normally returns one line.  For a disk, however, each
+     read returns one block and the argument _n_u_m_c_h_a_r_s is taken to
+     be the index of the disk block desired.
+
+SEE ALSO
+     close(2), control(2), getc(2), open(2), putc(2), seek(2),
+     write(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,21 @@
+Changes made to the Sun Xinu7 Source Directory
+  Tue May 26, 1992 - Shawn Ostermann
+        moved contrib/distodt to contrib/distodt.old
+        added distributed ODT software from Jan 1992 in contrib/distodt
+
+        Added andy's fix to ttyiin.c to make flow control work
+                (added 'else' after "if (iptr->oflow) {...}")
+
+        Added missing .text assembler directive in set_evec.s
+        
+        Changed initial SP for null process to "plimit" rather than
+                10 in initialize.c, it confused resched.c
+
+        Changed Configuration to use sequoia rather than gwen:
+            Time server:        128.10.3.20:37        (sequoia.cs.purdue.edu)
+            Remote file server: 128.10.3.20:2001      (sequoia.cs.purdue.edu)
+            Domain name server: 128.10.3.20:53        (sequoia.cs.purdue.edu)
+
+        Changed sys Makefile to use "/u/u5" rather than "/u5"
+
+        Fixed the fix to ascdate.c

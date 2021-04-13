@@ -1,0 +1,66 @@
+
+
+
+WAIT(2)             Xinu Programmer's Manual              WAIT(2)
+
+
+
+NAME
+     wait - block and wait until semaphore signalled
+
+SYNOPSIS
+     int wait(sem)
+     int sem;
+
+DESCRIPTION
+     _W_a_i_t decrements the count of semaphore _s_e_m, blocking the
+     calling process if the count goes negative by enqueuing it
+     in the queue for _s_e_m. The only ways to get free from a sema-
+     phore queue are for some other process to signal the sema-
+     phore, or for some other process to delete or reset the
+     semaphore.  _W_a_i_t and SIGNAL(2) are the two basic synchroni-
+     zation primitives in the system.
+
+     _W_a_i_t returns SYSERR if _s_e_m is invalid.  Otherwise, it
+     returns OK once freed from the queue.
+
+SEE ALSO
+     scount(2), screate(2), sdelete(2), signal(2), sreset(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

@@ -1,0 +1,66 @@
+
+
+
+SCREATE(2)          Xinu Programmer's Manual           SCREATE(2)
+
+
+
+NAME
+     screate - create a new semaphore
+
+SYNOPSIS
+     int screate(count)
+     int count;
+
+DESCRIPTION
+     _S_c_r_e_a_t_e creates a counting semaphore and initializes it to
+     _c_o_u_n_t. If successful, _s_c_r_e_a_t_e returns the integer identifier
+     of the new semaphore.  It returns SYSERR if no more sema-
+     phores can be allocated or if _c_o_u_n_t is less than zero.
+
+     Semaphores are manipulated with WAIT(2) and SIGNAL(2) to
+     synchronize processes.  Waiting causes the semaphore count
+     to be decremented; decrementing a semaphore count past zero
+     causes a process to be blocked.  Signaling a semaphore
+     increases its count, freeing a blocked process if one is
+     waiting.
+
+SEE ALSO
+     scount(2), sdelete(2), signal(2), sreset(2), wait(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

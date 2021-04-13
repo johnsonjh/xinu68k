@@ -1,0 +1,28 @@
+.TH FPUTC 3
+.SH NAME
+fputc, putchar \- put character to a device
+.SH SYNOPSIS
+.B #include <io.h>
+.PP
+.B int fputc(device, c)
+.br
+.B int device;
+.br
+.B char c;
+.br
+.B putchar(c)
+.SH DESCRIPTION
+These procedures are included for compatibility with \s-2UNIX\s0.
+.I Fputc
+appends the character
+.I c
+to the named output
+.IR device ,
+and returns SYSERR if device is invalid; it is defined to be
+.I "putc(device, c)."
+.PP
+.I Putchar(c)
+is also defined to be
+.I "putc(CONSOLE, c)."
+.SH "SEE ALSO"
+putc(2), puts(3), printf(3)

@@ -1,0 +1,66 @@
+
+
+
+RESUME(2)           Xinu Programmer's Manual            RESUME(2)
+
+
+
+NAME
+     resume - resume a suspended process
+
+SYNOPSIS
+     int resume(pid)
+     int pid;
+
+DESCRIPTION
+     _R_e_s_u_m_e takes process _p_i_d out of hibernation and allows it to
+     resume execution.  If _p_i_d is invalid or process _p_i_d is not
+     suspended, _r_e_s_u_m_e returns SYSERR; otherwise it returns the
+     priority at which the process resumed execution.  Only
+     suspended processes may be resumed.
+
+SEE ALSO
+     sleep(2), suspend(2), send(2), receive(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

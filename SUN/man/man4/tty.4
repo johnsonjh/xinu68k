@@ -1,0 +1,99 @@
+.TH TTY 4
+.SH NAME
+tty \- general-purpose terminal I/O device driver (type tty)
+.SH SYNOPSIS
+.nf
+.B #include <slu.h>
+.B #include <tty.h>
+.sp
+.B read(device buffer, length)
+.B write(device, buffer, length)
+.B open(device, name)
+.B close(device)
+.B control(device, function, arg1, arg2)
+.B init(device)
+.SH DESCRIPTION
+.PP
+The \f2tty\f1 device driver provides input and output for
+a full-duplex ascii terminal device.
+On most Xinu systems, device \f2CONSOLE\f1 is of type tty.
+.PP
+Currently implemented on a Digital Equipment Corporation
+serial line unit (SLU) like that on the DLV11 and MXV11,
+the driver expects one interrupt per character on both input
+and output.
+.PP
+The \f2tty\f1 driver operates in one of three modes, with switching
+between the modes determined dynamically.
+In \f2raw mode\f1, it passes incoming characters to the reading
+process without further processing.
+In \f2cbreak mode\f1, the driver honors XON-XOFF flow control,
+character echo, and mapping between carriage return and line feed.
+In \f2cooked mode\f1 the driver behaves like cbreak mode, but
+also handles line editing with backspace and line kill keys.
+Characters are processed according to the driver mode when they arrive,
+and are placed in a queue from which upper-half routines extract them.
+Echoing, presentation of control characters, and editing are controlled
+by several fields in the driver control structure,
+and may be changed dynamically.
+.PP
+The upper-half routines behave as follows:
+.TP
+.B read(device,buffer,length)
+Reads up to one line into the user's \f2buffer\f1, stopping on
+an END-OF-FILE or NEWLINE character, or after \f2length\f1
+characters have been supplied.
+As a special case, if \f2length\f1 is zero, the driver reads
+whatever characters are available in the input buffer (possibly zero).
+In cooked mode, \f2read\f1 blocks until a line has been typed.
+.TP
+.B write(device,buffer,length)
+Writes \f2length\f1 characters from the user's \f2buffer\f1,
+mapping CARRIAGE RETURN to NEWLINE as specified by field \f2ocrlf\f1
+of the driver control structure.
+Write may block if the output exceeds the currently available
+buffer space.
+.TP
+.B getc(device)
+Reads a single character and returns it as the function value.
+.TP
+.B putc(device,char)
+Writes character \f2char\f1.
+.TP
+.B open(device,name)
+Returns \f2OK\f1 if character string \f2name\f1 is null, and
+\f2SYSERR\f1 otherwise, taking no action except generating a return value.
+.TP
+.B close(device)
+Returns \f2OK\f1 without taking any action.
+.TP
+.B init(device)
+Initializes the driver.
+Note: for historical reasons,
+device \f2CONSOLE\f1 is initialized to cooked
+mode with echo, visual control character printing, and line editing
+enabled, while other devices are initialized to raw mode.
+.TP
+.B control(device,function)
+Controls the driver and provides non-transfer operations.
+The valid functions are:
+.nf
+.in +0.2i
+TCSETBRK \- set the line into  the ``break'' state.
+TCRSTBRK \- reset the line, turning off ``break'' state.
+TCNEXTC \- lookahead one character without reading it.
+TCMODER \- change the driver to raw mode.
+TCMODEC \- change the driver to cooked mode.
+TCMODEK \- change the driver to cbreak mode.
+TCECHO \- turn on character echo.
+TCNOECHO \- turn off character echo.
+TCICHARS \- return a count of characters in the input buffer.
+.fi
+.in -0.2i
+.SH DIAGNOSTICS
+Character errors are reported by turning on the high-order bit
+of the character.
+.SH NOTES
+The version 6 driver used buffer counts as exact requests; version
+7 is line oriented.
+Error reporting should be improved.

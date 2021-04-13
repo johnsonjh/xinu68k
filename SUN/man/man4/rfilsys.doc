@@ -1,0 +1,132 @@
+
+
+
+RFILSYS(4)          Xinu Programmer's Manual           RFILSYS(4)
+
+
+
+NAME
+     rfilsys - remote file system pseudo-device driver (types
+     rfm, rf)
+
+SYNOPSIS
+     #include <rfile.h>
+     #include <fserver.h>
+
+     read(device buffer, length)
+     write(device, buffer, length)
+     open(device, name, mode)
+     close(device)
+     control(device, function, arg1, arg2)
+     init(device)
+     seek(device,offset)
+
+DESCRIPTION
+     The _r_f_m and _r_f pseudo-device drivers work as a pair to pro-
+     vide access to remote files using a Xinu remote file server
+     across an Internet.  There is one master remote file
+     pseudo-device (type _r_f_m) for a given remote server.  When
+     users open the master remote file pseudo-device, they pass
+     it the name of a specific file and the access mode for that
+     file.  The call to OPEN(2) returns the device descriptor of
+     a remote file pseudo-device (type _r_f) connected to the named
+     file.
+
+     Once opened, a user calls READ(2), WRITE(2), GETC(2), or
+     PUTC(2), to transfer data between the user program and the
+     remote file; they call SEEK(2) to position the file pointer.
+     The user calls CLOSE(2) to disconnect from the file.
+     Finally, users call CONTROL(2) on the master pseudo-device
+     to test file access protections, remove files, or change
+     file names.
+
+     The standard Xinu device name for the remote file master
+     pseudo-device is _R_F_I_L_S_Y_S; the standard Xinu device name for
+     individual remote file pseudo-devices is _R_F_I_L_E.  The opera-
+     tions on these devices are defined by:
+
+     open(device, name, mode)
+          Opens a connection to a remote file given the file name
+          and access mode, and returns the device descriptor used
+          to access the file.  See ACCESS(2) for valid file
+          modes.
+
+     read(device buffer, length)
+          Transfers up to  _l_e_n_g_t_h bytes of data from a file to
+          the user's _b_u_f_f_e_r, and returns the number of bytes
+          found or _E_O_F if no more data remains in the file.
+
+     write(device, buffer, length)
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+RFILSYS(4)          Xinu Programmer's Manual           RFILSYS(4)
+
+
+
+          Writes _l_e_n_g_t_h bytes of data to a file from the user's
+          _b_u_f_f_e_r.  File length extends automatically if needed.
+
+     close(device)
+          Disconnect from a file, leaving it on secondary
+          storage.
+
+     control(device, function, arg1, arg2)
+          Handles file manipulation other than data transfer.
+          The possible functions are:
+            FLACCESS - test access (_a_r_g_1 is mode string).
+            FLREMOVE - remove file named by _a_r_g_1.
+            FLRENAME - rename file named by _a_r_g_1 to _a_r_g_2
+            FLCLEAR - clear the remote file datagram port
+
+     init(device)
+          When called with an _r_f device, initializes the pseudo-
+          device data structures at system startup.  Initializing
+          the master pseudo-device has no effect.
+
+     seek(device,offset)
+          Positions the file to _o_f_f_s_e_t bytes from the beginning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

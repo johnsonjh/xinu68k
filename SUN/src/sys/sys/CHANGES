@@ -1,0 +1,23 @@
+Xinu Change Log File
+
+The following file contains changes made to the Xinu code.
+
+Oct 12, 1989
+  1) fixed all of mem.h, freemem.c, and getmem.c to use the correct rounding
+     functions.
+  2) added the fix to clkinit.c to screate() clkmutex.  Also added some
+     missing inits to clkinit.c
+  3) changed version string to "7.2 SUN3 (10/11/89)"
+Wed Dec 13, 1989
+  1) added the missing file: access.c, also added it to the Makefile
+  2) fixed getdmem to use roundmb() instead of roundew()
+  3) added new constant EMAXPAKREC = (EMAXPAK+4).  This includes the
+     4 byte CRC included in packets read from the LANCE chip.  This
+     constant is defined only in ethinit.c
+  4) changed ethread.c to decrement the packet size by 4 (4 byte CRC)
+  5) changed version string to "7.2.1 SUN3 (12/13/89)"
+  6) changed ethinter.c to fix the problem of missing back to back packets.
+     Includes fix to ethinit.c to init:   "etptr->etnextbuf = 0;"
+Mon Mar 26, 1990
+  1) Patched create.c, initialize.c, and getstk.c to use roundmb
+     Also patched mem.h to use roundmb for freestk macro.

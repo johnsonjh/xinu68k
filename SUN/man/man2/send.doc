@@ -1,0 +1,66 @@
+
+
+
+SEND(2)             Xinu Programmer's Manual              SEND(2)
+
+
+
+NAME
+     send - send a (one-word) message to a process
+
+SYNOPSIS
+     int send(pid, msg)
+     int pid;
+     int msg;
+
+DESCRIPTION
+     _S_e_n_d sends the one-word message _m_s_g to the process with id
+     _p_i_d. A process may have at most one outstanding message that
+     has not been received.
+
+     _S_e_n_d returns SYSERR if _p_i_d is invalid or if the process
+     already has a message waiting that has not been received.
+     Otherwise, it sends the message and returns OK.
+
+SEE ALSO
+     receive(2), sendf(2), preceive(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

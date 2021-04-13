@@ -1,0 +1,66 @@
+
+
+
+PANIC(2)            Xinu Programmer's Manual             PANIC(2)
+
+
+
+NAME
+     panic - abort processing due to severe error
+
+SYNOPSIS
+     int panic(message)
+     char *message;
+
+DESCRIPTION
+     _P_a_n_i_c will print the character string _m_e_s_s_a_g_e on the con-
+     sole, dump the machine registers and top few stack loca-
+     tions, and halt the processor.  It uses _k_p_r_i_n_t_f rather than
+     _p_r_i_n_t_f, so it may be called anywhere in the kernel (e.g.,
+     from an interrupt routine that may be executed by the null
+     process).  Typing P after the processor halts will cause
+     panic to restore the machine state and continue, so it is
+     possible to examine locations with ODT after the processor
+     halts, and still restart processing.
+
+     There are alternate entry points to _p_a_n_i_c that are invoked
+     by branch to location zero, illegal interrupts, or processor
+     exceptions (traps).
+
+SEE ALSO
+     kprintf(3), printf(3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

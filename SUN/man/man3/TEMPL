@@ -1,0 +1,18 @@
+.TH XXX 3
+.SH NAME
+xxx \- descr. of xxx
+.SH SYNOPSIS
+.B #include <xxx.h>
+.PP
+.B int xxx(x,y)
+.br
+.B int	x;
+.B int	y;
+.br
+.SH DESCRIPTION
+.I Xxx
+does neat things.
+.SH "SEE ALSO"
+zzz(2)
+.SH SEE ALSO
+.SH DIAGNOSTICS

@@ -1,0 +1,39 @@
+.ds Sh "Device Descriptions
+.ds Sa "Section 4
+.bp
+.tm ==== .Sc "" "\*(Sh" \n%
+.ds Sn "INTRO(\|4\|)
+.ds Sf "Xinu Programmer's Manual
+.in 0i
+.sp 8
+.ps +4
+.B
+.ce
+Section 4: Device Descriptions
+.IX "device"
+.sp 3
+.ps 10
+.PP
+This section of the manual describes the Xinu device
+drivers available on the distribution tape.
+Each device driver implements the device independent
+I/O routines
+\f2open\f1,
+\f2close\f1,
+\f2read\f1,
+\f2write\f1,
+\f2seek\f1,
+\f2getc\f1,
+\f2putc\f1,
+\f2control\f1,
+and
+\f2init\f1,
+for one physical or pseudo-device.
+While the intuitive meanings of these routines are
+the same across all devices, each driver defines
+specific, sometimes device dependent meaning to
+them.
+If a particular operation does not make sense for
+a given device, the driver may choose to
+return \f2SYSERR\f1 or \f2OK\f1 without taking
+further action.

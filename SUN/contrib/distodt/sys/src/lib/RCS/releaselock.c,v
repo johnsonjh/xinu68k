@@ -1,0 +1,298 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.5
+date	92.01.04.03.43.14;	author muckel;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	91.11.25.09.42.17;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.05.28.32;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.04.22.59;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.06.04;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.5
+log
+@/dev/null
+@
+text
+@/* releaselock.c - This file contains routines for releasing a lock
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Thu May 26 17:23:44 1988
+ */
+
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
+#include <setjmp.h>
+#include <sys/file.h>
+#include <sys/stat.h>
+
+#include "bed.h"
+#include "bmutils.h"
+
+#define MAXBM	30
+
+
+/*---------------------------------------------------------------------------
+ * releaselock - release lock on a backend machine
+ *			- release specified backend machine is bename!=""
+ *			- else release last machine reservered by user in
+ *			  class is class is not ""
+ *			- else release last machine used by user
+ *---------------------------------------------------------------------------
+ */
+int
+releaselock( class, bename, remove )
+     char * class, * bename, remove;
+{
+	FILE * fs;			/* lock file ptr		*/
+	struct stat statbuf;		/* status of file struct	*/
+	char filename[ MAXFILENAME ];	/* temp filename variable	*/
+	char femachine[ MAXMACHINENAME ];/* temp fename str variable	*/
+	char bemachine[ MAXMACHINENAME ];/* temp bename str variable	*/
+	char beclass[ MAXCLASS ];	/* temp class str variable	*/
+	char user[ 256 ];
+	int i, j;			/* counter variable		*/
+	struct bm * bm[ MAXBM ];	/* list of status messages	*/
+	struct statresp * stresp;	/* temp status response ptr	*/
+	struct bestatus * bestat;	/* temp backend status ptr	*/
+	int nummach;			/* number of machines		*/
+	char * ttyline;			/* tty line used		*/
+	char * devname;			/* tty device line name		*/
+	
+	
+	
+	if ( getuser( user ) < 0 ) {
+		fprintf( stderr, "error: intruder alert\n" );
+		return( -1 );
+	}
+	getfilename( filename, user );
+	if ( stat( filename, & statbuf ) == 0 ) {	/* has mach reserved */
+		fs = fopen( filename, "r" );
+		fscanf( fs, "%s %s %s", femachine, bemachine, beclass );
+		fclose( fs );
+	}
+	else {
+		fs = NULL;
+	}
+	if ( strlen( bename ) == 0 ) {	/* release machine reserved */
+		if ( fs == NULL ) {
+			fprintf( stderr, "error: no machine reserved\n" );
+			return( -1 );
+		}
+		if ( ! strlen( class )  || strequ( class, beclass ) ) {
+			if ( requnlock( femachine, bemachine, user ) >= 0 ) {
+				if ( remove && unlink( filename ) ) {
+					fprintf( stderr,
+					  "error: cannot remove lock file\n" );
+				}
+				strcpy( bename, bemachine );
+				return( 1 );
+			}
+			fprintf( stderr, "error: requnlock failed\n" );
+			return( -1 );
+		}
+		fprintf( stderr, "error: reserved backend not of class %s\n",
+			class );
+		return( -1 );
+	}
+	
+	/* if we get to this point we need to find a particular machine	*/
+	nummach = obtainstatus( bm, MAXBM );
+	for ( i = 0; i < nummach; i++ ) {
+		stresp = (struct statresp *) bm[ i ]->detail;
+		for ( j = 0; j < atoi( stresp->festatus.numbends ); j++ ) {
+			bestat = &( stresp->bestatus[ j ] );
+			if ( strcmp( bename, bestat->bename ) ) {
+				continue;
+			}
+			checkidletime( bestat, user );
+			if ( requnlock( stresp->festatus.fename, bestat->bename, user ) >= 0 ) {
+				if ( remove && fs != NULL && strequ( bemachine, bename ) ) {
+					if ( unlink( filename ) ) {
+						fprintf( stderr, "error: cannot remove lock file\n" );
+					}
+				}
+				return( 1 );
+			}
+			fprintf( stderr, "error: requnlock failed\n" );
+			return( -1 );
+		}
+	}
+	fprintf( stderr, "error: reserved backend not found\n" );
+	return( -1 );
+}
+
+
+/*
+ * checkidletime -- print a warning if idle time is less then threshhold
+ */
+static int
+checkidletime( bestat, user )
+     struct bestatus * bestat;
+     char * user;
+{
+	int min;
+	
+	if ( ! strcmp( NOBODY, bestat->user ) ||
+	    ! strcmp( user, bestat->user ) ) {
+		return( 0 );
+	}
+	min = getidleminutes( bestat->idle );
+	if ( min < RESERVETIME ) {
+		fprintf( stderr,
+		    "warning: releasing backend '%s' with only %s idle time\n"
+			, bestat->bename, bestat->idle );
+	}
+}
+
+@
+
+
+1.4
+log
+@/dev/null
+@
+text
+@d33 2
+a34 3
+releaselock( class, bename, bedserversfile, remove )
+     char * class, * bename, * bedserversfile;
+     char remove;
+d89 1
+a89 1
+	nummach = obtainstatus( bm, MAXBM, bedserversfile );
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@a17 1
+#include "String.h"
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d34 2
+a35 2
+releaselock( class , bename , bedserversfile , remove )
+     char * class , * bename , * bedserversfile;
+d45 1
+a45 1
+	int i , j;			/* counter variable		*/
+d56 1
+a56 1
+		fprintf( stderr , "error: intruder alert\n" );
+d59 4
+a62 4
+	getfilename( filename , user );
+	if ( stat( filename , & statbuf ) == 0 ) {	/* has mach reserved */
+		fs = fopen( filename , "r" );
+		fscanf( fs , "%s %s %s" , femachine , bemachine , beclass );
+d70 1
+a70 1
+			fprintf( stderr , "error: no machine reserved\n" );
+d73 2
+a74 2
+		if ( ! strlen( class )  || strequ( class , beclass ) ) {
+			if ( requnlock( femachine , bemachine , user ) >= 0 ) {
+d76 1
+a76 1
+					fprintf( stderr ,
+d79 1
+a79 1
+				strcpy( bename , bemachine );
+d82 1
+a82 1
+			fprintf( stderr , "error: requnlock failed\n" );
+d85 1
+a85 1
+		fprintf( stderr , "error: reserved backend not of class %s\n" ,
+d91 1
+a91 1
+	nummach = obtainstatus( bm , MAXBM , bedserversfile );
+d96 1
+a96 1
+			if ( strcmp( bename , bestat->bename ) ) {
+d99 3
+a101 3
+			checkidletime( bestat , user );
+			if ( requnlock( stresp->festatus.fename , bestat->bename , user ) >= 0 ) {
+				if ( remove && fs != NULL && strequ( bemachine , bename ) ) {
+d103 1
+a103 1
+						fprintf( stderr , "error: cannot remove lock file\n" );
+d108 1
+a108 1
+			fprintf( stderr , "error: requnlock failed\n" );
+d112 1
+a112 1
+	fprintf( stderr , "error: reserved backend not found\n" );
+d121 1
+a121 1
+checkidletime( bestat , user )
+d127 2
+a128 2
+	if ( ! strcmp( NOBODY , bestat->user ) ||
+	    ! strcmp( user , bestat->user ) ) {
+d133 1
+a133 1
+		fprintf( stderr ,
+d135 1
+a135 1
+			, bestat->bename , bestat->idle );
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a16 1
+#include <strings.h>
+d18 1
+a20 5
+
+
+#if defined(SEQ)
+#define strrchr rindex
+#endif
+@

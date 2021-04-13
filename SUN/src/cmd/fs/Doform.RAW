@@ -1,0 +1,5 @@
+DIR={Xinu-directory}
+FORDIR=$DIR/book/formatted
+for i in *.c *.h
+do   expand < $i | sed 's/\\/&&&&/g;s/^\./\\\\\&./' > $FORDIR/$i
+done

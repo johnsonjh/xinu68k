@@ -1,0 +1,66 @@
+
+
+
+GETADDR(2)          Xinu Programmer's Manual           GETADDR(2)
+
+
+
+NAME
+     getaddr - obtain the local machine's Internet (IP) address
+
+SYNOPSIS
+     int getaddr(ip)
+     IPaddr ip;
+
+DESCRIPTION
+     _G_e_t_a_d_d_r obtains the local machine's primary Internet (IP)
+     address and places it in the 4-byte array specified by argu-
+     ment _i_p.  Calling _g_e_t_a_d_d_r may trigger a Reverse Address
+     Resolution Protocol (RARP) broadcast to find the address.
+     If RARP succeeds, the address is kept locally for successive
+     lookup requests.  If RARP fails, _g_e_t_a_d_d_r calls _p_a_n_i_c to halt
+     processing.
+
+SEE ALSO
+     getname(2), getnet(2)
+
+BUGS
+     There is no provision to obtain multiple addresses for
+     machines that connect to multiple networks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

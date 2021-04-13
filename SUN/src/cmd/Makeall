@@ -1,0 +1,17 @@
+: ' makeall  --  make all of src/cmd for Xinu'
+
+PATH=/bin:/usr/bin
+echo
+echo '*** Making commands in {Xinu-directory}/src/cmd'
+make
+make install
+for i in *
+do if test -d $i
+   then cd $i
+	echo
+        echo "*** Making commands in {Xinu-directory}/src/cmd/$i"
+	make
+        make install
+        cd ..
+    fi
+done

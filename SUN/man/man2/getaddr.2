@@ -1,0 +1,22 @@
+.TH GETADDR 2
+.SH NAME
+getaddr \- obtain the local machine's Internet (IP) address
+.SH SYNOPSIS
+.nf
+.B int getaddr(ip)
+.B IPaddr ip;
+.fi
+.SH DESCRIPTION
+.I Getaddr
+obtains the local machine's primary Internet (IP) address and places
+it in the 4-byte array specified by argument \f2ip\f1.
+Calling \f2getaddr\f1 may trigger a Reverse Address Resolution Protocol
+(RARP) broadcast to find the address.
+If RARP succeeds, the address is kept locally for successive lookup
+requests.
+If RARP fails, \f2getaddr\f1 calls \f2panic\f1 to halt processing.
+.SH SEE ALSO
+getname(2), getnet(2)
+.SH BUGS
+There is no provision to obtain multiple addresses for machines that
+connect to multiple networks.

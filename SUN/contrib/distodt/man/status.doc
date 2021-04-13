@@ -1,0 +1,66 @@
+
+
+
+STATUS(1)           UNIX Programmer's Manual            STATUS(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     status - list both frontend and backend status
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ssssttttaaaattttuuuussss
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _S_t_a_t_u_s is really a combination of _f_u_s_e_r_s and _b_u_s_e_r_s. It
+     prints the status of each frontend and its associated back-
+     ends.  For each frontend running a BED server it prints the
+     number of users, the load average, and the number of back-
+     ends.  For each backend connected to the frontend it prints
+     the backend machine's name, the class it belongs to, the tty
+     line it is connected to, the user who has it reserved, and
+     the idle time.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     busers(1), fusers(1)
+
+BBBBUUUUGGGGSSSS
+     _S_t_a_t_u_s lists reservations and idle time based on lock file
+     times which may not be quite accurate.  Machines with more
+     than 10 minutes of idle time are listed even though the
+     reservation software considers the reservation to have
+     expired.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 6/8/88                                                  1
+
+
+

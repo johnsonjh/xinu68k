@@ -1,0 +1,28 @@
+.TH SRESET 2
+.SH NAME
+sreset \- reset semaphore count
+.SH SYNOPSIS
+.nf
+.B int sreset(sem,count)
+.B int sem;
+.B int count;
+.fi
+.SH DESCRIPTION
+.I Sreset
+frees processes in the queue for semaphore
+.I sem,
+and resets its count to
+.I count.
+This corresponds to the operations of sdelete(sem) and
+sem=screate(count), except that it guarantees that the
+semaphore id
+.I sem
+does not change.
+.I Sreset
+returns SYSERR if
+.I sem
+is not a valid semaphore id.
+The current count in a semaphore does not affect
+resetting it.
+.SH SEE ALSO
+scount(2), screate(2), sdelete(2), signal(2), wait(2)

@@ -1,0 +1,726 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  Xinu Programmer's Manual
+
+
+                         Version 6b
+
+
+
+
+
+
+                     (Xinu Is Not Unix)
+
+
+
+
+                         June 1983
+
+
+
+
+
+          This manual contains  a  description  of  the
+     Xinu software.  It has been divided into four sec-
+     tions.  The introduction in  section  0  describes
+     how to use the Xinu software to compile, download,
+     execute, and debug a C program.   Section  0  also
+     contains  a  set  of informal implementation notes
+     that give the flavor of Xinu.  Section 1 gives the
+     details  and  arguments  of cross-development com-
+     mands available on the  host  that  cross-compile,
+     cross-assemble,  cross-load, download, upload, and
+     analyze programs.  Section 2 describes Xinu system
+     procedures  that programs call to invoke operating
+     system services.  Section 3  describes  procedures
+     available  from  the standard libraries.  From the
+     programmer's point of view, there is  little  dis-
+     tinction   between  library  routines  and  system
+     calls.
+
+          As in the UNIX manual, each page describes  a
+     command,  system  call or library routine; section
+     numbers appear in the  page  header  as  "(digit)"
+     following  the  name of the program; within a sec-
+     tion all pages are arranged in alphabetical order.
+     References  have  the  same form as headers (e.g.,
+     "getc(2)" refers to the page for "getc" in section
+     2).
+
+
+
+                     November 26, 1983
+
+
+
+
+
+                           - 2 -
+
+
+_A _S_h_o_r_t _I_n_t_r_o_d_u_c_t_i_o_n _T_o _X_i_n_u _a_n_d _t_h_e _C_r_o_s_s-_D_e_v_e_l_o_p_m_e_n_t _S_o_f_t_w_a_r_e
+
+
+_H_o_w _t_o _U_s_e _X_i_n_u
+
+     _A_r_c_h_i_t_e_c_t_u_r_e.   Xinu  comes  in  two  parts:  a  cross-
+development  environment that runs on the host machine (usu-
+ally a Digital Equipment Corp. VAX), and an independent sys-
+tem that runs on the microcomputer (usually a Digital Equip-
+ment Corporation LSI 11/02).  The microcomputer is connected
+to the host over an asynchronous serial line like those used
+to connect terminals.  From the point of view of  the  host,
+the  microcomputer  is  simply another device that transmits
+and receives characters; from  the  point  of  view  of  the
+micro,  the host is merely a console terminal that transmits
+and receives characters.
+
+     _O_v_e_r_v_i_e_w.  To run a program under Xinu, you create  the
+source   file   on  the  host  machine,  and  invoke  cross-
+development software to compile and load the  program  along
+with the Xinu system.  Once a complete memory image has been
+produced, it can be downloaded onto the microcomputer  where
+it  executes independent of the host.  During execution, you
+invoke a program on the host that captures characters  emit-
+ted  by  the micro and displays them on the terminal screen,
+and sends characters typed at the  keyboard  to  the  micro.
+Thus,  your  terminal  on  the  host appears to be connected
+directly to the micro.  If the micro crashes, it can be res-
+tarted  without downloading (provided the crash did not des-
+troy the program in memory).  To help debug severe  crashes,
+the  contents  of  memory  on the micro can be uploaded to a
+file on the host where a post-mortem program can analyze the
+state and report problems.
+
+     _C_r_o_s_s-_D_e_v_e_l_o_p_m_e_n_t _c_o_m_m_a_n_d_s.  The cross-development sys-
+tem  contains  a  C  compiler,  linking  loader, downloader,
+uploader, and post-mortem debugger as well as a few  miscel-
+laneous  commands.  The details can be found in section 1 of
+this manual.  These commands probably  reside  in  the  Xinu
+"bin"  directory  on your system; the directory name must be
+part of your PATH for you to execute them.  If they are  not
+in  directory  /usr/Xinu/bin, consult whoever installed Xinu
+to find out the bin directory name and add it to your path.
+
+     _C_o_m_p_i_l_i_n_g _p_r_o_g_r_a_m_s.  The command _c_c_1_1  works  like  the
+UNIX  _c_c  command.   It invokes the C cross-compiler, cross-
+assember, and cross-loader to translate C  programs  into  a
+memory  image.   Like  _c_c, the actions of _c_c_1_1 depend on the
+file names passed to it as arguments -- names ending in ".c"
+are  assumed  to  be  C  programs,  those ending in ".s" are
+assumed to be assember programs, and those  ending  in  ".o"
+are  assumed  to  be  previoulsy  compiled  object programs.
+Unless you specify  otherwise,  _c_c_1_1  compiles  C  programs,
+assembles  assembler  programs, and loads object programs to
+
+
+
+Version 6b                11/26/83                         2
+
+
+
+
+
+
+
+
+produce a memory image in file _a._o_u_t.  Normally, the  memory
+image  contains  the  Xinu  operating system along with your
+program (you can ask _c_c_1_1 to leave out the operating  system
+and just prepare a "stand-alone" program).
+
+     _D_o_w_n_l_o_a_d_i_n_g.  Command _d_o_w_n_l_o_a_d reads  file  _a._o_u_t,  and
+loads  the memory image into the microcomputer (it will look
+for the memory image in a different file if you instruct  it
+to  do  so).   Usually, _d_o_w_n_l_o_a_d is invoked with an argument
+"-a5" that  causes  the  microcomputer  to  delay  for  five
+seconds before starting execution of the downloaded program.
+
+     _I_n_t_e_r_a_c_t_i_n_g _w_i_t_h _t_h_e _M_i_c_r_o.  The microcomputer on which
+Xinu  runs is attached to the host like a peripheral device.
+The program _o_d_t "connects" your terminal  to  the  microcom-
+puter  by  relaying  characters between the terminal and the
+device.  Characters that arrive from the micro are  sent  to
+your  terminal,  while characters typed on your keyboard are
+sent to the micro.  _O_d_t can be invoked at any time,  but  it
+is  most often used just after a _d_o_w_n_l_o_a_d so you can see the
+output of the program as it runs.  _O_d_t will halt the  micro-
+computer  for you by "breaking" the console line if you type
+the 2-character sequence  backslash  (\)  followed  by  null
+(CONTROL-@).   To  proceed  again, type uppercase-P (see the
+LSI 11 manual for more information on the "odt" mode).
+
+     _D_e_b_u_g_g_i_n_g _a _c_r_a_s_h.  If the program running on the micro
+crashes, the cause of trouble may not be easy to spot.  Help
+is available from a  post-mortem  debugger,  _p_m.   You  must
+first  execute  command  _u_p_l_o_a_d  to copy the complete memory
+image from the micro into a file on the host.   By  default,
+the  image  file is named _c_o_r_e_1_1.  After the _c_o_r_e_1_1 file has
+been created, run command _p_m to cull through  it  and  print
+out  the  system  status.   _P_m uses both _c_o_r_e_1_1 and _a._o_u_t to
+diagnose the problem (as usual, the actual file names can be
+changed if you don't happen to like them).
+
+_A_n _E_x_a_m_p_l_e
+
+     _C_r_e_a_t_e _a _C _p_r_o_g_r_a_m.  For example, here is a  C  program
+that  prints the string "Hello world." on the console termi-
+nal and exits (_P_r_i_n_t_f is a system (library)  procedure  that
+prints  formatted  strings on the console; other system com-
+mands are described in sections 2 and 3 of this manual):
+
+            /* example C program in file example.c */
+            main()
+            {
+                    printf("Hello world.\n");
+            }
+
+
+     _C_o_m_p_i_l_e _a_n_d _D_o_w_n_l_o_a_d.  Cross-compile the program, down-
+load  it  onto  the  micro, and connect your terminal to the
+
+
+
+Version 6b                11/26/83                         1
+
+
+
+
+
+INTRO(0)          Xinu Programmer's Manual          INTRO(0)
+
+
+micro with the following commands:
+
+            cc11 example.c
+            download -a5
+            odt
+
+The cross-compiler will compile the C program, and  load  it
+along  with  the  Xinu  system,  leaving  file _a._o_u_t in your
+current directory.  The downloader will copy the image  from
+_a._o_u_t  into  the micro and start it executing (after a delay
+of five seconds).  During downloading, you will see a  count
+of  the bytes remaining as blocks are transferred.  Finally,
+_o_d_t will connect your terminal to the  micro  (the  5-second
+delay leaves time for the VAX to start _o_d_t).  When the micro
+begins execution you will see a few Xinu system startup mes-
+sages  followed  by  the  program  output.  When all of your
+processes complete (in this case, when  the  single  program
+terminates), you will see a system termination message.  The
+output is:
+
+            Xinu Version 6.09b 3/1/83
+            57346 real mem
+            21268 avail mem
+            clock enabled
+
+            Hello world.
+
+            All user processes have completed.
+
+
+     _R_e-_r_u_n _t_h_e _p_r_o_g_r_a_m.   To  re-run  the  program  without
+downloading the micro again, type:
+
+            \CONTROL-@
+            1000G
+
+The 2-character  sequence  backslash  (\)  null  (control-@)
+causes  _o_d_t  to  halt the LSI 11 and place it in "ODT" mode.
+The LSI 11 responds with an at-sign  prompt.   The  sequence
+"1000G"  starts  the  machine  executing  at  location  1000
+(octal).  To get out of _o_d_t, kill the process by typing  the
+"DELETE" key.  Note that killing _o_d_t does not stop the micro
+-- it merely disconnects your terminal.
+
+     _U_p_l_o_a_d _t_h_e _m_e_m_o_r_y.  You may want to see what  processes
+are  (were)  running.   To  retrieve  the  memory  image and
+analyze it, run the commands:
+
+
+            upload
+            pm
+
+Warning: _u_p_l_o_a_d destroys the contents of memory on the micro
+as it executes, so the micro cannot be restarted again after
+
+
+
+Version 6b                11/26/83                         2
+
+
+
+
+
+INTRO(0)          Xinu Programmer's Manual          INTRO(0)
+
+
+uploading.  Also note that if you interrupt (i.e. kill)  the
+uploader and then restart it, the image it retrieves will be
+incorrect.
+
+     _I_n_t_e_r_p_r_e_t_i_n_g _p_m.  _P_m reports things  like  whether  the
+program  text  has  been changed and the status of each pro-
+cess.  If the output from _p_m seems unreasonable,  check  for
+the following common errors.  If significant portions of the
+program have been changed, it  may  mean  a  stack  overflow
+occurred;  totally  meaningless  process  information  often
+indicate that the overflow extended into the process  table.
+Having  only  one  or two bad process states in an otherwise
+meaningful set may indicate that the context switch ended up
+with no ready or current processes; this only happens if you
+modify the system code or add your own device driver.   When
+experimenting  with  device  drivers,  look carefully at the
+status of the null process after a crash -- if you  find  it
+sleeping, waiting, receiving, or suspended then you probably
+have a lower-half driver routine that removes the null  pro-
+cess from the current/ready lists.
+
+     _S_y_s_t_e_m _T_e_r_m_i_n_a_t_i_o_n.  Xinu may not always print the sys-
+tem  termination  message  even  if all your processes exit,
+because it interprets the term "user process" to  mean  "all
+processes  except  the  null process." This can be confusing
+because the network software  starts  processes  that  never
+terminate  (they  continue forwarding frames even if the CPU
+is otherwise idle).  Also remember that the tty driver  will
+continue  to  echo characters even if there are no processes
+running to consume them.
+
+     _H_i_n_t_s _o_n _r_e_s_t_a_r_t_i_n_g.  The LSI 11 ODT command 1000G sets
+the program counter to 1000 and starts execution with inter-
+rupts _e_n_a_b_l_e_d.  Xinu disables interrupts  immediately  after
+it  starts  executing  to avoid being interrupted before the
+system is ready.  If an interrupt occurs before the  LSI  11
+can execute the first instructon, it may cause the system to
+crash (ungracefully).  If your processor gives  you  trouble
+with the "G" command, then type the following three lines to
+restart Xinu:
+
+            RS/xxxxxx 340
+            R7/xxxxxx 1000
+            P
+
+The LSI 11 will print  octal  values  in  place  of  xxxxxx.
+Note: no carriage return is used after the "P" command (con-
+sult the LSI 11 manual for more information).
+
+
+
+
+
+
+
+
+
+Version 6b                                                 3
+
+
+
+
+
+
+
+
+                 _X_i_n_u _I_m_p_l_e_m_e_n_t_a_t_i_o_n _N_o_t_e_s
+                 Updated 1/82, 3/82, 11/82.
+
+     These are the notes kept  during  implementation;  they
+are  not  designed  as an accurate introduction to Xinu.  In
+particular, deferred operations implemented with _p_m_a_r_k  have
+disappeared from the book version even though they remain in
+version 5.
+
+Some quick ideas:
+
+-  There are multiple processes.
+
+-  A process is known by its process id.
+
+-  The process id is an index into the process table.
+
+-  There are counting semaphores.
+
+-  A semaphore is known by its index in the semaphore table.
+
+-  There is a line time clock.
+
+-  The system schedules processes based on priority.
+
+-  The system supports I/O.
+
+-  For tty I/O characters are queued on  input  and  output.
+   The normal mode includes echoing, erasing backspace, etc.
+
+-  There is a frame-level data link  communications  package
+   to make a ring of LSI 11's.
+
+-  There is a file system that supports concurrent growth of
+   files  without  preallocation; it has only a single-level
+   directory sturcture.
+
+-  There is a one-word message passing mechanism.
+
+-  There is support for self-initializing  routines  (memory
+   marking) that  makes the system serially reusable without
+   requiring the kernel to  explicitly  call  initialization
+   routines.
+
+-  Processes can create processes, kill  processes,  suspend
+   processes,  restart processes, and change the priority of
+   processes.
+
+-  There is no real memory management, but there are  primi-
+   tives  for acquiring and returning memory from the global
+   pool, and a way to suballocate smaller  pools  of  fixed-
+   size buffers.
+
+-  There is a configuration program, config, to  generate  a
+
+
+
+Version 6b                11/26/83                         1
+
+
+
+
+
+NOTES(0)          Xinu Programmer's Manual          NOTES(0)
+
+
+   Xinu system according to specifications given.
+
+Discussion of implementation:
+
+
+0. Files.  The system sources are organized as a set of pro-
+   cedures.   For  the  most  part, there is a file for each
+   system call (e.g., chprio.c for the system call  chprio).
+   In  addition  to  the  system call procedures, a file may
+   contain utility functions needed  by  that  system  call.
+   Files which do not correspond to system calls are:
+
+
+   Configuration
+      The file of device and constant information as  edited
+      by  the user to describe the hardware; the config pro-
+      gram takes this file and produces  conf.c  and  conf.h
+      files.
+
+   conf.h
+      Generated constants including I/O and size  constants;
+      do not edit directly.
+
+   conf.c
+      Generated file of initialized variables; do  not  edit
+      directly.
+
+   kernel.h
+      General symbolic constants; misc defined macros.
+
+   proc.h
+      Process table entry structure declaration; state  con-
+      stants.
+
+   sem.h
+      Semaphore table entry structure declaration; semaphore
+      constants.
+
+   io.hGeneral user-level I/O definitions.
+
+   slu.h
+      Serial Line Unit CSR layout; I/O constants for slu's.
+
+   tty.h
+      tty line discipline control block, buffers,  excluding
+      sizes.
+
+   dlc.h
+      line discipline control block for asynchronous  device
+      used as network interface.
+
+   disk.h
+      disk driver control block.
+
+
+
+
+Version 6b                11/26/83                         2
+
+
+
+
+
+NOTES(0)          Xinu Programmer's Manual          NOTES(0)
+
+
+   dtc.h
+      Digital Technology Corp. SASI disk interface  hardware
+      register layouts.
+
+   xebec.h
+      Xebec Corp. SASI disk controller register layouts.
+
+   frame.h
+      Xinu ring network frame format definitions.
+
+   bufpool.h
+      Buffer pool constants and format.
+
+   mark.h
+      Memory marking table declarations.
+
+   mem.h
+      Memory management free list format declarations.
+
+   ports.h
+      Definitions for communications ports (queued interpro-
+      cess rendevous points).
+
+   sleep.h
+      Definitions for real-time delay software.
+
+   dir.h
+      Layout of disk directory block.
+
+   iblock.h"
+      Layout of index block (i-block).
+
+   file.h
+      Definitions of variables and  constants  used  by  the
+      local file system routines.
+
+   q.hq data structure declaration (see below); defined mac-
+      ros for q predicates.
+
+   queue.c
+      q manipulation routines.
+
+   resched.c
+      Almost  the  inner  most  routine  (rescheduler).   It
+      selects  the  next process to run from the ready queue
+      and fixes up the state.  Calls ctxsw  to  switch  con-
+      texts.
+
+   cxtsw.s
+      The routine that actually changes the  executing  pro-
+      cess  into  another one.  A very small piece of assem-
+      bler code with only  one  trick:  when  a  process  is
+      saved,  the  execution address at which it restarts is
+      actually the instruction following the call to ctxsw.
+
+
+
+Version 6b                11/26/83                         3
+
+
+
+
+
+NOTES(0)          Xinu Programmer's Manual          NOTES(0)
+
+
+   lowcore.s
+      The loaded version of the low part of  memory  (inter-
+      rupt  vectors).  All interrupt vectors are initialized
+      by  the  loader  to  point  to  panic  routines,   and
+      overwritten for valid devices at startup.
+
+   ioint.s
+      I/O interrupt dispatchers.
+
+   startup.s
+      Actual entry point (start) with code to set up C  run-
+      time environment and call high-level initialization.
+
+   initialize.c
+      All external  (global)  variables,  the  null  process
+      (process 0, see below), and the high-level system ini-
+      tialization routine (e.g., to craft the process  table
+      entry for process 0).
+
+   userret.c
+      The routine to which user processes return (i.e. exit)
+      if they ever do.  Care should be taken so that userret
+      never exits; it must kill the  process  that  runs  it
+      because there is no legal return frame on the stack.
+
+   sizmem.s
+      Utility procedure to size main memory.
+
+
+
+1. Process states.  Each process has a state  given  by  the
+   pstate  field  in  the  process  table  entry.  The state
+   values are given by symbolic  constants  PRxxxx.   PRFREE
+   means  that  the  process entry is unused.  PRREADY means
+   that the process is linked into the  ready  list  and  is
+   eligible  for  the CPU.  PRWAIT means that the process is
+   waiting on a semaphore (given  by  psem).   PRSUSP  means
+   that  the  process  is  in  hibernation; it is not on any
+   list.  PRSLEEP means that the process is in the queue  of
+   sleeping  processes waiting to be awakened.  PRCURR means
+   that the process is (the  only  one)  currently  running.
+   The  currently  running process is NOT on the ready list.
+   In addition to the actual state, there is a "mark"  field
+   (pmark)  which  indicates  pending state changes.  PMDEAD
+   indicates that the process has been killed and should  be
+   removed  as  soon  as it reaches the ready queue.  PMSUSP
+   indicates that the process has been suspended and  should
+   move  to  the  suspended  state as soon as it reaches the
+   ready queue.  PMNONE indicates no pending action.
+
+2. Semaphores.  Semaphores reside in the array semaph.  Each
+   entry  in  the array corresponds to a semaphore and has a
+   count (scount), and state (sstate).  The state  is  SFREE
+   if  the  semaphore  slot  is  unassigned,  SUSED  if  the
+
+
+
+Version 6b                11/26/83                         4
+
+
+
+
+
+NOTES(0)          Xinu Programmer's Manual          NOTES(0)
+
+
+   semaphore is in use.  If the count is -p then the  sqhead
+   and  sqtail  fields  point to a FIFO queue of p processes
+   waiting for the semaphore.  If the count is nonnegative p
+   then  no  processes are waiting.  More about the head and
+   tail pointers below.
+
+3. Suspension.  Suspended processes are forbidden from using
+   the CPU.  They may remain on semaphore/sleep queues until
+   they are to be moved to  the  ready  queue.   A  call  to
+   ready(p),  where  p  has  been marked suspended, will NOT
+   place it on the ready queue.  It will merely result in  p
+   being  placed  in the suspended state.  Suspending a pro-
+   cess that is already on the ready queue will  remove  it.
+   Suspending the current processes forces it to give up the
+   CPU.
+
+4. Sleeping.  When a  process  calls  sleep(n)  it  will  be
+   delayed  n seconds.  This is achieved by placing the pro-
+   cess on a queue of jobs ordered by wakeup time and relin-
+   quishing  the  CPU.   Every 60th of a second, an external
+   line-time clock will interrupt the CPU and cause a  clock
+   interrupt routine to be called.  To avoid extra overhead,
+   5 such interrupts are ignored before  one  is  processed.
+   Thus,  the  granularity  of  clock  counts  is  1/10 of a
+   second.  The interrupt  handler  maintains  a  clock  and
+   moves processes back to the ready queue when their wakeup
+   time has been reached.  Notice that  a  process  may  put
+   itself, but no one else, to sleep.
+
+5. Queues and ordered lists.  There is  one  data  structure
+   for  all heads, tails, and elements of queues or lists of
+   processes: q[].  The first  NPROC  entries  in  q  (0  to
+   NPROC-1) correspond to the NPROC processes.  If one wants
+   to link process i onto a queue or  list,  then  one  uses
+   q[i].qnext  and  q[i].qprev  as  the forward and backward
+   pointers.
+
+   The remaining entries in q are used  for  the  heads  and
+   tails  of  lists.  The integer nextqueue always points to
+   the next available entry in q to assign.  When initialize
+   builds  the  heads and tails of various lists, it assigns
+   entries in q sequentially.  Thus, the sqhead  and  sqtail
+   fields  of a semaphore are really the indices of the head
+   and tail of the list in q.  The advantage of keeping  all
+   heads  and  tails  in  the  same  data  structure is that
+   enqueueing, dequeuing, testing  for  empty/nonempty,  and
+   removing  from the middle (eg., when a process is killed)
+   are all handled by  a  small  set  of  simple  procedures
+   (files queue.c and q.h).  An empty queue has the head and
+   tail pointing to each other.  Since all real  items  have
+   index  less  than  NPROC, testing whether a list is empty
+   becomes trivial.  In addition to FIFO queues, q also con-
+   tains  ordered lists based on an integer kept in the qkey
+   field.  For example, processes are inserted in the  ready
+
+
+
+Version 6b                11/26/83                         5
+
+
+
+
+
+NOTES(0)          Xinu Programmer's Manual          NOTES(0)
+
+
+   list  (head at position q[rdylist]) based on their prior-
+   ity.  They are inserted in the sleep list based on wakeup
+   time.   Ordered  lists are always in ascending order with
+   the inserted item stuck in BEFORE  those  with  an  equal
+   key.   Thus,  processes  are  removed from the ready list
+   from the tail to get the highest priority process.  Also,
+   processes  of  equal  priority are scheduled round robin.
+   Since the sleep queues are serviced from the smallest  to
+   largest  keys,  items  are  removed  from the head of the
+   queue (equal keys do not matter for sleeps).
+
+6. Process 0.  Process 0 is a null process  that  is  always
+   available  to  run  or is running.  Care must be taken so
+   that process 0 never executes code that could  cause  its
+   suspension  (e.g. it cannot wait for a semaphore).  Since
+   Process 0 may be running during  interrupts,  this  means
+   that interrupt code may never wait for a semaphore.  Pro-
+   cess 0 initializes the system,  creates  the  first  user
+   process,  starts  it executing the main program, and goes
+   into  an  infinite  loop  waiting  until  an   interrupt.
+   Because its priority is lower than that of any other pro-
+   cess, the null process loop executes only when  no  other
+   process  is  ready.   It  uses  a pause instruction while
+   waiting to avoid taking bus cycles just in case dma  dev-
+   ices are running.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b                11/26/83                         6
+
+

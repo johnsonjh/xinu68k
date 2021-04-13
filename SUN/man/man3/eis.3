@@ -1,0 +1,104 @@
+.TH EIS 3
+.SH NAME
+EIS \- extended instruction set for the LSI-11/2
+.SH SYNOPSIS
+.B jsr pc,times2
+.br
+.B jsr pc,over2
+.br
+.B jsr pc,shift2
+.br
+.B jsr pc,cshft2
+.SH DESCRIPTION
+Library \f2eis.a\f1 contains assembly language routines to simulate
+LSI-11 multiply, divide, arithmetic shift, 
+and arithmetic shift combined instructions.
+Normally,
+an assembly language listing should be filtered through the
+programs
+.I subMUL,
+.I subDIV,
+.I subASH,
+and
+.I subASHC 
+to replace any of the extended instructions with the
+proper calling sequence.
+The resulting assembly language program must be loaded with
+this library, which contains the routines called.
+.LP
+These routines do
+.I not
+use the C calling conventions. The multiply routine is called by:
+.ta 2L 8L 18L
+.nf
+	mfps	-(sp)	/ push psw
+	mov	A,-(sp)	/ push multiplier
+	mov	R,-(sp)	/ push multiplicand
+	jsr	pc,times2	/ call mul simulation routine
+	mov	(sp)+,R	/ save low word of product
+	mov	(sp)+,R+1	/ save high word of product
+	mtps	(sp)+	/ put in new psw
+.fi
+.aj
+where the instruction being mimicked is "mul A,R" and R is an
+even-numbered register (if R is odd, change the "mov (sp)+,R" to
+"tst (sp)+" and the "mov (sp)+,R+1" to "mov (sp)+,R").
+.LP
+The division routine is called by:
+.ta 2L 8L 18L
+.nf
+	mfps	-(sp)	/ push psw
+	mov	A,-(sp)	/ push divisor
+	mov	R,-(sp)	/ push high word of dividend
+	mov	R+1,-(sp)	/ push low word of dividend
+	jsr	pc,over2	/ call div simulation routine
+	mov	(sp)+,R+1	/ save remainder
+	mov	(sp)+,R	/ save quotient
+	tst	(sp)+	/ reset stack pointer
+	mtps	(sp)+	/ put in new psw
+.fi
+.aj
+where the instruction being mimicked is "div A,R".
+.LP
+The arithmetic shift routine is called by:
+.ta 2L 8L 18L
+.nf
+	mfps	-(sp)	/ get psw
+	mov	A,-(sp)	/ push shift count onto the stack
+	mov	r0,-(sp)	/ push number to be shifted onto the stack
+	jsr	pc,shift2	/ call the simulation routine
+	mov	(sp)+,r0	/ save the result
+	tst	(sp)+	/ reset stack pointer
+	mtps	(sp)+	/ put in new psw
+.fi
+.aj
+where the instruction being mimicked is "ash A,R".
+The arithmetic shift combined routine is called by:
+.ta 2L 8L 18L
+.nf
+	mfps	-(sp)	/ get psw
+	mov	A,-(sp)	/ push shift count onto the stack
+	mov	r0,-(sp)	/ push high word onto the stack
+	mov	r1,-(sp)	/ push low word onto the stack
+	jsr	pc,shift2	/ call the simulation routine
+	mov	(sp)+,r1	/ save the low word
+	mov	(sp)+,r0	/ save the high word
+	tst	(sp)+	/ reset stack pointer
+	mtps	(sp)+	/ put in the new psw
+.fi
+.aj
+where the instruction being mimicked is "ashc A,R".
+.SH FILES
+{Xinu-directory}/lib/libeis.a
+.br
+{Xinu-directory}/bin/subMUL
+.br
+{Xinu-directory}/bin/subDIV
+.br
+{Xinu-directory}/bin/subASH
+.br
+{Xinu-directory}/bin/subASHC
+.SH SEE ALSO
+cc11(1), subEIS(1)
+.SH DIAGNOSTICS
+The condition codes are correctly set by the above calling sequence.

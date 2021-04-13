@@ -1,0 +1,3 @@
+Dev= 3: lport= 513, fport=   0, mode=002, xport=18 addr=128.10.2.8
+Dev= 4: lport=   7, fport=   0, mode=001, xport=17 addr=0.0.0.0
+Dev= 5: lport=2052, fport=2001, mode=042, xport=16 addr=128.10.2.88

@@ -1,0 +1,24 @@
+.TH CVT 1
+.SH NAME
+cvt \- Convert disable/restore assembler macros to standard assembler
+.SH SYNOPSIS
+.B cvt \f2infile\f1
+.SH DESCRIPTION
+.I Cvt
+is a special-purpose filter used to convert nonstandard assembler
+language code to standard form.
+The nonstandard code arises from the \f2disable\f1 and \f2restore\f1
+macro definitions, which insert literal text into the assembler
+language output of \f2cc11\f1 without resolving symbolic references.
+When invoked, \f2cvt\f1 reads the assembler language contained in
+\f2infile\f1, remembering the offset of the local variable \f2ps\f1.
+It replaces symbolic references to \f2ps\f1 with the correct offset.
+.PP
+\f2Cvt\f1 detects possible misuse of \f2disable\f1 and \f2restore\f1
+by returning a nonzero exit code if it finds references to local
+variable \f2ps\f1 without finding a definition.
+.SH BUGS
+When multiple procedures have been compiled into one assembler file,
+\f2cvt\f1 may fail to detect missing declarations of \f2ps\f1
+in later procedures because it treats the entire input file as a
+single text file.

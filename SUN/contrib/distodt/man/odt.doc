@@ -1,0 +1,132 @@
+
+
+
+ODT(1)              UNIX Programmer's Manual               ODT(1)
+
+
+
+NNNNAAAAMMMMEEEE
+     odt - connect user's terminal to a backend SUN's console
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ooooddddtttt [ option ] ...
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     _O_d_t connects a terminal on the SUN (or VAX) to a backend
+     SUN's console line so the output of the backend SUN appears
+     on the terminal screen and characters typed at the keyboard
+     are sent to the backend SUN.  _O_d_t sets the backend SUN's tty
+     line to raw mode, and the SUN (or VAX) terminal to cbreak
+     mode.  The connection can be broken by killing the odt pro-
+     cess (e.g., by typing the interrupt character (e.g.,
+     CONTROL-C).
+
+     When _o_d_t receives a backslash from the terminal, it switches
+     to raw mode to read one character, after which it switches
+     back to cbreak mode.  The backslash escape allows the user
+     to send characters like CONTROL-C to the backend SUN even
+     though they are normally interpreted as signals.  As a spe-
+     cial case, an escaped null character (octal 0) causes _o_d_t to
+     force the backend SUN line into a break condition for 1
+     second.  This is useful for halting the processor and trap-
+     ping to the SUN monitor program.
+
+     Options are:
+
+     ----cccc_C_L_A_S_S
+          Class. Connect to a machine in the class _C_L_A_S_S if one
+          is available.  The default class is SUN.  If the user
+          already has a machine reserved in the class _C_L_A_S_S, then
+          the reserved machine will be used. If no machines are
+          available in the specified class then a message to that
+          effect will be printed.
+
+     ----mmmm_M_A_C_H
+          Machine.  Use the backend SUN named _M_A_C_H if it is
+          available.  A user may now reserve two or more machines
+          at once.  The first machine they reserve will not
+          automatically be released like the original version of
+          the software used to do.  Moreover,  the tty line and
+          the user name are used to make a reservation.  This
+          means that a user can odt to two different backend
+          machines from two different windows on his workstation,
+          and the reservation system will remember which window
+          is associated with each backend.  If you want to odt to
+          two different backends from the same window, then you
+          must specify the desired backend each time, or the
+          reservation system will automatically odt to the back-
+          end that you used most recently in that window.  If
+          machine _M_A_C_H is unavailable, then a message to that
+
+
+
+Printed 1/16/89                                                 1
+
+
+
+
+
+
+ODT(1)              UNIX Programmer's Manual               ODT(1)
+
+
+
+          effect will be printed.
+
+     ----vvvv   Verbose.  The verbose option will print messages indi-
+          cating what the program is currently doing.
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     busers(1), download(1), odtunlock(1)
+
+FFFFIIIILLLLEEEESSSS
+     /tmp/xinu/*   Local lock files.  Named by user's login id
+     /usr/xinu/database/bedservers  List of BED servers if on
+                                    on remote net
+
+BBBBUUUUGGGGSSSS
+     Avoid suspending odt (CONTROL-Z) if possible since it will
+     leave the terminal line in cbreak mode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 1/16/89                                                 2
+
+
+

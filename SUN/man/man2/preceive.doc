@@ -1,0 +1,66 @@
+
+
+
+PRECEIVE(2)         Xinu Programmer's Manual          PRECEIVE(2)
+
+
+
+NAME
+     preceive - get a message from a port
+
+SYNOPSIS
+     char *preceive(portid)
+     int portid;
+
+DESCRIPTION
+     _P_r_e_c_e_i_v_e retrieves the next message from the port _p_o_r_t_i_d,
+     returning a pointer to the message if successful, or SYSERR
+     if _p_o_r_t_i_d is invalid.  (The sender and receiver must agree
+     on a convention for passing the message length.)
+
+     The calling process is blocked if there are no messages
+     available (and reawakened as soon as a message arrives).
+     The only ways to be released from a port queue are for some
+     other process to send a message to the port with PSEND(2) or
+     for some other process to delete or reset the port with
+     PDELETE(2) or PRESET(2).
+
+SEE ALSO
+     pcount(2), pcreate(2), pdelete(2), preset(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

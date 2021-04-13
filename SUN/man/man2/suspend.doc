@@ -1,0 +1,66 @@
+
+
+
+SUSPEND(2)          Xinu Programmer's Manual           SUSPEND(2)
+
+
+
+NAME
+     suspend - suspend a process to keep it from executing
+
+SYNOPSIS
+     int suspend(pid)
+     int pid;
+
+DESCRIPTION
+     _S_u_s_p_e_n_d places process _p_i_d in a state of hibernation.  If
+     _p_i_d is illegal, or the process is not currently running or
+     on the ready list, _s_u_s_p_e_n_d returns SYSERR.  Otherwise it
+     returns the priority of the suspended process.  A process
+     may suspend itself, in which case the call returns the
+     priority at which the process is resumed.
+
+     Note that hibernation differs from sleeping because a hiber-
+     nating process can remain on I/O or semaphore queues.  A
+     process can put another into hibernation; a process can only
+     put itself to sleep.
+
+SEE ALSO
+     resume(2), sleep(2), send(2), receive(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

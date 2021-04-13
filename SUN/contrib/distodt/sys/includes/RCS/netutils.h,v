@@ -1,0 +1,45 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	91.11.25.02.06.50;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@
+/* 
+ * netutils.h - Header file for network utilitie routines
+ * 
+ * Author:	Tim Korb/Shawn Oostermann/Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 10 16:06:18 1988
+ *
+ * Copyright (c) 1988 Tim Korb/Shawn Oostermann/Jim Griffioen
+ */
+
+#define lsa (sizeof (struct sockaddr_in))
+
+char *IaToSb ();
+char *GetHostName ();
+struct sockaddr_in *FdToRemoteSa ();
+struct sockaddr_in *FdToLocalSa ();
+
+#define canceltimer()	alarm(0)	/* turn timer off		*/
+#define settimer(t)	alarm(t)	/* set the timer		*/
+
+@

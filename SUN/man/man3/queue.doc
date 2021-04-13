@@ -1,0 +1,132 @@
+
+
+
+QUEUE(3)            Xinu Programmer's Manual             QUEUE(3)
+
+
+
+NAME
+     queue - q-structure predicates and list manipulation pro-
+     cedures
+
+SYNOPSIS
+     #include <q.h>
+
+     int enqueue(proc, tail)
+     int dequeue(proc)
+     int firstid(head)
+     int firstkey(head)
+     int getfirst(head)
+     int getlast(tail)
+     int insert(proc, head, key)
+     int insertd(proc, head, key)
+     Bool isempty(head)
+     int lastkey(tail)
+     Bool nonempty(head)
+
+     int head, tail;
+     int proc;
+     int key;
+
+DESCRIPTION
+     The _q structure holds doubly-linked lists of processes,
+     including lists of processes that are ready, sleeping, and
+     waiting on a semaphore.  These routines manipulate lists in
+     the _q structure as follows.
+
+     enqueue
+          Add a process to a FIFO list given the process id in
+          argument _p_r_o_c and the _q index of the tail of the list
+          in argument _t_a_i_l.  _E_n_q_u_e_u_e returns argument _p_r_o_c to its
+          caller.
+
+     dequeue
+          Remove a process from a list given the process id.  The
+          list on which the process is found need not be speci-
+          fied because it can be determined from the _q structure.
+          _D_e_q_u_e_u_e will remove a process from both FIFO and
+          ordered lists.  It returns its argument to the caller.
+
+     firstid
+          Return the process id of the first process on a list
+          given the _q index of the list head in argument _h_e_a_d.
+
+     firstkey
+          Return the integer key associated with the first entry
+          on a list given the _q index of the list in argument
+          _h_e_a_d.
+
+     getfirst
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+QUEUE(3)            Xinu Programmer's Manual             QUEUE(3)
+
+
+
+          Remove the first process from a list and return its
+          process id given the _q index of the head of the list in
+          argument _h_e_a_d.  _G_e_t_f_i_r_s_t returns EMPTY if the list is
+          empty, and a process id otherwise.
+
+     getlast
+          Remove the last process on a list and return its pro-
+          cess id given the _q index of the tail of the list in
+          argument _t_a_i_l.  _G_e_t_l_a_s_t returns EMPTY if the list is
+          empty, and a process id otherwise.
+
+     insert
+          Insert a process into an ordered list given the process
+          id in argument _p_r_o_c, the _q index of the head of the
+          list in argument _h_e_a_d, and an integer key for the pro-
+          cess in argument _k_e_y.  Ordered lists are always ordered
+          by increasing key values.  _I_n_s_e_r_t returns OK.
+
+     insertd
+          Insert a process in a delta list given the process id
+          in argument _p_r_o_c, the _q index of the head of the list
+          in argument _h_e_a_d, and an integer key in argument _k_e_y.
+          _I_n_s_e_r_t_d returns OK.
+
+     isempty
+          Return TRUE if there are no processes on a list, FALSE
+          otherwise, given the _q index of the head of the list in
+          argument _h_e_a_d.
+
+     lastkey
+          Return the key of the last process in a list given the
+          _q index of the tail of the list in argument _t_a_i_l.
+
+     nonempty
+          Return TRUE if there is at least one process on a list,
+          FALSE otherwise, given the _q index of the head of the
+          list in argument _h_e_a_d.
+
+BUGS
+     Most of these routines do not check for valid arguments or
+     valid lists.  Also, they assume interrupts are disabled when
+     called, and will corrupt the list structure if the caller
+     fails to disable interrupts.
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

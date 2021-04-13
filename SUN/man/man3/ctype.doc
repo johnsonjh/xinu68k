@@ -1,0 +1,132 @@
+
+
+
+CTYPE(3)            Xinu Programmer's Manual             CTYPE(3)
+
+
+
+NAME
+     ctype - character type predicates and manipulation routines
+
+SYNOPSIS
+     #include <ctype.h>
+
+     isalpha(c)
+     ...
+     toascii(c)
+     tolower(c)
+     toupper(c)
+     char c;
+
+DESCRIPTION
+     Routines beginning with _i_s are predicates that classify the
+     type of a character.  Routines beginning with _t_o convert
+     characters.  Each predicate returns _T_R_U_E if the condition is
+     satisfied, and _F_A_L_S_E otherwise.  In the current implementa-
+     tion, predicates are macros that use table lookup for effi-
+     ciency.
+
+     _i_s_a_l_n_u_m        _c is an alphanumeric character (i.e., a
+                    letter or digit)
+
+     _i_s_a_l_p_h_a        _c is a lower- or upper-case letter
+
+     _i_s_a_s_c_i_i        _c is an ASCII character, code less than 0200
+
+     _i_s_c_n_t_r_l        _c has a value less than octal 040 or is a DEL
+                    (octal value 0177).
+
+     _i_s_d_i_g_i_t        _c is a digit.
+
+     _i_s_l_o_w_e_r        _c is a lower case letter.
+
+     _i_s_p_r_i_n_t        _c is a printable character with octal value
+                    040 (blank) through 0176 (tilde).
+
+     _i_s_p_r_s_h_o_r_t      _c is a printable short.
+
+     _i_s_p_u_n_c_t        _c is a punctuation character (neither control
+                    nor alphanumeric).
+
+     _i_s_s_p_a_c_e        _c is a space, tab, carriage return, newline,
+                    or formfeed.
+
+     _i_s_u_p_p_e_r        _c is an upper case letter.
+
+     _i_s_x_d_i_g_i_t       _c is a hexadecimal digit (i.e., is 0-9 or a-
+                    f).
+
+     _t_o_a_s_c_i_i        Converts _c to an ascii by turning off high-
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+CTYPE(3)            Xinu Programmer's Manual             CTYPE(3)
+
+
+
+                    order bits.
+
+     _t_o_l_o_w_e_r        Converts argument _c from upper to lower case.
+
+     _t_o_u_p_p_e_r        Converts argument _c from lower to upper case.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

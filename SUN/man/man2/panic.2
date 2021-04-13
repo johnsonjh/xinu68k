@@ -1,0 +1,34 @@
+.TH PANIC 2
+.SH NAME
+panic \- abort processing due to severe error
+.SH SYNOPSIS
+.nf
+.B int panic(message)
+.B char *message;
+.fi
+.SH DESCRIPTION
+.I Panic
+will print the character string
+.I message
+on the console, dump the machine registers and top few stack locations,
+and halt the processor.
+It uses
+.I kprintf
+rather than
+.I printf,
+so it may be called anywhere in
+the kernel (e.g., from an interrupt routine that may be executed
+by the null process).
+Typing
+.B P
+after the processor halts will cause panic to restore the machine
+state and continue, so it is
+possible to examine locations with ODT after the processor halts, and
+still restart processing.
+.PP
+There are alternate entry points to
+.I panic
+that are invoked by branch to location zero, illegal interrupts,
+or processor exceptions (traps).
+.SH SEE ALSO
+kprintf(3), printf(3)

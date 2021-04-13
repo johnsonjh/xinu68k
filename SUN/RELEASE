@@ -1,0 +1,149 @@
+To: xinu-info
+Cc: sdo
+Subject: Sun3 Version 7
+Date: Thu, 03 Mar 88 23:13:32 EST
+From: sdo
+
+
+Version 7 Xinu for the Sun 3-50 is now available.  All of the code
+from the original LSI version, documented in Dr. Comer's second Xinu
+book, has been ported over.  
+
+In addition to all of the routines and libraries of version 6, Sun3-50
+Version 7 Xinu includes the following:
+    Networking code
+        Uses AMD LANCE ethernet controller in the Sun 3-50
+        Standard IP protocols
+        Unix compatible ruptime & rwho daemons
+        UDP echo server
+        Xinu remote file system and Unix stateless server support code
+        Uses Domain name server
+        Uses time server
+        Uses ARP and RARP protocols
+        Good basis for networking projects
+        
+    Built-in shell
+        Access to remote files
+        Commands to list and copy files
+        Syntactic namespace
+        Simple date / time type programs as examples
+        
+
+Like version 6, it runs on Sun 3-50's, arranged in frontend - backend
+pairs, and uses the standard Sun C compiler, linker, etc.
+
+We are currently using the original distribution, Version 6 Sun3, for
+our operating systems class, and are now satisfied with the soundness
+of the basic code.  The low level network device driver code is new,
+but has been working well for several months.  The upper level network
+code is nearly identical to that in the original LSI version.
+
+Two fixes have been made that make this version slightly different
+from the code distributed as Version 6 Sun3:
+
+1) The enable() and disable() interrupt level manipulating macros have
+   been rewritten as assembly language subroutines.  This allows the
+   optimizing compiler to be used.  Also, both routines now take
+   the (ps) argument, which was missing (and missed) in Version 6.
+
+2) Watchdog clock routine.  Since the only was to "get hold" of the
+   machine once it's running is to send a break down the serial line,
+   and serial line interrupts are disabled with the disable() system
+   call, student code (at least MY students' code) was notorious for
+   leaving interrupts disabled and locking up the machines.  A clock
+   watchdog has been added to halt the machine when interrupts are
+   disabled for too long (15 seconds).  This may not sound like much
+   to you, but after you've trudged over to the lab at midnight to
+   reboot all the Suns after some student locked them ALL up from
+   remote login, you'll appreciate it!!!   (-:
+
+
+Technically, the code is provided on an as-is basis.  However, since I
+anticipate using it for class work and experimentation in the very
+near future, I'll be happy to accept bug reports and (better still!)
+fixes.
+
+Things in the works:
+1) Distributed downloader/uploader/odt package.  This will allow a
+   virtual pairing between any frontend and any backend machine based
+   on preference, load, or availability.  When this is done, the usual
+   LSI commands like lusers, odtunlock, upload, etc, will return to the
+   scene.  This should be done by the end of the semester, and will be
+   available to interested parties by request.
+
+2) Virtual memory Xinu!!
+   Preliminary work is being done in a graduate seminar this semester.
+   Stay tuned....
+
+
+Shawn Ostermann
+================================
+Following is a (liberally edited) copy of the official how-to and whom-to
+notice for ordering the tapes:
+
+                      Xinu Types and Price List (March 1988)
+ 
+
+Target     Xinu           Host Compiler     Media          Price   Make Check
+Machine    Version        Operating System                         Payable To
+-----------------------------------------------------------------------------
+LSI *      6 (Book I)     Cross Compiler    1600 BPI       $100  Douglas Comer
+                          Included          9-Track UNIX
+                          4.3BSD UNIX       Tar Tape
+
+LSI *      7 (Book II)    Cross Compiler    1600 BPI       $200  Douglas Comer
+                          included          9-Track UNIX
+                          4.3BSD UNIX       Tar Tape
+______________________________________________________________________________
+8086 %     6 (Book I)     Cross Compiler    1600 BPI       $100  Douglas Comer
+           Derived from   Included          9-Track UNIX
+           LSI-11         4.3BSD UNIX       Tar Tape
+______________________________________________________________________________
+Sun 3 %    6 (Book I)     Sun Micro-        1600 BPI       $100  Shawn 
+                          Systems C         9-Track UNIX          Ostermann
+                          Sun OS            Tar Tape
+Sun 3 %    7 (Book II)    Sun Micro-        1600 BPI       $200  Shawn
+                          Systems C         9-Track UNIX          Ostermann
+                          Sun OS            Tar Tape
+______________________________________________________________________________
+IBM-PC     PC-Xinu        Microsoft C       5 1/4 floppy   $100  See attached
+           6 (New Book)   MS/DOS                                 announcement
+IBM-PC %   6 (Book I)     Aztec C           5 1/4 floppy   $100  Andy Thomas
+                          MS/DOS
+______________________________________________________________________________
+Mac 1&2%   6 (Book I)    Aztec C            3 1/2 floppy   $200  Steven Munson
+512K mem   7 (Book II)   Macintosh
+______________________________________________________________________________
+VAX        6 (Book I)    VAX UNIX C         1600 BPI       $200  Douglas Comer
+           7 (Book II)   Compiler           9-Track UNIX
+                         4.3BSD UNIX        Tar Tape
+______________________________________________________________________________
+VAX        ConcurrenC     VAX UNIX           1600 BPI       $50  Ken Rodemann
+                          Compiler           9-Track UNIX
+                          4.3BSD UNIX        Tar Tape
+______________________________________________________________________________
+      % Prepared by students.  These versions are "as is".
+
+
+     If you have a UNIX source license, please send  a  copy
+     of the signature page; otherwise, we will send you dis-
+     tributions without UNIX source.
+
+                    Send your order and check to:
+                                   
+                       Professor Douglas Comer
+               (Shawn Ostermann for the Sun 3 version)
+                   Department of Computer Sciences
+                          Purdue University
+                      West Lafayette, IN  47907.
+                                   
+                                   
+ Information about Xinu is exchanged through  electronic  mail.   To
+have  your  name  added  to  the  mailing list, send to  xinu-info-
+request@purdue.edu. To send mail to the Xinu list,  address  it  to
+xinu-info@purdue.edu.
+
+-----------------------------------------------------------------------------
+Shawn Ostermann        ARPA:  sdo@gwen.cs.purdue.edu
+                       UUCP:  ...!purdue!sdo
+-----------------------------------------------------------------------------

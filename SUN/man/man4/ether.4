@@ -1,0 +1,56 @@
+.TH ETHER 4
+.SH NAME
+ether \- standard 10Mbps Ethernet network interface device driver (type eth)
+.SH SYNOPSIS
+.nf
+.B #include <lereg.h>
+.B #include <ether.h>
+.sp
+.B read(device buffer, length)
+.B write(device, buffer, length)
+.B init(device)
+.br
+.SH DESCRIPTION
+.PP
+The \f2eth\f1 device driver provides input and output
+for a 10 Mbps Ethernet local area network.
+The standard Xinu device name for Ethernet devices is \f2ETHER\f1.
+.PP
+Implemented on an AMD 7990 LANCE Ethernet controller.
+the \f2eth\f1 driver handles DMA input and output
+at the physical network level, transmitting complete
+frames between user processes and the device.
+.PP
+The driver honors the following operations:
+.TP
+.B read(device buffer, length)
+Reads one frame into \f2buffer\f1, copying no more than
+\f2length\f1 characters.
+It returns the length of the frame read; the count includes
+the 14-octet header.
+.TP
+.B write(device, buffer, length)
+Writes a frame of \f2length\f1 characters found in \f2buffer\f1.
+It returns \f2OK\f1 if the frame was acceptable, \f2SYSERR\f1
+otherwise.
+The call to \f2write\f1 will return once output has been started,
+but the buffer will be in use until the device finishes.
+The driver calls FREEBUF(2) to dispose of the buffer once the device
+finishes using it.
+.TP
+.B init(device)
+Initializes the device and driver.
+The driver sets the device to accept only those packets addressed
+directly to the devices' physical address and broadcast packets
+(all 1's address).
+.SH NOTES
+Since the LANCE controller has no internal buffering, it was necessary
+to use the buffer ring facility rather than lose back to back packets.
+For this reason, it was no longer
+possible to expect the next packet to arrive to go into a specific
+buffer.
+Rather than change the semantics of read and write for the ethernet
+driver, it was decided to copy buffers in both directions.
+Also note that, in order for the Sun DVMA access to work, the buffers
+linked into the read and write buffer rings cannot exist at arbitrary
+locations, but must be allocated using getdmem().

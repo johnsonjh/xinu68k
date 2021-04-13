@@ -1,0 +1,66 @@
+
+
+
+MOUNT(2)            Xinu Programmer's Manual             MOUNT(2)
+
+
+
+NAME
+     mount - add a prefix mapping to the namespace
+
+SYNOPSIS
+     int mount(prefix, dev, replace)
+     char *prefix;
+     int dev;
+     char *replace;
+
+DESCRIPTION
+     _M_o_u_n_t adds a prefix mapping to the syntactic namespace,
+     inserting it just prior to the last entry.  Argument _p_r_e_f_i_x
+     points to a string that contains a null-terminated prefix
+     string, argument _d_e_v gives the device id of the device to
+     which the prefix maps, and argument _r_e_p_l_a_c_e points to a
+     null-terminated replacement string.  As a special case, _d_e_v
+     can specify the value SYSERR to indicate that names matching
+     the prefix cannot be mapped or accessed.
+
+     If the namespace table is full, or if the specified prefix
+     or replacement strings exceed the allowed size, _m_o_u_n_t
+     returns SYSERR.  Otherwise it returns OK.
+
+SEE ALSO
+     open(2), nammap(2), namrepl(2), unmount(2), namespace(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

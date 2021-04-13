@@ -1,0 +1,57 @@
+.TH GETS 3
+.SH NAME
+gets, fgets \- get a string from a device
+.SH SYNOPSIS
+.B #include <io.h>
+.PP
+.B char *gets(s)
+.br
+.B char *s;
+.PP
+.B char *fgets(dev, s, n)
+.br
+.B int	dev;
+.br
+.B char *s;
+.br
+.B int	n;
+.br
+.SH DESCRIPTION
+.I Gets
+reads a string into
+.I s
+from the standard input device, CONSOLE.
+The string is terminated by a newline
+character, which is replaced in
+.I s
+by a null character.
+.I Gets
+returns its argument.
+.PP
+.I Fgets
+reads 
+.IR n \-1
+characters, or up to a newline
+character, whichever comes first,
+from device
+.I dev
+into the string
+.IR s .
+The last character read into
+.I s
+is followed by a null character.
+.I Fgets
+returns its second argument.
+.SH "SEE ALSO"
+getc(2), puts(2), scanf(3), fread(3),
+.SH DIAGNOSTICS
+.I Gets
+and
+.I fgets
+return SYSERR if an error results.
+.SH BUGS
+.I Gets
+deletes a newline,
+.I fgets
+keeps it,
+all in the name of backward compatibility.

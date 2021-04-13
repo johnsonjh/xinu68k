@@ -1,0 +1,223 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	92.01.04.03.43.07;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.05.28.17;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.04.22.52;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.06.04;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@/dev/null
+@
+text
+@/* lockutils.c - 
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Tue May 24 22:10:01 1988
+ */
+
+#include <stdio.h>
+#include <ctype.h>
+
+#include "bed.h"
+
+/*----------------------------------------------------------------------
+ * requnlock - request unlock on remote machine 
+ *----------------------------------------------------------------------
+ */
+int
+requnlock( fename, bename, user )
+     char * fename;			/* name of frontend with bename	*/
+     char * bename;			/* name of backend desired	*/
+     char * user;
+{
+	int i;
+	struct bm bm;
+	struct lockreq *lreq;
+	char * sb;
+	char buf[ MAXMACHINENAME ];
+	int sock;
+	
+	/* make lock request packet	*/
+	bm.ver = CURVER;
+	sprintf( bm.cmd, "%d", REQ_UNLOCK );
+	lreq = (struct lockreq *) bm.detail;
+	
+	strcpy( lreq->uid, user );
+	if ( gethostname( buf, MAXMACHINENAME ) != 0 ) {
+		strcpy( buf, "dunno" );
+	}
+	strcpy( lreq->hostid, buf );
+	strcpy( lreq->bename, bename );
+	
+	if ( ( sock = ConnectUdp( fename, KNOWN_UDP_PORT ) ) < 0 ) {
+		return( -1 );
+	}
+	if ( bmsend( sock, & bm, lbm, 0 ) <= 0 ) {
+		return( -1 );
+	}
+	if ( bmrecv( sock, & bm, lbm, 0 ) <= 0 ) {
+		return( -1 );
+	}
+	if ( atoi( bm.cmd ) != RESP_OK ) {
+		return(-1);
+	}
+	else {
+		return( 1 );
+	}
+}
+
+
+/*----------------------------------------------------------------------
+ * reqlock - request lock on remote machine 
+ *----------------------------------------------------------------------
+ */
+int
+reqlock( fename, bename, user )
+     char * fename;			/* name of frontend with bename	*/
+     char * bename;			/* name of backend desired	*/
+     char * user;
+{
+	int i;
+	struct bm bm;
+	struct lockreq *lreq;
+	char *sb;
+	char buf[ MAXMACHINENAME ];
+	int sock;
+	
+	/* make lock request packet	*/
+	bm.ver = CURVER;
+	sprintf( bm.cmd, "%d", REQ_LOCK );
+	lreq = (struct lockreq *) bm.detail;
+	
+	strcpy( lreq->uid, user );
+	if ( gethostname( buf, MAXMACHINENAME ) != 0 ) {
+		strcpy( buf, "dunno" );
+	}
+	strcpy( lreq->hostid, buf );
+	strcpy( lreq->bename, bename );
+	
+	if ( ( sock = ConnectUdp( fename, KNOWN_UDP_PORT ) ) <= 0 ) {
+		return( -1 );
+	}
+	if ( bmsend( sock, & bm, lbm, 0 ) <= 0 ) {
+		return( -1 );
+	}
+	if ( bmrecv( sock, & bm, lbm, 0 ) <= 0 ) {
+		return( -1 );
+	}
+	
+	if ( atoi( bm.cmd ) != RESP_OK ) {
+		return( -1 );
+	}
+	else {
+		return( 1 );
+	}
+}
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@a13 4
+extern char * getenv();
+
+static char filename[ 256 ];		/* temp filename variable	*/
+
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d23 1
+a23 1
+requnlock( fename , bename , user )
+d37 1
+a37 1
+	sprintf( bm.cmd , "%d", REQ_UNLOCK );
+d40 3
+a42 3
+	strcpy( lreq->uid , user );
+	if ( gethostname( buf , MAXMACHINENAME ) != 0 ) {
+		strcpy( buf , "dunno" );
+d44 2
+a45 2
+	strcpy( lreq->hostid , buf );
+	strcpy( lreq->bename , bename );
+d47 1
+a47 1
+	if ( ( sock = ConnectUdp( fename , KNOWN_UDP_PORT ) ) < 0 ) {
+d50 1
+a50 1
+	if ( bmsend( sock , & bm , lbm , 0 ) <= 0 ) {
+d53 1
+a53 1
+	if ( bmrecv( sock , & bm , lbm , 0 ) <= 0 ) {
+d70 1
+a70 1
+reqlock( fename , bename , user )
+d87 3
+a89 3
+	strcpy( lreq->uid , user );
+	if ( gethostname( buf , MAXMACHINENAME ) != 0 ) {
+		strcpy( buf , "dunno" );
+d91 2
+a92 2
+	strcpy( lreq->hostid , buf );
+	strcpy( lreq->bename , bename );
+d94 1
+a94 1
+	if ( ( sock = ConnectUdp( fename , KNOWN_UDP_PORT ) ) <= 0 ) {
+d97 1
+a97 1
+	if ( bmsend( sock , & bm , lbm , 0 ) <= 0 ) {
+d100 1
+a100 1
+	if ( bmrecv( sock , & bm , lbm , 0 ) <= 0 ) {
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a13 4
+#if defined(SEQ)
+#define strrchr rindex
+#endif
+
+@

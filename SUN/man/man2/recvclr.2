@@ -1,0 +1,16 @@
+.TH RECVCLR 2
+.SH NAME
+recvclr \- clear incoming message buffer asynchronously
+.SH SYNOPSIS
+.nf
+.B int recvclr()
+.fi
+.SH DESCRIPTION
+A process executes \f2recvclr\f1 to clear its message buffer of
+any waiting message in preparation for receiving messages.
+If a message is waiting, \f2recvclr\f1 returns it to the caller.
+If no messages are waiting,
+.I recvclr
+returns OK.
+.SH SEE ALSO
+receive(2), send(2), preceive(2), psend(2)

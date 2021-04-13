@@ -1,0 +1,22 @@
+.TH DISABLE 3
+.SH NAME
+disable, enable, restore \- change and restore processor interrupt status
+.SH SYNOPSIS
+.B disable(ps);
+.br
+.B enable(ps);
+.br
+.B restore(ps);
+.PP
+.B STATWORD ps;
+.br
+.SH DESCRIPTION
+These routines change the processor interrupt status mode.
+Normally, procedures use
+.I disable
+and
+.I restore
+to save the interrupt status, mask interrupts off, and then restore
+the saved status.
+\f2Enable\f1 explicitly enables interrupts; it is used only at system
+startup.

@@ -1,0 +1,67 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.2
+date	91.11.25.05.28.48;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.06.04;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@/* 
+ * xmalloc.c - 
+ * 
+ * Author:	Shawn Oostermann/Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Fri Jun 10 11:36:27 1988
+ *
+ * Copyright (c) 1988 Shawn Oostermann/Jim Griffioen
+ */
+
+#include <stdio.h>
+
+extern char * malloc();
+
+char *
+xmalloc( size )
+     int size;
+{
+	char * p;
+	
+	if ( ( p = malloc( size ) ) == NULL ) {
+		fprintf( stderr, "malloc failed\n" );
+		exit( 1 );
+	}
+	return( p );
+}
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d23 1
+a23 1
+		fprintf( stderr , "malloc failed\n" );
+@

@@ -1,0 +1,132 @@
+
+
+
+NETUTIL(3)          Xinu Programmer's Manual           NETUTIL(3)
+
+
+
+NAME
+     netutil - Network utilities hs2net, net2hs, hl2net, net2hl,
+     vax2hl, hl2vax
+
+SYNOPSIS
+     short net2hs(s)
+     short hs2net(s)
+     long net2hl(l)
+     long hl2net(l)
+     long vax2hl(l)
+     long hl2vax(l)
+
+     short s;
+     long l;
+
+DESCRIPTION
+     These routines map binary integer data between network stan-
+     dard byte order and local host byte order.  In the descrip-
+     tion, the term _s_h_o_r_t refers to a 2-octet (16-bit) binary
+     value, whether two's complement signed or unsigned, and the
+     term _l_o_n_g _r_e_f_e_r_s _t_o _a _4-_o_c_t_e_t (_3_2-_b_i_t) _v_a_l_u_e.  _T_h_e _i_n_d_i_v_i_-
+     _d_u_a_l _r_o_u_t_i_n_e_s _a_r_e:
+
+     net2hs
+          Converts a short item from network byte order to host
+          byte order.
+
+     hs2net
+          Converts a short item from host byte order to network
+          byte order.
+
+     net2hl
+          Converts a long item from network byte order to host
+          byte order.
+
+     hl2net
+          Converts a long item from host byte order to network
+          byte order.
+
+     vax2hl
+          Converts a long item from VAX byte order to host byte
+          order (used in communication with a file server running
+          on a VAX).
+
+     hl2vax
+          Converts a long from host byte order to VAX byte order
+          (used in communication with a file server running on a
+          VAX).
+
+     No conversion is needed for character strings because the
+     local host order on most machines agrees with network stan-
+     dard byte order (i.e., the string extends upward in the
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
+
+
+
+NETUTIL(3)          Xinu Programmer's Manual           NETUTIL(3)
+
+
+
+     memory address space).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        2
+
+
+

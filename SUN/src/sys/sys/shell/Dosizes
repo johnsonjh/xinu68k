@@ -1,0 +1,11 @@
+PATH=/bin:/usr/bin:/usr/ucb
+trap 'rm -rf ,,size[12s] ; exit' 1 2 3 15
+wc   *.h  *.c		 > ,,ssizes
+echo '       Sorted By Name'		 > ,,ssize1
+echo '       ------ -- ----'		>> ,,ssize1
+cat  ,,ssizes				>> ,,ssize1
+echo '       Sorted By Size'		 > ,,ssize2
+echo '       ------ -- ----'		>> ,,ssize2
+sort +0n ,,ssizes			>> ,,ssize2
+pr -2 -t -m ,,ssize[12] | sed '/^$$/d'	 >  ,ssizes
+rm -rf ,,ssize[12s]

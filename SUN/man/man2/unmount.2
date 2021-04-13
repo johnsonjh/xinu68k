@@ -1,0 +1,17 @@
+.TH UNMOUNT 2
+.SH NAME
+unmount \- remove an entry from the syntactic namespace mapping table
+.SH SYNOPSIS
+.nf
+.B int unmount(prefix)
+.B char *prefix;
+.fi
+.SH DESCRIPTION
+.I Unmount
+searches the syntactic namespace mapping table and removes
+the mapping which has a prefix equal to the null-terminated
+string \f2prefix\f1.
+If no such entry exists, \f2unmount\f1 returns SYSERR.
+Otherwise, it returns OK.
+.SH SEE ALSO
+mount(2), namespace(4)

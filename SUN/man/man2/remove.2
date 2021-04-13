@@ -1,0 +1,23 @@
+.TH REMOVE 2
+.SH NAME
+remove \- remove a file from the file system
+.SH SYNOPSIS
+.nf
+.B int remove(filename, key)
+.B char *filename;
+.B int key;
+.fi
+.SH DESCRIPTION
+.I Remove
+takes a file name as an argument and destroys the named file (i.e.,
+removes it from the file system).
+Argument \f2filename\f1 specifies the name of a file to remove, and
+the optional argument \f2key\f1 gives a one-word protection key.
+.PP
+\f2Remove\f1 uses the namespace to map the given file name to a new
+name, and invokes CONTROL(2) on the underlying device to destroy the file.
+It returns SYSERR if the name is illegal or cannot be mapped to
+an underlying device.
+It returns whatever CONTROL(2) returns otherwise.
+.SH SEE ALSO
+control(2), nammap(2), namespace(4)

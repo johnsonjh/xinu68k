@@ -1,0 +1,66 @@
+
+
+
+SEEK(2)             Xinu Programmer's Manual              SEEK(2)
+
+
+
+NAME
+     seek - device independent position seeking routine
+
+SYNOPSIS
+     int seek(dev, position)
+     int dev;
+     char *buffer;
+     long position;
+
+DESCRIPTION
+     _S_e_e_k will position the device given by _d_e_v after the _p_o_s_i_-
+     _t_i_o_n byte.  It returns SYSERR if _d_e_v is incorrect, or if it
+     is not possible to position _d_e_v as specified.
+
+     _S_e_e_k cannot be used with devices connected to terminals.
+
+     Note that the position argument is declared _l_o_n_g rather than
+     _i_n_t.
+
+SEE ALSO
+     close(2), control(2), getc(2), open(2), putc(2), read(2),
+     write(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

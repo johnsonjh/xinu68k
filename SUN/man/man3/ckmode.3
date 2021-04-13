@@ -1,0 +1,43 @@
+.TH CKMODE 3
+.SH NAME
+ckmode \- check a file mode string and convert to integer representation
+.SH SYNOPSIS
+.B #include <file.h>
+.PP
+.B int chmode(mode)
+.br
+.B char *mode;
+.br
+.SH DESCRIPTION
+.I Ckmode
+parses a null-terminated string, \f2mode\f1,
+containing characters that represent file
+modes, and produces an integer with mode bits set.
+The possible mode characters are:
+.TP
+.B r
+The file is to be opened for reading (i.e., input).
+.TP
+.B w
+The file is to be opened for writing (i.e., output).
+.TP
+.B n
+The file must be new.  That is, it must not already exist.
+.TP
+.B o
+The file must be old.  That is, it must already exist.
+.PP
+The file mode string, \f2mode\f1, can specify that the file is to
+be accessed for both reading and writing, but it cannot specify
+the mode to be both old and new.
+If neither reading nor writing is specified, \f2ckmode\f1 assumes the
+file will be used for both.
+Similarly, if neither old or new files are specified, \f2ckmode\f1
+assumes either is allowed.
+.PP
+Given a legal mode string,
+\f2ckmode\f1 returns an integer with bits \f2FLREAD\f1, FLWRITE,
+FLOLD, and FLNEW set according to the argument, \f2mode\f1.
+\f2Ckmode\f1 returns SYSERR if it finds illegal or duplicated
+characters in the argument string, or if the mode string specifies
+that the file must be both old and new.

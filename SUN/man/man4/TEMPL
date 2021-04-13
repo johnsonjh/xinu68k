@@ -1,0 +1,46 @@
+.TH XXX 4
+.SH NAME
+xxx \- device driver for x
+.SH SYNOPSIS
+.nf
+.B #include <xxx.h>
+.sp
+.B read(device buffer, length)
+.B write(device, buffer, length)
+.B open(device, name)
+.B close(device)
+.B control(device, function, arg1, arg2)
+.B init(device)
+.B seek(device,offset)
+.br
+.SH DESCRIPTION
+.PP
+.TP
+.B read(device buffer, length)
+.sp
+
+.TP
+.B write(device, buffer, length)
+.sp
+
+.TP
+.B open(device, name)
+.sp
+
+.TP
+.B close(device)
+.sp
+
+.TP
+.B control(device, function, arg1, arg2)
+.sp
+
+.TP
+.B init(device)
+.sp
+
+.TP
+.B seek(device,offset)
+.sp
+
+.SH NOTES

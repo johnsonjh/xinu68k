@@ -1,0 +1,33 @@
+.TH NAMREPL 2
+.SH NAME
+namrepl \- replace a name once using the syntactic namespace
+.SH SYNOPSIS
+.nf
+.B int namrepl(name, newname)
+.B char *name;
+.B char *newname;
+.fi
+.SH DESCRIPTION
+.I Namrepl
+uses the syntactic namespace to translate a name into a new
+name and returns the id of a device to which the name maps.
+The name is translated exactly once, independent of the device
+to which it maps.
+In particular, \f2namrepl\f1 will return the device id \f2NAMESPACE\f1
+without further mapping
+for those names that map recursively through the syntactic namespace.
+.PP
+Argument \f2name\f1 points to a null-terminated string containing
+the name to be mapped, and
+argument \f2newname\f1 points to a string area large enough to hold the
+mapped version of the name.
+If successful, \f2namrepl\f1 returns the device id of the device to which the
+name maps.
+Otherwise, it returns SYSERR.
+.SH SEE ALSO
+nammap(2), open(2), mount(2), unmount(2), namespace(4)
+.SH BUGS
+\f2Namrepl\f1 writes the mapped name into \f2newname\f1 without checking
+to make sure it fits.
+There is no way to distinguish errors such as string overflow
+from names that map to device SYSERR.

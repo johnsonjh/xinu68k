@@ -1,0 +1,199 @@
+#
+#  Makefile for resident piece of Sun 3/50 Ethernet downloader
+#
+
+DIR	=	/u5/xinu/xinu7.sun3
+DEST	=	$(DIR)/lib
+LIB	=	$(DIR)/lib
+BIN	=	$(DIR)/bin
+CFLAGS	=	-c -O -I../h
+
+XBOOTFILES =	startup.o tftpload.o 
+SETBOOTFILES =	startup.o setboot.o
+
+OFILES=	blkcopy.o	blkequ.o	bzero.o		cksum.o		\
+	eeprom.o	einit.o		eread.o		erstrt.o	\
+	estrt.o		ewrite.o	ewstrt.o	getdmem.o	\
+	getidprom.o	kgetline.o	kprintf.o	makepack.o	\
+	mkrarp.o	mmu.o		panic.o		printaddr.o	\
+	readaddr.o	scanaddr.o	strcpy.o	tftpwr.o	\
+	udpipwr.o
+
+.s.o:
+		$(CC) $(CFLAGS) $<
+
+.c.o:
+		$(CC) $(CFLAGS) $<
+
+all:		xboot.out setboot.out
+
+xboot.out:	xboot.a $(XBOOTFILES)
+		$(LD) -e _start -N -X -T 00100000   \
+                    $(XBOOTFILES) xboot.a -o b.out
+	        strip b.out;dd if=b.out of=xboot.out ibs=32 skip=1
+
+
+setboot.out:	xboot.a $(SETBOOTFILES)
+		$(LD) -e _start -N -X -T 004000     \
+                    $(SETBOOTFILES) xboot.a -o b.out
+	        strip b.out;dd if=b.out of=setboot.out ibs=32 skip=1
+
+
+xboot.a:	$(OFILES) 
+		/bin/rm -f  xboot.a
+		/bin/ar cr xboot.a `lorder $(OFILES) | tsort`
+		ranlib xboot.a
+
+big.out:	startup.o big.o xboot.a
+		$(LD) -e _start -N -X -T 004000   \
+                    startup.o big.o xboot.a -o big.out
+
+lint:
+		lint -I../h *.c
+
+clean:
+		/bin/rm -rf core *.o .,* ,* *.out xboot.a
+
+depend:
+		maketd -I../h *.c
+
+
+# DO NOT DELETE THIS LINE - maketd DEPENDS ON IT
+# Dependencies generated at: Sun Jan 15 22:28:27 EST 1989
+
+big.c:
+big.o: big.c
+blkcopy.c:
+blkcopy.o: blkcopy.c
+blkequ.c:
+blkequ.o: ../h/tftpload.h
+blkequ.o: blkequ.c
+bzero.c:
+bzero.o: bzero.c
+cksum.c:
+cksum.o: cksum.c
+eeprom.c:
+eeprom.o: ../h/eeprom.h
+eeprom.o: ../h/ether.h
+eeprom.o: ../h/ip.h
+eeprom.o: ../h/network.h
+eeprom.o: eeprom.c
+einit.c:
+einit.o: ../h/ether.h
+einit.o: ../h/idprom.h
+einit.o: ../h/lereg.h
+einit.o: ../h/mmu.h
+einit.o: ../h/network.h
+einit.o: ../h/tftpload.h
+einit.o: einit.c
+eread.c:
+eread.o: ../h/tftpload.h
+eread.o: eread.c
+erstrt.c:
+erstrt.o: ../h/ether.h
+erstrt.o: ../h/lereg.h
+erstrt.o: ../h/mmu.h
+erstrt.o: ../h/network.h
+erstrt.o: ../h/tftpload.h
+erstrt.o: erstrt.c
+estrt.c:
+estrt.o: ../h/ether.h
+estrt.o: ../h/lereg.h
+estrt.o: ../h/mmu.h
+estrt.o: ../h/network.h
+estrt.o: ../h/tftpload.h
+estrt.o: estrt.c
+ewrite.c:
+ewrite.o: ../h/ether.h
+ewrite.o: ../h/tftpload.h
+ewrite.o: ewrite.c
+ewstrt.c:
+ewstrt.o: ../h/ether.h
+ewstrt.o: ../h/lereg.h
+ewstrt.o: ../h/mmu.h
+ewstrt.o: ../h/network.h
+ewstrt.o: ../h/tftpload.h
+ewstrt.o: ewstrt.c
+getdmem.c:
+getdmem.o: ../h/mmu.h
+getdmem.o: ../h/network.h
+getdmem.o: ../h/tftpload.h
+getdmem.o: getdmem.c
+kgetline.c:
+kgetline.o: ../h/sunromvec.h
+kgetline.o: kgetline.c
+kprintf.c:
+kprintf.o: ../h/sunromvec.h
+kprintf.o: ../h/tftpload.h
+kprintf.o: kprintf.c
+makepack.c:
+makepack.o: ../h/ether.h
+makepack.o: ../h/ip.h
+makepack.o: ../h/network.h
+makepack.o: ../h/tftpload.h
+makepack.o: ../h/udp.h
+makepack.o: makepack.c
+mkrarp.c:
+mkrarp.o: ../h/arp.h
+mkrarp.o: ../h/ether.h
+mkrarp.o: ../h/ip.h
+mkrarp.o: ../h/network.h
+mkrarp.o: ../h/udp.h
+mkrarp.o: mkrarp.c
+panic.c:
+panic.o: panic.c
+printaddr.c:
+printaddr.o: ../h/ether.h
+printaddr.o: ../h/ip.h
+printaddr.o: printaddr.c
+readaddr.c:
+readaddr.o: ../h/eeprom.h
+readaddr.o: ../h/ether.h
+readaddr.o: ../h/ip.h
+readaddr.o: ../h/network.h
+readaddr.o: ../h/tftpload.h
+readaddr.o: readaddr.c
+scanaddr.c:
+scanaddr.o: ../h/ether.h
+scanaddr.o: ../h/ip.h
+scanaddr.o: ../h/tftpload.h
+scanaddr.o: scanaddr.c
+setboot.c:
+setboot.o: ../h/eeprom.h
+setboot.o: ../h/ether.h
+setboot.o: ../h/ip.h
+setboot.o: ../h/network.h
+setboot.o: ../h/tftpload.h
+setboot.o: setboot.c
+strcpy.c:
+strcpy.o: strcpy.c
+tftpload.c:
+tftpload.o: ../h/a.out.h
+tftpload.o: ../h/arp.h
+tftpload.o: ../h/eeprom.h
+tftpload.o: ../h/ether.h
+tftpload.o: ../h/ip.h
+tftpload.o: ../h/network.h
+tftpload.o: ../h/sunromvec.h
+tftpload.o: ../h/tftp.h
+tftpload.o: ../h/tftpload.h
+tftpload.o: ../h/udp.h
+tftpload.o: tftpload.c
+tftpwr.c:
+tftpwr.o: ../h/ether.h
+tftpwr.o: ../h/ip.h
+tftpwr.o: ../h/network.h
+tftpwr.o: ../h/tftp.h
+tftpwr.o: ../h/udp.h
+tftpwr.o: tftpwr.c
+udpipwr.c:
+udpipwr.o: ../h/ether.h
+udpipwr.o: ../h/ip.h
+udpipwr.o: ../h/network.h
+udpipwr.o: ../h/tftpload.h
+udpipwr.o: ../h/udp.h
+udpipwr.o: udpipwr.c
+
+# DO NOT ADD ANYTHING HERE - WILL GO AWAY
+
+# DO NOT DELETE THIS LINE - maketd DEPENDS ON IT

@@ -1,0 +1,131 @@
+/* Configuration - (device configuration specifications) */
+
+/* "type" declarations for both real- and pseudo- devices */
+
+/* console device, actual Sun keyboard and monitor */
+con:
+	on PHY		-i coninit	-o ionull	-c ionull
+			-r conread	-w conwrite	-s ioerr
+			-n concntl	-g congetc	-p conputc
+			-iint ioerr	-oint ioerr
+
+
+/* terminals connected by serial lines */
+tty: 
+	on SLU		-i ttyinit	-o ionull	-c ionull
+			-r ttyread	-w ttywrite	-s ioerr
+			-n ttycntl	-g ttygetc	-p ttyputc
+			-iint ioerr	-oint ioerr
+
+
+/* Ethernet using a LANCE interface */
+eth:
+	on LANCE	-i ethinit	-o ioerr	-c ioerr 
+			-r ethread	-w ethwrite	-s ioerr
+			-n ethcntl	-g ioerr	-p ioerr
+			-iint ethinter	-oint ethinter
+
+/* Datagram interface to network (master device) */
+dgm:
+	on ETH		-i ionull	-o dgmopen	-c ioerr 
+			-r ioerr	-w ioerr	-s ioerr
+			-n dgmcntl	-g ioerr	-p ioerr
+			-iint ioerr	-oint ioerr	-csr 0
+			-ivec 0		-ovec 0
+
+/* A datagram "connection"  (pseudo-device returned by dgm open) */
+dg:
+	on ETH		-i dginit	-o ioerr	-c dgclose
+			-r dgread	-w dgwrite	-s ioerr
+			-n dgcntl	-g ioerr	-p ioerr
+			-iint ioerr	-oint ioerr	-csr 0
+			-ivec 0		-ovec 0
+
+/* Remote file system master device (open to get rf device) */
+rfm:
+	on DGM		-i ioerr	-o rfopen	-c ioerr
+			-r ioerr	-w ioerr	-s ioerr
+			-n rfcntl	-g ioerr	-p ioerr
+			-iint ioerr	-oint ioerr	-csr 0
+			-ivec 0		-ovec 0
+
+/* A remote file (pseudo-device returned by rfm open) */
+rf:
+	on DGM		-i rfinit	-o ioerr	-c rfclose 
+			-n rfcntl	-g rfgetc	-p rfputc
+			-iint ioerr	-oint ioerr	-csr 0
+			-ivec 0		-ovec 0
+
+/* Name system (topmost level of name resolution mechanism) */
+nam:
+	on TOP		-i naminit	-o namopen	-c ioerr
+			-r ioerr	-w ioerr	-s ioerr
+			-n ioerr	-g ioerr	-p ioerr
+			-iint ioerr	-oint ioerr	-csr 0
+			-ivec 0		-ovec 0
+%
+
+/* Device definitions starting with terminals */
+CONSOLE		is tty  on SLU		csr=01770020004 ivec=0170 ovec=0170
+					   /* 0xfe02004      0x78      0x78 */
+
+
+/* The Serial port B */
+/*
+TTYB		is tty  on SLU		csr=01770020000 ivec=0170 ovec=0170
+*/
+					   /* 0xfe02000       0x78      0x78 */
+
+/* The physical Sun keyboard and monitor */
+/*
+PHYSICAL	is con	on PHY		csr=01770000000 ivec=0170 ovec=0170
+*/
+					   /* 0xfe00000 */
+
+/* Physical ethernet raw packet interface */
+
+ETHER		is eth	on LANCE		csr=01770200000 ivec=0154 ovec=0154
+					   /* 0xfe10000    0x6c  0x6c */
+
+/* Datagram network interface (master pseudo-device) */
+
+INTERNET	is dgm	on ETH
+
+/* Pseudo-device slots for datagram "connections" */
+
+DGRAM1		is dg	on ETH
+DGRAM2		is dg	on ETH
+DGRAM3		is dg	on ETH
+DGRAM4		is dg	on ETH
+
+/* Remote file system interface (master pseudo-device) */
+
+RFILSYS		is rfm	on DGM
+
+/* Pseudo-device slots for remote files */
+
+RFILE1		is rf	on DGM
+RFILE2		is rf	on DGM
+RFILE3		is rf	on DGM
+RFILE4		is rf	on DGM
+
+
+/* Pseudo device for the abstract (file) name space */
+
+NAMESPACE	is nam	on TOP
+
+%
+
+/* Configuration and Size Constants */
+
+#define	NPROC	    30			/* number of user processes	*/
+#define	NSEM	    50			/* number of semaphores		*/
+#define	MEMMARK				/* define if memory marking used*/
+#define	RTCLOCK				/* now have RTC support		*/
+#define	STKCHK				/* resched checks stack overflow*/
+#define	NETDAEMON			/* Ethernet network daemon runs	*/
+#define	GATEWAY	     128,10,3,8		/* Gateway address		*/
+#define	TSERVER	    "128.10.3.20:37"	/* Time server address		*/
+#define	RSERVER	    "128.10.3.20:2001"	/* Remote file server address	*/
+#define	NSERVER	    "128.10.3.20:53"	/* Domain Name server address	*/
+#define	VERSION	    "7.2.2 SUN3 (Wed May 27, 1992)"/* label printed at startup	*/

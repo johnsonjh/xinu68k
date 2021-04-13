@@ -1,0 +1,66 @@
+
+
+
+CHPRIO(2)           Xinu Programmer's Manual            CHPRIO(2)
+
+
+
+NAME
+     chprio - change the priority of a process
+
+SYNOPSIS
+     int chprio(pid,newprio)
+     int pid;
+     int newprio;
+
+DESCRIPTION
+     _C_h_p_r_i_o changes the scheduling priority of process _p_i_d to
+     _n_e_w_p_r_i_o. Priorities are positive integers.  At any instant,
+     the highest priority process  that is ready will be running.
+     A set of processes with equal priority is scheduled round-
+     robin.
+
+     If the new priority is invalid, or the process id is invalid
+     _c_h_p_r_i_o returns SYSERR.  Otherwise, it returns the old pro-
+     cess priority.  It is forbidden to change the priority of
+     the null process, which always remains zero.
+
+SEE ALSO
+     create(2), getprio(2), resume(2)
+
+BUGS
+     Because _c_h_p_r_i_o changes priorities without rearranging
+     processes on the ready list, it should only be used on wait-
+     ing, sleeping, suspended, or current processes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

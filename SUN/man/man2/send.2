@@ -1,0 +1,26 @@
+.TH SEND 2
+.SH NAME
+send \- send a (one-word) message to a process
+.SH SYNOPSIS
+.nf
+.B int send(pid, msg)
+.B int pid;
+.B int msg;
+.fi
+.SH DESCRIPTION
+.I Send
+sends the one-word message
+.I msg
+to the process with id
+.I pid.
+A process may have at most one outstanding message that has
+not been received.
+.PP
+.I Send
+returns SYSERR if
+.I pid
+is invalid or if the process already has a message waiting
+that has not been received.
+Otherwise, it sends the message and returns OK.
+.SH SEE ALSO
+receive(2), sendf(2), preceive(2), psend(2)

@@ -1,0 +1,14 @@
+: ' Makeall  --  make all of src/lib for Xinu'
+:
+: 'Makeall'
+PATH=/bin:/usr/bin
+for i in *
+do if test -d $i
+   then cd $i
+	echo
+	echo "*** Making Xinu library {Xinu-directory}/src/lib/$i"
+	make
+        make install
+        cd ..
+    fi
+done

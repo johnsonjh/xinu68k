@@ -1,0 +1,30 @@
+# Filename: machines
+#
+# This is an example machines file
+#
+# Front End: walnut.cs.purdue.edu
+#
+# Below are listed the backend machines connect to this machine.
+# Lines beginning with # are comments.  Each line specifying a backend
+# machine has the following form and must be all on one line:
+#    ttyline be-name downloader be-type downloader-path baud class odttype
+# where
+#	ttyline:		serial line backend is connected to
+#	be-name:		name of backend machine
+#	downloader:		download type (serial(sdl) or ethernet(edl))
+#	be-type:		cpu type of backend machine
+#	downloader-path:	where to find the eload program
+#	baud:			buad rate to use on serial line
+#	class:			the class the backend machine belongs to
+#	odttype:		type of odt to use to talk to back end
+# Each backend machine should be listed on a seperate line
+#
+# Last Modified on: 5-26-88
+# Last Modified by: Jim Griffioen
+#
+# Modification History:
+#	5-26-88:	Created
+#
+#-------------------------- Backend Machines ------------------------------
+#
+/dev/ttya persimmon edl.sun sun3 /usr/xinu7/bin/eload 9600 SUN odt.sun

@@ -1,0 +1,25 @@
+.TH FREEMEM 2
+.SH NAME
+freemem \- deallocate a block of heap memory
+.SH SYNOPSIS
+.nf
+.B int freemem(addr, len)
+.B char *addr;
+.B int len;
+.fi
+.SH DESCRIPTION
+.I Freemem
+deallocates a contiguous block of memory
+previously obtained with GETMEM(2),
+and returns it to the free list.
+Argument \f2addr\f1 specifies the lowest address
+of the block being deallocated, and argument \f2len\f1 specifies the
+length of the block in bytes.
+In this version, memory is allocated in  multiples of four bytes to guarantee
+that sufficient space is available in each block to link it onto the free
+list.
+However, the length passed to both \f2getmem\f1 and \f2freemem\f1 is
+rounded automatically, so the user need not be aware of any extra space in
+the allocated block.
+.SH SEE ALSO
+getbuf(2), getmem(2), getstk(2), freebuf(2), freestk(2)

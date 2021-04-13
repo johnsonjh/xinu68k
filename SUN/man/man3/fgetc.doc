@@ -1,0 +1,66 @@
+
+
+
+FGETC(3)            Xinu Programmer's Manual             FGETC(3)
+
+
+
+NAME
+     fgetc, getchar - get character from a device
+
+SYNOPSIS
+     #include <io.h>
+
+     int fgetc(dev)
+     int dev;
+
+     int getchar()
+
+DESCRIPTION
+     These procedures are included for compatibility with UNIX.
+     _F_g_e_t_c returns the next character from the named input _d_e_v_-
+     _i_c_e.
+
+     _G_e_t_c_h_a_r() is identical to _g_e_t_c(_C_O_N_S_O_L_E).
+
+     Note that _f_g_e_t_c is exactly equivalent to _g_e_t_c.
+
+SEE ALSO
+     getc(2), putc(2), gets(3), scanf(3),
+
+DIAGNOSTICS
+     These functions return SYSERR to indicate an illegal device
+     or read error.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

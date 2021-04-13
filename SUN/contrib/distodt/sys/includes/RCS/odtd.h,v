@@ -1,0 +1,34 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	91.11.25.02.06.50;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/* odtd.h - */
+
+/* used by the odt and odtd command */
+#define ODTD_BREAKCH 	'\000'
+#define ODTD_ESCCH	'\\'
+
+/* used by the odt command */
+#define ODT_DFLT_CH	'\000'
+#define ODT_DFLT_MSG 	"Escape Character (control shift @@) NULL\n"
+
+
+@

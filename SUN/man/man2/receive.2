@@ -1,0 +1,16 @@
+.TH RECEIVE 2
+.SH NAME
+receive \- receive a (one-word) message
+.SH SYNOPSIS
+.nf
+.B int receive()
+.fi
+.SH DESCRIPTION
+.I Receive
+returns the one-word
+message sent to a process using SEND(2).
+If no messages are waiting,
+.I receive
+blocks until one appears.
+.SH SEE ALSO
+preceive(2), psend(2), receive(2)

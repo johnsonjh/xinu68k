@@ -1,0 +1,4 @@
+Remote files: server on dev=5, server mutex=41
+  8. name=/usr/xinu7/storage/output/mem, pos=   203, mode=002, sem=42
+  9. name=/usr/xinu7/storage/output/ps, pos=   618, mode=002, sem=40
+ 10. name=/usr/xinu7/storage/output/rf, pos=   186, mode=002, sem=39

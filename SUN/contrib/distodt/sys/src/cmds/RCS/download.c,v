@@ -1,0 +1,279 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	92.01.04.03.43.32;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.26.07.09.49;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.05.29.12;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.05.30;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@/dev/null
+@
+text
+@/* download.c -  version 1 - copies a.out file to backend mach
+ * 
+ * Author:	Jim Griffioen
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Wed Mar  2 11:08:01 1988
+ */
+
+#include <stdio.h>
+
+#include "bed.h"
+#include "downloadd.h"
+
+extern void setupopt();
+extern char * nextopt();
+extern char * nextarg();
+extern char * nextword();
+
+extern char * getenv();
+
+/*---------------------------------------------------------------------------
+ * main (csb, rgsb)
+ *---------------------------------------------------------------------------
+ */
+main ( csb, rgsb )
+     int csb;
+     char *rgsb[];
+{
+	int devtcp;
+	char verbose;
+	char class[ MAXCLASS ];
+	char femachine[ MAXMACHINENAME ];
+	char bemachine[ MAXMACHINENAME ];
+	char filename[ MAXFILENAME ];
+	struct genericreq * dnreq;
+	char * option;
+	int rv;
+
+	verbose = 0;
+	bemachine[ 0 ] = '\0';
+	bemachine[ MAXMACHINENAME - 1 ] = '\0';
+	filename[ 0 ] = '\0';
+	filename[ MAXFILENAME - 1 ] = '\0';
+	class[ 0 ] = '\0';
+	class[ MAXCLASS - 1 ] = '\0';
+	setupopt( csb, rgsb );
+	for ( option = nextopt(); option != NULL; option = nextopt() ) {
+		if ( strequ( option, "-v" ) ) {
+			verbose = 1;
+		}
+		else if ( strequ( option, "-m" ) ) {
+			if ( ( option = nextarg() ) == NULL ) {
+				strcpy( bemachine, "-new" );
+			}
+			else {
+				strncpy(bemachine, option, MAXMACHINENAME-1);
+			}
+		}
+		else if ( strequ( option, "-c" ) ) {
+			if ( ( option = nextarg() ) == NULL ) {
+				printusage( "error: missing class name\n" );
+			}
+			strncpy( class, option, MAXCLASS - 1 );
+		}
+		else {
+			printusage("error: unexpected argument '%s'\n",option);
+		}
+	}
+	if ( ( option = nextarg() ) != NULL ) {
+		strncpy( filename, option, MAXFILENAME - 1 );
+	}
+	else {
+		char * sb = getenv( ENVFILENAME );
+
+		if ( sb != NULL ) {
+			strncpy( filename, sb, MAXFILENAME - 1 );
+		}
+		else {
+			strcpy( filename, "a.out" );
+		}
+	}
+	if ( ( option = nextword() ) != NULL ) {
+		printusage( "error: unexpected argument '%s'\n", option );
+	}
+	
+	strcpy( femachine, "" );
+	
+	if ( verbose ) {
+		printf( "connect to bemachine '%s', class '%s', filename '%s'\n", bemachine, class, filename );
+	}
+	
+	if ( ( devtcp = connectbed( femachine, bemachine, class,
+				   REQ_DNLD_CONNECT ) ) < 0 ){
+		exit( 1 );
+	}
+	if ( verbose ) {
+		printf( "permission to use the backend machine\n" );
+	}
+	
+	printf( "downloading file: %s\n", filename );
+
+	rv = dload2tcp( filename, devtcp );
+	if ( rv == -1 ) {
+		exit( 1 );
+	}
+	exit( 0 );
+}
+
+
+/*---------------------------------------------------------------------------
+ * printusage -
+ *---------------------------------------------------------------------------
+ */
+printusage( sb, w1, w2 )
+     char *sb;
+     int w1, w2;
+{
+	fprintf( stderr, sb, w1, w2 );
+	fprintf( stderr,
+	    "usage: download [-c  CLASS] [-m BACKENDMACHINE] [filename]\n" );
+	exit( 1 );
+}
+	
+@
+
+
+1.3
+log
+@*** empty log message ***
+@
+text
+@a33 1
+	char bedserversfile[ MAXFILENAME ];
+a39 2
+	bedserversfile[0] = '\0';
+	bedserversfile[ MAXMACHINENAME - 1 ] = '\0';
+d48 1
+a48 7
+		if ( strequ( option, "-b" ) ) {
+			if ( ( option = nextarg() ) == NULL ) {
+				printusage("error: missing bedservers file\n");
+			}
+			strncpy( bedserversfile, option, MAXFILENAME - 1 );
+		}
+		else if ( strequ( option, "-v" ) ) {
+a88 1
+		printf( "bedservers file '%s'\n", bedserversfile );
+d93 1
+a93 1
+				   bedserversfile, REQ_DNLD_CONNECT ) ) < 0 ){
+d120 1
+a120 1
+	    "usage: download [-b FILE] [-c  CLASS] [-m BACKENDMACHINE] [filename]\n" );
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d130 1
+a130 1
+	    "usage: download [-b FILE] [-c  CLASS] [-m BACKENDMACHINE]\n" );
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d25 1
+a25 1
+main ( csb , rgsb )
+d49 1
+a49 1
+	setupopt( csb , rgsb );
+d51 1
+a51 1
+		if ( strequ( option , "-b" ) ) {
+d55 1
+a55 1
+			strncpy( bedserversfile , option , MAXFILENAME - 1 );
+d57 1
+a57 1
+		else if ( strequ( option , "-v" ) ) {
+d60 1
+a60 1
+		else if ( strequ( option , "-m" ) ) {
+d62 1
+a62 1
+				strcpy( bemachine , "-new" );
+d65 1
+a65 1
+				strncpy(bemachine , option , MAXMACHINENAME-1);
+d68 1
+a68 1
+		else if ( strequ( option , "-c" ) ) {
+d72 1
+a72 1
+			strncpy( class , option , MAXCLASS - 1 );
+d79 1
+a79 1
+		strncpy( filename , option , MAXFILENAME - 1 );
+d85 1
+a85 1
+			strncpy( filename , sb , MAXFILENAME - 1 );
+d88 1
+a88 1
+			strcpy( filename , "a.out" );
+d92 1
+a92 1
+		printusage( "error: unexpected argument '%s'\n" , option );
+d95 1
+a95 1
+	strcpy( femachine , "" );
+d98 2
+a99 2
+		printf( "bedservers file '%s'\n" , bedserversfile );
+		printf( "connect to bemachine '%s' , class '%s' , filename '%s'\n", bemachine , class , filename );
+d102 2
+a103 2
+	if ( ( devtcp = connectbed( femachine , bemachine , class ,
+				   bedserversfile , REQ_DNLD_CONNECT ) ) < 0 ){
+d110 1
+a110 1
+	printf( "downloading file: %s\n" , filename );
+d112 1
+a112 1
+	rv = dload2tcp( filename , devtcp );
+d124 1
+a124 1
+printusage( sb , w1 , w2 )
+d126 1
+a126 1
+     int w1 , w2;
+d128 2
+a129 2
+	fprintf( stderr , sb , w1 , w2 );
+	fprintf( stderr ,
+@

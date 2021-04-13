@@ -1,0 +1,27 @@
+.TH READ 2
+.SH NAME
+read \- device independent input routine
+.SH SYNOPSIS
+.nf
+.B int read(dev, buffer, numchars)
+.B int dev;
+.B char *buffer;
+.B int numchars;
+.fi
+.SH DESCRIPTION
+.I Read
+will read up to
+.I numchars
+bytes from the I/O device given by
+.I dev.
+It returns SYSERR if
+.I dev
+is incorrect.
+It returns the number of characters read if successful.
+The number of bytes actually returned depends on the device.
+For example, when reading from a device of type "tty", each read
+normally returns one line.
+For a disk, however, each read returns one block and the argument
+\f2numchars\f1 is taken to be the index of the disk block desired.
+.SH SEE ALSO
+close(2), control(2), getc(2), open(2), putc(2), seek(2), write(2)

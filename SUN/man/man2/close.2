@@ -1,0 +1,24 @@
+.TH CLOSE 2
+.SH NAME
+close \- device independent close routine
+.SH SYNOPSIS
+.B int
+.B close(dev)
+.nf
+.B int dev;
+.fi
+.SH DESCRIPTION
+.I Close
+will disconnect I/O from the device given by
+.I dev.
+It returns SYSERR if
+.I dev
+is incorrect, or is not opened for I/O.
+Otherwise,
+.I close
+returns OK.
+.PP
+Normally tty devices like the console do not have to be opened and
+closed.
+.SH SEE ALSO
+control(2), getc(2), open(2), putc(2), read(2), seek(2), write(2)

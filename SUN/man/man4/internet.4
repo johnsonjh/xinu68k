@@ -1,0 +1,83 @@
+.TH INTERNET 4
+.SH NAME
+internet \- IP-level Internet interface pseudo-device driver (types dgm, dg)
+.SH SYNOPSIS
+.nf
+.B #include <network.h>
+.sp
+.B read(device buffer, length)
+.B write(device, buffer, length)
+.B open(device, name)
+.B close(device)
+.B control(device, function, arg1)
+.B init(device)
+.br
+.SH DESCRIPTION
+.PP
+The \f2dgm\f1 and \f2dg\f1 device drivers, which operate as a related
+pair, provide a network interface at the IP datagram level.
+They accept datagrams from user processes and send them out on
+the DARPA Internet, or receive datagrams from the Internet and deliver
+them to user processes.
+The standard Xinu device name for the datagram master pseudo-device
+is \f2INTERNET\f1, and the standard name for individual connection
+pseudo-devices is \f2DGRAM\f1.
+.PP
+The drivers cooperate so that users can initiate connection by calling
+OPEN(2) on the datagram master device.
+If successful, the call to OPEN(2) returns the device descriptor of a
+\f2dg\f1 pseudo-device that can be used with READ(2) or WRITE(2) to
+transfer data.
+Finally, when finished with the connection,
+the user process calls CLOSE(2) on the \f2dg\f1 device.
+.PP
+The \f2dgm\f1 driver consists of routines that implement OPEN(2)
+and CONTROL(2), while the \f2dg\f1 driver consists of routines for
+READ(2), WRITE(2), CLOSE(2), and CONTROL(2).
+Primitives READ(2) and WRITE(2) operate in one of two basic modes.
+Either they transfer data in Xinugram format complete with an address
+header, or they transfer just the data portion of the datagram.
+.TP
+.B open(device,name,mode)
+Used with the master device to open a datagram pseudo-device.
+Name is a string that gives an IP address and UDP port
+number in the form \f2i1.i2.i3.i4:u\f1.
+.TP
+.B control(device,function,arg1)
+Used with master device to set the default gateway for nonlocal
+IP datagram traffic.  The only function supported is \f2DGM_GATE\f1
+which takes an IP address as an argument and sets the default gateway
+to that address.
+.PP
+Used with a \f2dg\f1 pseudo-device to set the transfer mode.
+The valid operations include \f2DG_CLEAR\f1, which clears
+any UDP datagrams that happen to be in the receive queue, and
+\f2DG_SETMODE\f1, which sets the pseudo-device mode.
+The mode argument composed of a word in which the first two bits
+control the transfer mode and sixth bit controls timeout.
+The symbolic constants for these bits are:
+.sp .5
+.in +0.2i
+DG_NMODE (001) \- Normal mode
+.br
+DG_DMODE (002) \- Data-only mode
+.br
+DG_TMODE (040) \- Timeout all reads
+.in -0.2i
+.sp .5
+Note that timeout can be applied to either transfer mode.
+.TP
+.B read(device buffer, length)
+Used with a \f2dg\f1 pseudo-device to await the arrival of a UDP datagram
+and transfer it to the user in the form of a Xinugram.
+.TP
+.B write(device, buffer, length)
+Used with a \f2dg\f1 pseudo-device to transfer a xinugram into a
+UDP datagram and send it on the Internet.
+.TP
+.B close(device)
+Closes a \f2dg\f1 pseudo-device.
+.TP
+.B init(device)
+When applied to \f2dg\f1 pseudo-devices initializes each to
+mark it not in use.

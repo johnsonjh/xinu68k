@@ -1,0 +1,44 @@
+.TH GETMEM 2
+.SH NAME
+getmem, getstk \- get a block of main memory
+.SH SYNOPSIS
+.B char *getmem(nbytes)
+.br
+.B int nbytes;
+.sp
+.B char *getstk(nbytes)
+.br
+.B int nbytes;
+.fi
+.SH DESCRIPTION
+In either form,
+.I getmem
+rounds the number of bytes,
+.I nbytes,
+to an even-word multiple, and
+allocates a block of
+.I nbytes
+bytes of memory for the caller.
+.I Getmem
+returns the lowest word address in the allocated block;
+.I getstk
+returns the highest word address in the allocated block.
+If less than
+.I nbytes
+bytes remain, the call returns SYSERR.
+.PP
+.I Getmem
+allocates memory starting with the end of the loaded program.
+.I Getstk
+allocates memory from the stack area downward.
+The routines cooperate so they never allocate overlapping
+regions.
+.SH SEE ALSO
+freemem(2) getbuf(2), freebuf(2)
+.SH BUGS
+There is no way to protect memory, so the active stack may write into
+regions returned by
+either call; allocations returned by
+.I getstk
+are more prone to disaster because they lie closest to the
+dynamic stack areas of other processes.

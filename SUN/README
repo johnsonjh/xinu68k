@@ -1,0 +1,397 @@
+Sun3.V7 - README
+
+                           X I N U 
+                           -------
+
+   Xinu is a layered, process-based operating system.  A detailed
+description can be found in the text:
+
+        Comer, Douglas E., Operating System Design: The Xinu
+          Approach, Prentice-Hall, 1984.
+
+This directory contains version 7 of the software (including Internet
+protocol software and a user interface shell), and is described in:
+
+        Comer, Douglas E., Operating System Design Vol 2:
+          Internetworking with Xinu, Prentice-Hall, 1987.
+
+   To run the software on this tape, you will need at least 2 Sun 3
+workstations.  The workstations are arranged in pairs, with the
+frontend machine serving as the editing and compiling machine, and
+the backend workstation being used to test the software.  Each pair
+of machines must be connected to the local network, and they must
+have an RS232 line connecting their two A serial ports.
+   The tape is self-contained.  It contains source programs for
+both Xinu and the development system.  The tape can be read into
+any directory.  These programs do not need to be placed in system
+directories unless you want to do so.
+  Once downloaded, the micro runs independently, communicating
+with the VAX or other machines over an Ethernet, using standard DARPA
+Internet protocols (sometimes called TCP/IP).
+   We have attempted to keep most of the software identical to that
+published in the above text.  Almost all of the higher level
+software is identical.  The low level software, in many cases, had
+to be rewritten to some extent.  At the very least, we have
+attempted to maintain the function of each source file, even if the
+code has been significantly changed.
+   Since the machines are arranged in pairs, there is currently no
+support for specifying which machine to download to, nor is there
+any support for an 'lusers' command.  Also, because of the current
+setup, we have not written a 'download' command, as it's function is
+simply left to the user under the Sun monitor program.  Code to
+support such a distributed system is currently being designed, and
+will probably be available via ftp when it is finished.
+   This code assumes that you have some machines on your network which
+are capable of supplying the standard RARP, time, and Domain Name services.
+
+
+Installation
+------------
+
+   Choose a directory for the Xinu software.  You need not be
+in this directory to cross-compile or download programs -- it's
+merely the place to store the Xinu software.  Moving the soft-
+ware to another directory requires recompilation (i.e., re-
+installation).  Choosing /usr/xinu7 as the directory will save
+time during installation because binary files on the tape are
+compiled for that directory.  Throughout this documentation the
+directory into which you place Xinu is denoted {Xinu-directory}.
+
+   Make the Xinu directory and read in the tape by typing the
+following commands:
+
+        mkdir {Xinu-directory}
+        cd {Xinu-directory}
+        tar xbf 20 /dev/rmt0    (your 1600 bpi tape device may
+                                 be named something other than
+                                 /dev/rmt0)
+
+   Make a symbolic link from /usr/xinu7 to the directory you chose to
+avoid recompilation.  You will need super user privilege to do so. This
+step is optional:
+
+        su
+        ...supply super user password when asked...
+        ln -s {Xinu-directory} /usr/xinu7
+        CONTROL-d (to leave super user mode)
+
+Once the tape has been read, you must change all source programs
+that refer to {Xinu-directory} and recompile the binaries.  A
+shell script has been provided to do this for you.  To use it,
+move to the installation directory and run Install.  NOTE: YOU
+MUST BE IN THE INSTALLATION DIRECTORY {Xinu-directory}/install
+WHEN YOU EXECUTE THIS SCRIPT OR IT WILL NOT WORK.
+
+        cd {Xinu-directory}/install
+        ./Install
+
+
+
+Physical Description
+-------- -----------
+
+Let me describe the configuration under which we run Xinu on the
+Sun-3/50.  The layout in the Xinu lab looks like this:
+
+
+        -----------------Department Ethernet---------------------
+        |                                                       |
+        |                                                       |
+        |                                                       |
+        |    --------------                  --------------     |
+        |    |            |                  |            |     |
+        |    |   Front    |                  |   Back     |     |
+        |----|    End     |====9600 baud=====|    End     |-----|
+        |    |    Sun     |      serial      |    Sun     |     |
+        |    |            |                  |            |     |
+        |    --------------                  --------------     |
+
+
+The front end Sun (F) is connected to the back end Sun (B) with both
+a 9600 bps serial line and a 10 Mbps ethernet.  F is a full Sun-3/50
+with keyboard, monitor, and in our case, a 78 Mbyte disk drive, although
+a diskless workstation will perform just as well.  B is a cpu box only;
+no keyboard, monitor, or disk.  B is configured to treat serial port
+A as its console for both input and output.
+
+We use a program called odt (an acronym from the LSI-11 "on-line
+debugging technique", which we have kept for historical reasons) that
+connects to serial port A on F and allows prom monitor commands
+and tty input to be sent to B via the serial line.  This works
+especially well if the user on F is running a windowing environment.
+
+Setup
+-----
+
+In order for the Suns to communicate as above, the backend Sun
+must consider serial port A to be its console device.  Neatly
+enough, if you boot a Sun-3 without a keyboard, it automatically
+does this, at least on input.  However, to work fully, the EEPROM
+needs to be changed so that B will automatically use the serial
+port as the console.  At this point, it is strongly recommended that
+you look in "Installing Unix on the Sun Workstation," Appendix D, "the
+PROM Monitor and the EEPROM."  It contains full reference for that
+which will only be passed over lightly here.
+
+To set up the backend Sun (you must do this part with a keyboard
+and monitor attached):
+
+1) hit L1-a     (should transfer control to the EEPROM monitor)
+2) type "q 1f[return]"  ([return] is the return key)
+3) type "10[return]"
+4) type " [return]"     (space then return)
+
+Also, it speeds up the boot process if the back-end sun automatically
+uses the ethernet as the default boot device.  You will need to
+know whether your Sun uses the lance ethernet controller (le) or
+the intel ethernet controller (ie).
+
+1) hit L1-a
+2) type "q 18[return]"
+3) type "12[return]"    This code tells the Sun not to do
+                        device polling, but to boot from
+                        the device specified in the following
+                        locations.
+4) type "69[return]"    Hex code for "i".  If your Sun uses
+                        the lance ethernet, you need the hex
+                        code for "l", which is 6c.
+5) type "0[return]"     Literal 0.
+6) type "0[return]"     Literal 0.
+7) type "0[return]"     Literal 0.
+8) type " [return]"     space return, exits programming of
+                        EEPROM Monitor.
+
+This programs the back-end Sun to boot from device ie(0,0,0),
+or le(0,0,0) depending on the value entered above.
+
+So, on to booting.  B is put in prom monitor mode by sending
+a break down the serial line (a \^@ in odt does this).  The user
+then issues a boot instruction for B, which rarps over the ethernet
+to find its IP address, and then uses the tftp protocol which
+is stored in ROM to download the Xinu operating system from F,
+still using the ethernet.  B will also boot automatically after
+a power cycle.
+
+To aid in debugging, the Sun version of Xinu uses an autostart
+option on the boot command.  If you use the command "b" from the
+monitor prompt, the Xinu code will be loaded, and the monitor
+prompt will return.  From that point, you can start the Xinu system
+by typing "g 4000", which will branch to the loaded Xinu system.
+If you want to automatically start the system, then the command is
+"b -aN" where N is optional, and is a number of seconds to delay
+before starting.  If the N is omitted, the system will start
+immediately.
+
+
+Boot setup
+----------
+    When a diskless sun boots, it tries to determine its IP
+address.  To do this, it sends out a RARP packet, which is
+answered by any other machine which knows the IP address which
+corresponds to the Sun's physical address.  The booting sun will
+then request a boot file via TFTP from the FIRST machine which
+answered the RARP request.  In order for our boot sequence to work
+correctly, the front end Sun should have an entry for the back end
+sun in its file "/etc/ethers", which binds physical addresses to
+IP addresses, and it must also be running "rarpd".  The only file
+which the booting back end Sun can request is
+"/tftpboot/AABBCCDD", where AABBCCDD is the hex representation of
+the IP address of the back end Sun.  We make this file a symbolic
+link to the file "a.out" in the same directory.  For example,
+the /tftpboot directory for a front end Sun connected to a back
+end Sun with IP address 128.10.2.89 would look like:
+     1 lrwxrwxrwx  1 root        5 Sep  2 15:58 800A0259 -> a.out
+    18 -rw-rw-r--  1 sdo     17528 Oct 26 13:39 a.out
+Note that both files must be world readable.    
+
+Note: using yellow pages may cause difficulty in the above sequence.
+If you are running yellow pages, you should either turn yellow
+pages off (a drastic step) or put an entry for the back-end Sun
+in the /etc/ethers of your boot server.  However, the link in
+/tftpboot should still be present only on the front-end Sun.
+It is the presence of this file that determines who answers
+the RARP request.  
+
+The code is written to run under Sun 3.4 Unix, using its C compiler,
+loader and assembler.  
+
+
+Final Installation
+----- ------------
+
+   To complete installation you must recompile source programs
+that contain references to the Xinu directory.  Shell scripts
+have been provided to do the job.  For details, see file
+README in the installation directory:
+
+        cd {Xinu-directory}/install
+        cat README
+
+Network Servers
+------- -------
+
+   Now that installation is complete, you need to Configure the Xinu
+kernel software itself, and recompile it.  To do so, you must choose
+internet addresses for the domain name server, time server, and remote
+file server machines.  You can start the remote file server yourself
+on the VAX.  It is found in {Xinu-directory}/bin/fs.  You need to know
+the internet address of the VAX where fs runs, as well as the internet
+address of the machine that runs a time server (UDP port 37) and the
+internet address of a machine that runs a domain name server (UDP port
+53).  Ask your local network guru to tell you these internet addresses
+(in dotted decimal notation) and modify the SERVER constants found near
+the end of file {Xinu-directory}/src/sys/sys/Configuration.  If you do
+not have an assigned Internet address for your network (i.e., your network
+does not connect to the DARPA Internet), choose network an address for it.
+Using 128.10.2.0 (Which is actually the address of an Ethernet at Purdue),
+means you won't have to recompile the kernel.
+
+        cd {Xinu-directory}/src/sys/sys
+        ...edit file Configuration; change SERVER address constants...
+        make install
+
+Remote File Server
+------ ---- ------
+
+   The remote file server answers queries from the network and reads/writes
+files as directed.  If you run the file server on your VAX, then the file
+server has the permissions of the user who starts it.  We recommend that you
+install a new user account (e.g., "xinu"), and always execute the file server
+as that user.  Also, you should understand that the file server makes all
+world-readable files accessible over the network.  if you connect to the
+DARPA Internet, it makes world-readable files accessible from foreign sites.
+   The file server comes configured to use UDP port 2001.  Check with your
+local network guru to make sure 2001 is not in use, and if it is, choose a
+new port number for the file server.  Change the default port in the software
+in {Xinu-directory}/src/fs or just use the -p option when invoking fs.  You
+must also change the port number that the kernel uses - it can be found in
+file {Xinu-directory}/src/sys/sys/Configuration.
+   Start the file server:
+
+        ...login to the VAX under the account that owns the file server...
+        {Xinu-directory}/bin/fs
+        logout
+
+
+Try Running Xinu
+--- ------- ----
+
+   Now that you have a network running RARP, time, and name servers,
+you can boot xinu.  Download and run it.
+
+        cd to the directory with the a.out image
+        make download
+        odt
+        ...you should get Xinu boot message and login prompt...
+        type any login
+        ...you should get prompt with machine name in it...
+        ...try commands such as the following...
+        ps
+        date
+        dg
+        help
+        mount
+        ...try accessing remote files as follows...
+        rls /
+        cat > /tmp/junk
+        Hi there - this is a file
+        created from Xinu
+        CONTROL-D
+        cat /tmp/junk
+        ...you should see what you just created...
+
+Directories
+-----------
+
+   When the tape has been read, you will find a directory
+structure like this:
+
+1 .                             Xinu-directory (usually /usr/xinu7)
+
+  2 /bin                        cross-development software
+
+  2 /include                    include files
+
+  2 /install                    installation shell script
+
+  2 /lib                        library files
+
+  2 /man                        all manual pages for:
+    3 /man1                     cross-development commands
+    3 /man2                     Xinu system commands
+    3 /man3                     library commands
+
+  2 /src                        all source programs:
+    3 /cmd                      cross-development software
+    3 /lib                      libraries
+    3 /sys                      Xinu and configuration:
+      4 /con                    configuration program
+      4 /h                      Xinu include files
+      4 /sys                    Xinu and Makefile
+        5 /shell                Xinu shell and commands
+          6 /worm               Simple worm application as an example
+
+   2 README                     This file
+
+
+Differences between V7 Sun and V7 LSI
+----------- ------- -- --- --- -- ---
+The system should behave like it did in the original LSI version.  The
+ethernet drivers are all different, but the interface is unchanged.
+
+
+Differences between V7 Sun and V6 Sun
+----------- ------- -- --- --- -- ---
+All of the bug fixes from version 6 have been applied to this code as
+well.  In addition, the routines that manipulate the status register
+have all been changed.  The changed routines are disable(), restore(),
+enable(), pause(), and halt().  They were previously macros defined in
+kernel.h that were excpanded inline into asm("") calls.  These macros
+turned the Sun optimizing compiler into something more closely
+resembling a "randomizing" compiler, so you could not run Version 6 xinu
+with the optimizer enabled.  In this version, these routines are
+written as assembly language subroutines, and can be found in the file
+intr.s.  In version 6, disable() and restore() did not take arguments,
+rather, disable() pushed the old status word onto the stack, and
+restore() expected to find it there.  This caused some problems, and
+proved hard to understand.  In version 7, both routines MUST be passed
+a pointer to a short which holds the status register contents.  We
+recommend that you use the new typedef in kernel.h, STATWORD, to
+define the variables of this type.  For example, you might write a
+routine as follows:
+
+     test()
+     {
+         STATWORD ps;
+         disable(ps);
+         critical_section();
+         restore(ps);
+     }
+
+Note that we have not explicitely passed the address of ps.  That is
+because STATWORD defines ps to be of type short[1], so any reference
+to its name will generate the lvalue, or the address.  This is a trick
+from the memory marking routines, and is used so that you can't forget
+to pass the address of ps, rather than the contents, which will
+probably cause a panic.
+
+
+Problems or Questions
+-------- -- ---------
+
+This port of the system was written by Shawn Ostermann.  Reports of
+errors in the software or documentation are gratefully accepted.
+Please mail all comments and bug reports to:
+
+        DARPA Internet/ CSNet address:
+                sdo   @ cs . purdue . edu
+                comer @ cs . purdue . edu
+        uucp address:
+                {allegra, ihnp4} ! purdue ! sdo
+                {allegra, ihnp4} ! purdue ! dec
+        Postal address:
+                Department of Computer Science
+                Purdue University
+                West Lafayette, IN  47907
+                (317) 494-6009
+

@@ -1,0 +1,489 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	92.01.04.03.43.39;	author muckel;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	91.11.25.05.29.21;	author muckel;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	91.11.25.04.23.13;	author muckel;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	91.11.25.02.05.30;	author muckel;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@/dev/null
+@
+text
+@/* odt2tcp.c - 
+ * 
+ * Author:	Patrick A. Muckelbauer
+ * 		Dept. of Computer Sciences
+ * 		Purdue University
+ * Date:	Wed Oct 17 13:18:51 1990
+ */
+#include <stdio.h>
+#include <errno.h>
+
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sgtty.h>
+#include <signal.h>
+
+
+#include "bed.h"
+#include "bmutils.h"
+#include "odtd.h"
+
+#define BUFSIZE 100
+
+static int doMapping = 0;
+static unsigned char globalMask;
+
+/*---------------------------------------------------------------------------
+ * odt2tcp - Take standard input and send it to BED process on frontend 
+ *---------------------------------------------------------------------------
+ */
+odt2tcp( filein, fileout, devtcp, escch, initialMask )
+     int devtcp;
+     FILE *filein, *fileout;
+     char escch;
+     unsigned char initialMask;
+{
+	int devin, devout;
+	int bmaskRead;
+	int bmaskResult;
+	int zero = 0;
+	int i;
+
+	globalMask = initialMask;
+	devin = fileno(filein);
+	devout = fileno(fileout);
+	if ( isatty( devin ) ) {
+		rawtty( devin );
+	}
+	else {
+		doMapping = 1;
+	}
+	if ( isatty( devout ) ) {
+		rawtty( devout );
+	}
+	bmaskRead = BITMASK( devin ) | BITMASK( devtcp );
+
+	for ( ; 1 ; ) {
+		do {
+			bmaskResult = bmaskRead;
+			i = select( 32, &bmaskResult, &zero, &zero, 0 );
+		} while( i == -1 && errno == EINTR );
+		if ( i <= 0 ) {
+			fprintf( stderr, "error: bad return from select\n" );
+			break;
+		}
+		if ( ( bmaskResult & BITMASK( devtcp ) ) != 0 ) {
+			if ( flushtcp( devtcp, devout ) <= 0 ) {
+				break;
+			}
+		}
+		if ( ( ( bmaskResult & BITMASK(devin ) ) != 0 ) ) {
+			if ( flushinput( escch, filein, devtcp,
+					fileout ) <= 0 ) {
+				break;
+			}
+		}
+	}
+	if ( ! isatty( devin ) ) {	/* flush output if not a normal tty */
+		flushAllTcp( devtcp, devout );
+	}
+	fprintf( fileout, "\n\r" );
+	fflush( fileout );
+	restorettyAll();
+	return;
+}
+
+static 
+flushAllTcp( devtcp, devout )
+     int devtcp, devout;
+{
+	int bmaskResult, bmaskRead;
+	int i;
+	int zero = 0;
+	struct timeval timev;
+
+	timev.tv_sec = 1;
+	timev.tv_usec = 0;
+
+	bmaskRead = BITMASK( devtcp );
+	while ( 1 ) {
+		bmaskResult = bmaskRead;
+		do {
+			i = select( 32, & bmaskResult, & zero, & zero,
+				   & timev );
+		} while( i == -1 && errno == EINTR );
+		if ( i <= 0 ) {
+			break;
+		}
+		if ( flushtcp( devtcp, devout ) <= 0 ) {
+			break;
+		}
+	}
+}
+
+static int
+flushtcp( devtcp, devout )
+     int devtcp, devout;
+{
+	char buf[ BUFSIZE ];
+	int len;
+	int i;
+
+	if ( ( len = read( devtcp, buf, BUFSIZE ) ) <= 0 ) {
+		if ( len != 0 ) {
+			fprintf( stderr,
+				"error: bad return from read(tcp)\n" );
+		}
+		return( -1 );
+	}
+	for ( i = 0; i < len; i++ ) {
+		buf[ i ] &= globalMask;
+	}
+	if ( ( len = write( devout, buf, len ) ) <= 0 )  {
+		fprintf( stderr, "error: bad return from write(devout)\n" );
+		return( -1 );
+	}
+	return( len );
+}
+
+static int
+flushinput( escch, filein, devtcp, fileout )
+     char escch;
+     FILE *filein, *fileout;
+     int devtcp;
+{
+	unsigned char buf[ 1 ];
+	int len;
+	int devin = fileno( filein );
+	int i;
+
+	if ( (len = read( devin, buf, 1 ) ) <= 0 ) {
+		if ( len != 0 ) {
+			fprintf( stderr,
+				"error: bad return from read(devin)\n" );
+		}
+		return( -1 );
+	}
+	for ( i = 0; i < len; i++ ) {
+		buf[ i ] &= globalMask;
+	}
+	if ( buf[ 0 ] == escch ) {
+		return( handlebreak( escch, filein, devtcp, fileout ) );
+	}
+	return( escapewrite( devtcp, buf[ 0 ] ) );
+}
+
+/*---------------------------------------------------------------------------
+ * breakch - handle magic character
+ *---------------------------------------------------------------------------
+ */
+static int
+handlebreak( escch, filein, devtcp, fileout )
+     char escch;
+     FILE *filein, *fileout;
+     int devtcp;
+{
+	int ch;
+	int done;
+	int devin, devout;
+	int rv = 1;
+
+	devin = fileno( filein );
+	devout = fileno( fileout );
+
+	fprintf( fileout, "\n\r" );
+	done = FALSE;
+	while ( ! done ) {
+		fprintf( fileout, "\n\r(odt-command-mode) " );
+		ch = fgetc( filein );
+		ch &= 0x7F;
+		fprintf( fileout, "%c\n\r", ch );
+		switch ( ch ) {
+		      case EOF:
+		      case 'q':
+			rv = -1;
+			done = 1;
+			break;
+
+		      case '7':
+			globalMask = 0x7F;
+			break;
+
+		      case '8':
+			globalMask = 0xFF;
+			break;
+			
+		      case 'c':
+			done = TRUE;
+			break;
+
+		      case '?':
+		      case 'h':
+			fprintf( fileout, "h, ? : help message\n\r" );
+			fprintf( fileout, "s     : send default character 0x%x\n\r", (unsigned int) escch );
+			fprintf( fileout, "b     : send break\n\r" );
+			fprintf( fileout, "c     : continue session\n\r" );
+			fprintf( fileout, "z     : suspend\n\r" );
+			fprintf( fileout, "7     : 7-Bit ASCII\n\r" );
+			fprintf( fileout, "8     : 8-Bit ASCII\n\r" );
+			fprintf( fileout, "q     : quit\n\r" );
+			break;
+
+		      case 's':
+			done = TRUE;
+			rv = escapewrite( devtcp, escch );
+			break;
+
+		      case 'b':
+			done = TRUE;
+			rv = puttcp( devtcp, ODTD_ESCCH );
+			rv &= puttcp( devtcp, ODTD_BREAKCH );
+			break;
+
+		      case 'z':
+			done = FALSE;
+			restorettyAll();
+			kill( getpid(), SIGTSTP );
+			if ( isatty( devin ) ) {
+				rawtty( devin );
+			}
+			if ( isatty( devout ) ) {
+				rawtty( devout );
+			}
+			break;
+
+		      default:
+			fprintf( fileout, "Illegal option '0x%x'.  Type h for help\n\r", (unsigned char) ch );
+			break;
+		}
+	}
+	fprintf( fileout, "\n\r" );
+	fflush( fileout );
+	return( rv );
+}
+
+static int
+escapewrite( devtcp, ch )
+{
+	if ( ch == ODTD_ESCCH ) {
+		if ( puttcp( devtcp, ODTD_ESCCH ) <= 0 ) {
+			return( -1 );
+		}
+	}
+	return( puttcp( devtcp, ch ) );
+}
+     
+
+/*---------------------------------------------------------------------------
+ * puttcp - put a character
+ *---------------------------------------------------------------------------
+ */
+static int
+puttcp( devtcp, ch )
+     int devtcp;
+     char ch;
+{
+	if ( doMapping && ch == '\012' ) {/* newline maps to carriage return */
+		ch = '\015';
+	}
+	if ( write( devtcp, &ch, 1 ) <= 0 ) {
+		fprintf( stderr, "error: bad return from write(tcp)\n" );
+		return( -1 );
+	}
+	return( 1 );
+}
+
+@
+
+
+1.3
+log
+@/dev/null
+@
+text
+@d24 1
+a24 1
+static unsigned char globalMask = 0xFF;
+d30 1
+a30 1
+odt2tcp( filein, fileout, devtcp, escch )
+d34 1
+d42 1
+d83 1
+a83 1
+	exit( 0 );
+a285 9
+/*---------------------------------------------------------------------------
+ * quit - exit odt
+ *---------------------------------------------------------------------------
+ */
+quit()
+{
+	restorettyAll();
+	exit( 1 );
+}
+@
+
+
+1.2
+log
+@/dev/null
+@
+text
+@d30 1
+a30 1
+odt2tcp( filein , fileout , devtcp , escch )
+d57 1
+a57 1
+			i = select( 32 , &bmaskResult , &zero , &zero , 0 );
+d60 1
+a60 1
+			fprintf( stderr , "error: bad return from select\n" );
+d64 1
+a64 1
+			if ( flushtcp( devtcp , devout ) <= 0 ) {
+d69 1
+a69 1
+			if ( flushinput( escch , filein , devtcp ,
+d76 1
+a76 1
+		flushAllTcp( devtcp , devout );
+d78 1
+a78 1
+	fprintf( fileout , "\n\r" );
+d85 1
+a85 1
+flushAllTcp( devtcp , devout )
+d100 1
+a100 1
+			i = select( 32 , & bmaskResult , & zero , & zero ,
+d106 1
+a106 1
+		if ( flushtcp( devtcp , devout ) <= 0 ) {
+d113 1
+a113 1
+flushtcp( devtcp , devout )
+d120 1
+a120 1
+	if ( ( len = read( devtcp , buf , BUFSIZE ) ) <= 0 ) {
+d122 1
+a122 1
+			fprintf( stderr ,
+d130 2
+a131 2
+	if ( ( len = write( devout , buf , len ) ) <= 0 )  {
+		fprintf( stderr , "error: bad return from write(devout)\n" );
+d138 1
+a138 1
+flushinput( escch , filein , devtcp , fileout )
+d148 1
+a148 1
+	if ( (len = read( devin , buf , 1 ) ) <= 0 ) {
+d150 1
+a150 1
+			fprintf( stderr ,
+d159 1
+a159 1
+		return( handlebreak( escch , filein , devtcp , fileout ) );
+d161 1
+a161 1
+	return( escapewrite( devtcp , buf[ 0 ] ) );
+d169 1
+a169 1
+handlebreak( escch , filein , devtcp , fileout )
+d185 1
+a185 1
+		fprintf( fileout , "\n\r(odt-command-mode) " );
+d188 1
+a188 1
+		fprintf( fileout , "%c\n\r" , ch );
+d210 8
+a217 8
+			fprintf( fileout , "h , ? : help message\n\r" );
+			fprintf( fileout , "s     : send default character 0x%x\n\r" , (unsigned int) escch );
+			fprintf( fileout , "b     : send break\n\r" );
+			fprintf( fileout , "c     : continue session\n\r" );
+			fprintf( fileout , "z     : suspend\n\r" );
+			fprintf( fileout , "7     : 7-Bit ASCII\n\r" );
+			fprintf( fileout , "8     : 8-Bit ASCII\n\r" );
+			fprintf( fileout , "q     : quit\n\r" );
+d222 1
+a222 1
+			rv = escapewrite( devtcp , escch );
+d227 2
+a228 2
+			rv = puttcp( devtcp , ODTD_ESCCH );
+			rv &= puttcp( devtcp , ODTD_BREAKCH );
+d234 1
+a234 1
+			kill( getpid() , SIGTSTP );
+d244 1
+a244 1
+			fprintf( fileout , "Illegal option '0x%x'.  Type h for help\n\r" , (unsigned char) ch );
+d248 1
+a248 1
+	fprintf( fileout , "\n\r" );
+d254 1
+a254 1
+escapewrite( devtcp , ch )
+d257 1
+a257 1
+		if ( puttcp( devtcp , ODTD_ESCCH ) <= 0 ) {
+d261 1
+a261 1
+	return( puttcp( devtcp , ch ) );
+d270 1
+a270 1
+puttcp( devtcp , ch )
+d277 2
+a278 2
+	if ( write( devtcp , &ch , 1 ) <= 0 ) {
+		fprintf( stderr , "error: bad return from write(tcp)\n" );
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a22 8
+#if defined(SUN) || defined(VAX)
+#define delay()	        usleep(500000)
+#endif
+     
+#if defined(SEQ) || defined(DEC)
+#define delay()	        sleep(1)
+#endif
+     
+a39 2
+
+	delay();
+@

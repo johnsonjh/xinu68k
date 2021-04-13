@@ -1,0 +1,30 @@
+.TH SETNOK 2
+.SH NAME
+setnok \- set next-of-kin for a specified process
+.SH SYNOPSIS
+.nf
+.B int setnok(nok, pid)
+.B int nok;
+.B int pid;
+.fi
+.SH DESCRIPTION
+.I Setnok
+sets \f2nok\f1 to be the next-of-kin for process \f2pid\f1
+by recording \f2nok\f1 in the process table entry for
+process \f2pid\f1.
+A call to \f2setnok\f1 overwrites any previous information
+in the process table entry.
+.PP
+The next-of-kin for a process, \f2P\f1, is another process, \f2Q\f1,
+that the system notifies when \f2P\f1 dies (i.e., exits).
+Notification consists of a message sent to \f2Q\f1 containing
+only the process id, \f2P\f1.
+.PP
+Both arguments to \f2setnok\f1 must be valid process ids.
+\f2Setnok\f1 returns SYSERR to report errors in its arguments,
+and OK otherwise.
+.SH SEE ALSO
+kill(2)
+.SH BUGS
+There is no check to ensure that the next-of-kin remains in existence
+between the call to \f2setnok\f1 and the termination of a process.

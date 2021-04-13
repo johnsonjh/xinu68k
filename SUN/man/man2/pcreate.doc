@@ -1,0 +1,66 @@
+
+
+
+PCREATE(2)          Xinu Programmer's Manual           PCREATE(2)
+
+
+
+NAME
+     pcreate - create a new port
+
+SYNOPSIS
+     int pcreate(count)
+     int count;
+
+DESCRIPTION
+     _P_c_r_e_a_t_e creates a port with _c_o_u_n_t locations for storing mes-
+     sage pointers.
+
+     _P_c_r_e_a_t_e returns an integer identifying  the port if success-
+     ful.  If no more ports can be allocated, or if _c_o_u_n_t is non-
+     positive, _p_c_r_e_a_t_e returns SYSERR.
+
+     Ports are manipulated with PSEND(2) and PRECEIVE(2).
+     Receiving from a port returns a pointer to a message that
+     was previously sent to the port.
+
+SEE ALSO
+     pcount(2), pdelete(2), preceive(2), preset(2), psend(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

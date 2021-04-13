@@ -1,0 +1,66 @@
+
+
+
+DISABLE(3)          Xinu Programmer's Manual           DISABLE(3)
+
+
+
+NNNNAAAAMMMMEEEE
+     disable, enable, restore - change and restore processor
+     interrupt status
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ddddiiiissssaaaabbbblllleeee((((ppppssss))));;;;
+     eeeennnnaaaabbbblllleeee((((ppppssss))));;;;
+     rrrreeeessssttttoooorrrreeee((((ppppssss))));;;;
+
+     SSSSTTTTAAAATTTTWWWWOOOORRRRDDDD ppppssss;;;;
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     These routines change the processor interrupt status mode.
+     Normally, procedures use _d_i_s_a_b_l_e and _r_e_s_t_o_r_e to save the
+     interrupt status, mask interrupts off, and then restore the
+     saved status.  _E_n_a_b_l_e explicitly enables interrupts; it is
+     used only at system startup.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 3/2/88                         1
+
+
+

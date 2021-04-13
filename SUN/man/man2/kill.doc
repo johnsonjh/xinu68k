@@ -1,0 +1,66 @@
+
+
+
+KILL(2)             Xinu Programmer's Manual              KILL(2)
+
+
+
+NAME
+     kill - terminate a process
+
+SYNOPSIS
+     int kill(pid)
+     int pid;
+
+DESCRIPTION
+     _K_i_l_l will stop process _p_i_d and remove it from the system,
+     returning SYSERR if the process id is invalid, OK otherwise.
+     _K_i_l_l terminates a process immediately.  If the process has
+     been queued on a semaphore, it is removed from the queue and
+     the semaphore count is incremented as if the process had
+     never been there.  Processes waiting to send a message to a
+     full port disappear without affecting the port.  If the pro-
+     cess is waiting for I/O, the I/O is stopped (if possible).
+
+     One can kill a process in any state, including a suspended
+     one.  Once killed, a process cannot recover.
+
+BUGS
+     At present there is no way to recover space allocated dynam-
+     ically when a process terminates.  However, _k_i_l_l does
+     recover the stack space allocated to a process when it is
+     created.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

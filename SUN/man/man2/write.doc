@@ -1,0 +1,66 @@
+
+
+
+WRITE(2)            Xinu Programmer's Manual             WRITE(2)
+
+
+
+NAME
+     write - write a sequence of characters from a buffer
+
+SYNOPSIS
+     int write(dev, buff, count)
+     int dev;
+     char *buff;
+     int count;
+
+DESCRIPTION
+     _W_r_i_t_e writes _c_o_u_n_t characters to the I/O device given by
+     _d_e_v, from sequential locations of the buffer, _b_u_f_f. _W_r_i_t_e
+     returns SYSERR if _d_e_v or _c_o_u_n_t is invalid, OK for a success-
+     ful write.  Write normally returns when it is safe for the
+     user to change the contents of the buffer.  For some devices
+     this means write will wait for I/O to complete before
+     returning.  On other devices, the data is copied into a ker-
+     nel buffer and the write returns while it is being
+     transferred.
+
+SEE ALSO
+     close(2), control(2), getc(2), open(2), putc(2), read(2),
+     seek(2)
+
+BUGS
+     Write may not have exclusive use of the I/O device, so out-
+     put from other processes may be mixed in.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

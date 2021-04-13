@@ -1,0 +1,66 @@
+
+
+
+UNMOUNT(2)          Xinu Programmer's Manual           UNMOUNT(2)
+
+
+
+NAME
+     unmount - remove an entry from the syntactic namespace map-
+     ping table
+
+SYNOPSIS
+     int unmount(prefix)
+     char *prefix;
+
+DESCRIPTION
+     _U_n_m_o_u_n_t searches the syntactic namespace mapping table and
+     removes the mapping which has a prefix equal to the null-
+     terminated string _p_r_e_f_i_x.  If no such entry exists, _u_n_m_o_u_n_t
+     returns SYSERR.  Otherwise, it returns OK.
+
+SEE ALSO
+     mount(2), namespace(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

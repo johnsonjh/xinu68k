@@ -1,0 +1,66 @@
+
+
+
+NETNUM(3)           Xinu Programmer's Manual            NETNUM(3)
+
+
+
+NAME
+     netnum - compute the network portion of a given Internet
+     (IP) address
+
+SYNOPSIS
+     #include <network.h>
+
+     int netnum(netpart, address)
+     IPaddr netpart;
+     IPaddr address;
+
+DESCRIPTION
+     _N_e_t_n_u_m extracts the network portion of the Internet address
+     specified by argument _a_d_d_r_e_s_s, and places the result in
+     argument _n_e_t_p_a_r_t.  It operates by using the IP class of
+     argument _a_d_d_r_e_s_s to determine whether the network part of
+     the address occupies 1, 2, or 3 bytes, and it zeros the
+     remaining bytes.  _N_e_t_n_u_m always returns OK.
+
+SEE ALSO
+     getaddr(2), getnet(2)
+
+BUGS
+     _N_e_t_n_u_m does not understand subnets or subnet masks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

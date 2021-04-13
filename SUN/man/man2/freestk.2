@@ -1,0 +1,25 @@
+.TH FREESTK 2
+.SH NAME
+freestk \- deallocate a block of stack memory
+.SH SYNOPSIS
+.nf
+.B int freestk(addr, len)
+.B char *addr;
+.B int len;
+.fi
+.SH DESCRIPTION
+.I Freestk
+deallocates a contiguous block of
+memory previously obtained with GETSTK(2),
+and returns it to the free list.
+Argument \f2addr\f1 specifies the highest integer address
+in the block being deallocated, and argument \f2len\f1 specifies the
+length of the block in bytes.
+In this version, memory is allocated in  multiples of four bytes to guarantee
+that sufficient space is available in each block to link it onto the free
+list.
+However, both \f2getstk\f1 and \f2freestk\f1 rounds the specified
+length automatically, so the user need not be aware of any extra
+space in the allocated blocks.
+.SH SEE ALSO
+getbuf(2), getmem(2), getstk(2), freebuf(2), freemem(2)

@@ -1,0 +1,92 @@
+.TH PM 1
+.SH NAME
+pm \- Xinu post mortem debugger
+.SH SYNOPSIS
+.B pm
+[
+.B -p
+]
+[
+.B -s
+]
+[
+.B -t
+]
+[
+.I txtfil
+[
+.I corfil
+]
+]
+.SH DESCRIPTION
+.I Pm
+performs a post mortem given a core image from a \s-2Sun\s0
+running Xinu.
+It takes as input the memory image (in \s-2Sun\s0 a.out format) that was
+\fIdownload\fRed,
+uploads the core image
+(in \s-2Sun\s0 core format) from the Sun,
+and prints the following information:
+.IP
+Differences between the text portions (program instruction areas)
+of the file before downloading and after uploading.
+Except for interrupt vectors which are initialized at run-time,
+differences indicate that instructions were accidentally overwritten.
+.IP
+C traceback of the executing process, based on Xinu's
+.I currpid.
+.IP
+C traceback of all other processes.
+.IP
+The status of all semaphores.
+If a semaphore is in use and the count indicates
+that there are processes waiting, the 
+list of waiting processes is printed along
+with an actual count.
+Backward links are checked for consistency.
+.IP
+The status of tty devices, including the buffer head and tail
+pointers along with buffer contents.
+.PP
+By default,
+.I pm
+takes the downloaded image from file
+.I pm.out,
+and produces all of the above output.
+.I Pm
+always prints information about the current process.
+If the following flags are present,
+.I pm
+prints only the information requested.
+.TP
+.B -p
+dump the process table.
+.TP
+.B -s
+dump the semaphore table.
+.TP
+.B -t
+dump the tty tables.
+.TP
+.B -m
+check for overwritten text
+.TP
+.B -r
+print a stack trace of all processes
+.TP
+.B -v
+give verbose messages
+.PP
+Optional arguments
+.I txtfil
+and
+.I corfil
+can be specified to change the files used as the downloaded and
+uploaded image.
+.SH SEE ALSO
+download(1), upload(1)
+.SH BUGS
+\f2Pm\f1 may fault when given garbage files (e.g., a badly damaged
+core file) because it references
+symbols in the core image based on values obtained from the a.out
+file without checking their validity.

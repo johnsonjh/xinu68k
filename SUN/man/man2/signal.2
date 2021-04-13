@@ -1,0 +1,33 @@
+.TH SIGNAL 2
+.SH NAME
+signal, signaln \- signal a semaphore
+.SH SYNOPSIS
+.nf
+.B int signal(sem)
+.B int signaln(sem, count)
+.B int sem;
+.B int count;
+.fi
+.SH DESCRIPTION
+In either form,
+.I signal
+signals semaphore
+.I sem
+and returns SYSERR if the semaphore does not exist, OK otherwise.
+The form
+.I signal
+increments the count of
+.I sem
+by 1 and frees the next process if any
+are waiting.
+The form
+.I signaln
+increments the semaphore by
+.I count
+and frees up to
+.I count
+processes if that many are waiting.
+Note that \f2signaln\f1(sem, x) is equivalent to
+executing \f2signal\f1(sem) x times.
+.SH SEE ALSO
+scount(2), screate(2), sdelete(2), sreset(2), wait(2)

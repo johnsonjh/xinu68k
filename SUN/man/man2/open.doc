@@ -1,0 +1,66 @@
+
+
+
+OPEN(2)             Xinu Programmer's Manual              OPEN(2)
+
+
+
+NAME
+     open - device independent open routine
+
+SYNOPSIS
+     int open(dev, name, mode)
+     int dev;
+     char *name;
+     char *modes;
+
+DESCRIPTION
+     _O_p_e_n will establish connection with the device given by _d_e_v
+     using the null-terminated string _n_a_m_e to name an object on
+     that device, and null-terminated string _m_o_d_e to specify the
+     access mode for that object.  Valid access mode characters
+     include r (read), w (write), o (old), and n (new) as speci-
+     fied in ACCESS(2).
+
+     _O_p_e_n returns SYSERR if _d_e_v is incorrect or cannot be opened.
+     If successful, the value returned by _o_p_e_n depends on the
+     device.  Most calls to open return a device descriptor that
+     can be used in subsequent calls to _r_e_a_d_f_1 _o_r _w_r_i_t_e.  For
+     example, calling _o_p_e_n on a disk device with a file name as
+     an argument produces a descriptor by which that file can be
+     accessed.
+
+SEE ALSO
+     access(2), close(2), ckmode(3), namespace(4)
+
+BUGS
+     Not all devices produce meaningful return values for _o_p_e_n.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

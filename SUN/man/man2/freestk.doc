@@ -1,0 +1,66 @@
+
+
+
+FREESTK(2)          Xinu Programmer's Manual           FREESTK(2)
+
+
+
+NAME
+     freestk - deallocate a block of stack memory
+
+SYNOPSIS
+     int freestk(addr, len)
+     char *addr;
+     int len;
+
+DESCRIPTION
+     _F_r_e_e_s_t_k deallocates a contiguous block of memory previously
+     obtained with GETSTK(2), and returns it to the free list.
+     Argument _a_d_d_r specifies the highest integer address in the
+     block being deallocated, and argument _l_e_n specifies the
+     length of the block in bytes.  In this version, memory is
+     allocated in  multiples of four bytes to guarantee that suf-
+     ficient space is available in each block to link it onto the
+     free list.  However, both _g_e_t_s_t_k and _f_r_e_e_s_t_k rounds the
+     specified length automatically, so the user need not be
+     aware of any extra space in the allocated blocks.
+
+SEE ALSO
+     getbuf(2), getmem(2), getstk(2), freebuf(2), freemem(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

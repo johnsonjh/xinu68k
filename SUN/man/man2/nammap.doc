@@ -1,0 +1,66 @@
+
+
+
+NAMMAP(2)           Xinu Programmer's Manual            NAMMAP(2)
+
+
+
+NAME
+     nammap - map a name through the syntactic namespace
+
+SYNOPSIS
+     int nammap(name, newname)
+     char *name;
+     char *newname;
+
+DESCRIPTION
+     _N_a_m_m_a_p uses the syntactic namespace to translate a name into
+     a new name and returns the id of a device to which the name
+     maps.  Names are mapped iteratively until they map to a dev-
+     ice other than the _N_A_M_E_S_P_A_C_E.
+
+     Argument _n_a_m_e points to a null-terminated string containing
+     the name to be mapped.  Argument _n_e_w_n_a_m_e points to a string
+     area large enough to hold the mapped version of the name.
+     If successful, _n_a_m_m_a_p returns the device id of the device to
+     which the mapping corresponds.  Otherwise, it returns
+     SYSERR.
+
+SEE ALSO
+     namrepl(2), open(2), mount(2), unmount(2), namespace(4)
+
+BUGS
+     _N_a_m_m_a_p writes the mapped name into _n_e_w_n_a_m_e without checking
+     to make sure it fits.  There is no way to distinguish errors
+     such as string overflow from names that map to device
+     SYSERR.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+

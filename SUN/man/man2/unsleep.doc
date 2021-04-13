@@ -1,0 +1,66 @@
+
+
+
+UNSLEEP(2)          Xinu Programmer's Manual           UNSLEEP(2)
+
+
+
+NAME
+     unsleep - remove a sleeping process from the clock queue
+     prematurely
+
+SYNOPSIS
+     int unsleep(pid)
+     int pid;
+
+DESCRIPTION
+     _U_n_s_l_e_e_p allow one process to take another out of the sleep-
+     ing state before the time limit has expired.  usually, only
+     system routines like RECVTIM(2) and KILL(2) call _u_n_s_l_e_e_p.
+     User-level processes can avoid using _u_n_s_l_e_e_p by arranging
+     processes to cooperate using message passing primitives.
+
+SEE ALSO
+     sleep(2), kill(2), recvtim(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 6b               Printed 1/12/87                        1
+
+
+
