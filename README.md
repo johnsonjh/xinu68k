@@ -29,3 +29,5 @@ suitable for embedded environments.
 
 * Xinu for modern systems is available from [Xinu-OS.org](http://xinu-os.org/)
   and the [Xinu-OS](https://github.com/xinu-os) GitHub repository.
+
+* Other classic Xinu releases are available via [FTP](ftp://ftp.cs.purdue.edu/pub/comer/).
