@@ -1,0 +1,18 @@
+This dir contains three SA programs in various forms--
+
+test.c--a demo program of basic C library routines
+To build for mecb, "make C=test test.68"
+To build for 7300, "make C=test test.68a"
+To build for UNIX, gcc test.c  (but don't call it "test", see test(1))
+
+timetest.c, timetest_mecb.c, timetest_7300.c--use timer device to 
+   print dots from the clock interrupt handler
+timetest.c--uses PLATFORM preprocessor name, conditional compilation.
+  -- use Makefile.timetest to build the two versions timetest.68/.68a
+timetest_mecb.c--MECB-only version "make C=timetest_mecb timetest_mecb.68"
+timetest_7300.c--7300-only version "make C=timetest_7300 timetest_7300.68a"
+
+typewr_mecb.c, typewr_7300.c--interrupt on console input, echo using
+  polling
+typewr_mecb.c--MECB-only version "make C=typewr_mecb typewr_mecb.68"
+typewr_7300.c--7300-only version "make C=typewr_7300 typewr_7300.68a"

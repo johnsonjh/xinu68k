@@ -1,0 +1,13 @@
+#include "slu7201.h"
+
+int errno;
+c_startup()
+{
+	slu_init(1); /* normal console */
+        slu_init(3); /* 6850 too--alternate console */
+	*(short *)0x4e0000 = 0xff00;   /* turn off floppy drive */
+	set_debug_traps();	/* not in libsa.a--debugging init */
+	main();
+	breakpoint();		/* not in libsa.a--trap back to debugging */
+}
+

@@ -1,0 +1,203 @@
+gcc -O -m68000 -c -I../h -DDEBUG	-o create.o68 create.c
+create.c: In function create:
+create.c:31: warning: assignment of pointer from integer lacks a cast
+create.c:31: warning: comparison between pointer and integer
+create.c: In function newpid:
+create.c:76: warning: `newpid' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o dotrace.o68 dotrace.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o freemem.o68 freemem.c
+freemem.c: In function freemem:
+freemem.c:28: warning: comparison of distinct pointer types lacks a cast
+gcc -O -m68000 -c -I../h -DDEBUG	-o getitem.o68 getitem.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o getmem.o68 getmem.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o getpid.o68 getpid.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o getstk.o68 getstk.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o init.o68 init.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o initialize.o68 initialize.c
+initialize.c: In function sysinit:
+initialize.c:108: warning: `sysinit' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o insert.o68 insert.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o insertd.o68 insertd.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o ioerr.o68 ioerr.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o ionull.o68 ionull.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o kill.o68 kill.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o mark.o68 mark.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o mdump.o68 mdump.c
+mdump.c: In function mdump:
+mdump.c:16: warning: comparison of distinct pointer types lacks a cast
+mdump.c: In function mdumph:
+mdump.c:32: warning: comparison of distinct pointer types lacks a cast
+gcc -O -m68000 -c -I../h -DDEBUG	-o newqueue.o68 newqueue.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o mkpool.o68 mkpool.c
+mkpool.c: In function mkpool:
+mkpool.c:29: warning: assignment of pointer from integer lacks a cast
+mkpool.c:29: warning: comparison between pointer and integer
+gcc -O -m68000 -c -I../h -DDEBUG	-o poolinit.o68 poolinit.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o freebuf.o68 freebuf.c
+freebuf.c: In function freebuf:
+freebuf.c:31: warning: assignment of integer from pointer lacks a cast
+freebuf.c:32: warning: assignment between incompatible pointer types
+gcc -O -m68000 -c -I../h -DDEBUG	-o getbuf.o68 getbuf.c
+getbuf.c: In function getbuf:
+getbuf.c:23: warning: return of pointer from integer lacks a cast
+getbuf.c:26: warning: return of pointer from integer lacks a cast
+getbuf.c:30: warning: assignment of pointer from integer lacks a cast
+gcc -O -m68000 -c -I../h -DDEBUG	-o queue.o68 queue.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o ready.o68 ready.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o receive.o68 receive.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o recvclr.o68 recvclr.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o resched.o68 resched.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o resume.o68 resume.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o scount.o68 scount.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o screate.o68 screate.c
+screate.c: In function newsem:
+screate.c:34: warning: `newsem' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o sdelete.o68 sdelete.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o send.o68 send.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o sendf.o68 sendf.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o pcreate.o68 pcreate.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o pdelete.o68 pdelete.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o preceive.o68 preceive.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o psend.o68 psend.c
+psend.c: In function psend:
+psend.c:43: warning: comparison of distinct pointer types lacks a cast
+gcc -O -m68000 -c -I../h -DDEBUG	-o pinit.o68 pinit.c
+pinit.c: In function pinit:
+pinit.c:28: warning: assignment of pointer from integer lacks a cast
+pinit.c:28: warning: comparison between pointer and integer
+gcc -O -m68000 -c -I../h -DDEBUG	-o preset.o68 preset.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o pcount.o68 pcount.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o signal.o68 signal.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o signaln.o68 signaln.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o sleep.o68 sleep.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o sleep10.o68 sleep10.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o sreset.o68 sreset.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o ssclock.o68 ssclock.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o suspend.o68 suspend.c
+/usr/local/gnu/bin/as -m68000 -o piint.o68 piint.s
+gcc -O -m68000 -c -I../h -DDEBUG	-o ttyread.o68 ttyread.c
+ttyread.c: In function readcopy:
+ttyread.c:54: warning: `readcopy' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o ttygetc.o68 ttygetc.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttycntl6850.o68 ttycntl.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttyiin6850.o68 ttyiin.c
+ttyiin.c: In function erase1:
+ttyiin.c:120: warning: `erase1' was declared implicitly `extern' and later `static'
+ttyiin.c: In function echoch:
+ttyiin.c:163: warning: `echoch' was declared implicitly `extern' and later `static'
+ttyiin.c: In function eputc:
+ttyiin.c:186: warning: `eputc' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttyinit6850.o68 ttyinit.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttyoin6850.o68 ttyoin.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttyputc6850.o68 ttyputc.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o ttywrite6850.o68 ttywrite.c
+ttywrite.c: In function writcopy:
+ttywrite.c:49: warning: `writcopy' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o sluint6850.o68 sluint.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o sluint7201.o68 sluint.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o slu7201.o68 slu7201.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttycntl7201.o68 ttycntl.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttyiin7201.o68 ttyiin.c
+ttyiin.c: In function erase1:
+ttyiin.c:120: warning: `erase1' was declared implicitly `extern' and later `static'
+ttyiin.c: In function echoch:
+ttyiin.c:163: warning: `echoch' was declared implicitly `extern' and later `static'
+ttyiin.c: In function eputc:
+ttyiin.c:186: warning: `eputc' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttyinit7201.o68 ttyinit.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttyoin7201.o68 ttyoin.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttyputc7201.o68 ttyputc.c
+gcc -O -m68000 -c -I../h -DDEBUG -DSLUCHIP=7201 -o ttywrite7201.o68 ttywrite.c
+ttywrite.c: In function writcopy:
+ttywrite.c:49: warning: `writcopy' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o slu6850.o68 slu6850.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o userret.o68 userret.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o wait.o68 wait.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o wakeup.o68 wakeup.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o xdone.o68 xdone.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o read.o68 read.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o write.o68 write.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o getc.o68 getc.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o putc.o68 putc.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o control.o68 control.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o close.o68 close.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o open.o68 open.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o seek.o68 seek.c
+/usr/local/gnu/bin/as -m68000 -o ctxsw.o68 ctxsw.s
+gcc -O -m68000 -c -I../h -DDEBUG	-o getprio.o68 getprio.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o chprio.o68 chprio.c
+/usr/local/gnu/bin/as -m68000 -o panic.o68 panic.s
+/usr/local/gnu/bin/as -m68000 -o regdump.o68 regdump.s
+/usr/local/gnu/bin/as -m68000 -o slu1int.o68 slu1int.s
+/usr/local/gnu/bin/as -m68000 -o slu2int.o68 slu2int.s
+/usr/local/gnu/bin/as -m68000 -o slu3int.o68 slu3int.s
+/usr/local/gnu/bin/as -m68000 -o spurint.o68 spurint.s
+gcc -O -m68000 -c -I../h -DDEBUG	-o pscfuncts.o68 pscfuncts.c
+/usr/local/gnu/bin/as -m68000 -o pssfuncts.o68 pssfuncts.s
+/usr/local/gnu/bin/as -m68000 -o setclkr.o68 setclkr.s
+/usr/local/gnu/bin/as -m68000 -o startup.o68 startup.s
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlccntl.o68 dlccntl.c
+dlccntl.c: In function dlccntl:
+dlccntl.c:21: warning: assignment between incompatible pointer types
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlciin.o68 dlciin.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcinit.o68 dlcinit.c
+dlcinit.c: In function dlcinit:
+dlcinit.c:28: warning: assignment between incompatible pointer types
+dlcinit.c:30: warning: assignment of pointer from integer lacks a cast
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcoin.o68 dlcoin.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcputc.o68 dlcputc.c
+dlcputc.c: In function dlcputc:
+dlcputc.c:23: warning: assignment between incompatible pointer types
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcread.o68 dlcread.c
+dlcread.c: In function dlcread:
+dlcread.c:24: warning: assignment between incompatible pointer types
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcwrite.o68 dlcwrite.c
+dlcwrite.c: In function dlcwrite:
+dlcwrite.c:28: warning: assignment between incompatible pointer types
+gcc -O -m68000 -c -I../h -DDEBUG	-o dldump.o68 dldump.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o finput.o68 finput.c
+finput.c: In function finput:
+finput.c:21: warning: assignment of pointer from integer lacks a cast
+finput.c:34: warning: assignment of pointer from integer lacks a cast
+finput.c:36: warning: assignment of pointer from integer lacks a cast
+finput.c:37: warning: assignment between incompatible pointer types
+finput.c:37: warning: assignment between incompatible pointer types
+finput.c:42: warning: assignment of pointer from integer lacks a cast
+finput.c:46: warning: assignment of pointer from integer lacks a cast
+finput.c:52: warning: assignment of pointer from integer lacks a cast
+finput.c: In function sendack:
+finput.c:64: warning: `sendack' was declared implicitly `extern' and later `static'
+finput.c: In function sendnack:
+finput.c:77: warning: `sendnack' was declared implicitly `extern' and later `static'
+finput.c: In function sendsack:
+finput.c:87: warning: `sendsack' was declared implicitly `extern' and later `static'
+gcc -O -m68000 -c -I../h -DDEBUG	-o foutput.o68 foutput.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o freceive.o68 freceive.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o frinit.o68 frinit.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o frsend.o68 frsend.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o frtimer.o68 frtimer.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o fsend.o68 fsend.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o netinit.o68 netinit.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o getmid.o68 getmid.c
+/bin/rm -f  libx.a
+ar cr libx.a	 create.o68 dotrace.o68 freemem.o68 getitem.o68 getmem.o68 getpid.o68 getstk.o68 init.o68 initialize.o68 insert.o68 insertd.o68 ioerr.o68 ionull.o68 kill.o68 mark.o68 mdump.o68 newqueue.o68 mkpool.o68 poolinit.o68 freebuf.o68 getbuf.o68 queue.o68 ready.o68 receive.o68 recvclr.o68 resched.o68 resume.o68 scount.o68 screate.o68 sdelete.o68 send.o68 sendf.o68 pcreate.o68 pdelete.o68 preceive.o68 psend.o68 pinit.o68 preset.o68 pcount.o68 signal.o68 signaln.o68 sleep.o68 sleep10.o68 sreset.o68 ssclock.o68 suspend.o68 piint.o68 ttyread.o68 ttygetc.o68 ttycntl6850.o68 ttyiin6850.o68 ttyinit6850.o68 ttyoin6850.o68 ttyputc6850.o68 ttywrite6850.o68 sluint6850.o68 sluint7201.o68 slu7201.o68 ttycntl7201.o68 ttyiin7201.o68 ttyinit7201.o68 ttyoin7201.o68 ttyputc7201.o68 ttywrite7201.o68 slu6850.o68 slu7201.o68 userret.o68 wait.o68 wakeup.o68 xdone.o68 read.o68 write.o68 init.o68 getc.o68 putc.o68 control.o68 close.o68 open.o68 seek.o68 ctxsw.o68 getprio.o68 chprio.o68 panic.o68 regdump.o68 slu1int.o68 slu2int.o68 slu3int.o68 spurint.o68 pscfuncts.o68 pssfuncts.o68 setclkr.o68 startup.o68 dlccntl.o68 dlciin.o68 dlcinit.o68 dlcoin.o68 dlcputc.o68 dlcread.o68 dlcwrite.o68 dldump.o68 finput.o68 foutput.o68 freceive.o68 freebuf.o68 freemem.o68 frinit.o68 frsend.o68 frtimer.o68 fsend.o68 netinit.o68 getmid.o68
+ar: member name `ttywrite6850.o68' truncated to `ttywrite6850.o6'
+ar: member name `ttywrite7201.o68' truncated to `ttywrite7201.o6'
+ranlib libx.a
+gcc -O -m68000 -c -I../h -DDEBUG	-o nullnet.o68 nullnet.c
+gcc -O -m68000 -c -I../h -DDEBUG	-o dlcstubs.o68 dlcstubs.c
+gcc -O -m68000 -c -I../h -DDEBUG -o conf.o68 conf.c
+gcc -O -m68000 -c -I../h -DDEBUG -o clkinit.o68 clkinit.c
+/lib/cpp clkint.s > temp.s
+/usr/local/gnu/bin/as -m68000  temp.s -o clkint.o68; rm temp.s
+gcc -m68000 -c -I../h -DDEBUG -DSLUCHIP=6850 -o kprintf.o68 kprintf.c
+gcc -O -m68000 -c -I../h -DDEBUG -o lpstubs.o68 lpstubs.c
+/usr/local/gnu/bin/as -m68000 -o sizmem.o68 sizmem.s
+gcc -O -m68000 -c -I../h -DDEBUG -DATT7300 -o conf7300.o68 conf7300.c
+gcc -O -m68000 -c -I../h -DDEBUG -DATT7300 -o clkinit7300.o68 clkinit.c
+/lib/cpp -DATT7300 clkint.s > temp.s
+/usr/local/gnu/bin/as -m68000  temp.s -o clkint7300.o68; rm temp.s
+gcc -m68000 -c -I../h -DDEBUG -DATT7300 -DSLUCHIP=7201 -o kprintf7300.o68 kprintf.c
+gcc -O -m68000 -c -I../h -DDEBUG -DATT7300 -o lpstubs7300.o68 lpstubs.c
+lpstubs.c:2: intvectors7300.h: No such file or directory
+make: *** [lpstubs7300.o68] Error 1

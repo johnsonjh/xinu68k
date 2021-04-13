@@ -1,0 +1,50 @@
+gcc -m68000 -I../../../include -c -o abs.o68 abs.c
+gcc -m68000 -I../../../include -c -o atoi.o68 atoi.c
+gcc -m68000 -I../../../include -c -o doscan.o68 doscan.c
+gcc -m68000 -I../../../include -c -o ecvt.o68 ecvt.c
+gcc -m68000 -I../../../include -c -o fgets.o68 fgets.c
+gcc -m68000 -I../../../include -c -o fprintf.o68 fprintf.c
+gcc -m68000 -I../../../include -c -o fputs.o68 fputs.c
+gcc -m68000 -I../../../include -c -o gets.o68 gets.c
+gcc -m68000 -I../../../include -c -o index.o68 index.c
+gcc -m68000 -I../../../include -c -o printf.o68 printf.c
+gcc -m68000 -I../../../include -c -o puts.o68 puts.c
+gcc -m68000 -I../../../include -c -o qsort.o68 qsort.c
+qsort.c: In function qs1:
+qsort.c:17: warning: `qs1' was declared implicitly `extern' and later `static'
+qsort.c: In function qsexc:
+qsort.c:88: warning: `qsexc' was declared implicitly `extern' and later `static'
+qsort.c: In function qstexc:
+qsort.c:104: warning: `qstexc' was declared implicitly `extern' and later `static'
+gcc -m68000 -I../../../include -c -o rand.o68 rand.c
+gcc -m68000 -I../../../include -c -o rindex.o68 rindex.c
+gcc -m68000 -I../../../include -c -o scanf.o68 scanf.c
+scanf.c: In function getch:
+scanf.c:55: warning: `getch' was declared `extern' and later `static'
+scanf.c: In function ungetch:
+scanf.c:72: warning: `ungetch' was declared `extern' and later `static'
+scanf.c: In function sgetch:
+scanf.c:100: warning: `sgetch' was declared `extern' and later `static'
+scanf.c: In function sungetch:
+scanf.c:111: warning: `sungetch' was declared `extern' and later `static'
+/usr/local/gnu/bin/as -m68000 -o setjmp.o68 setjmp.s
+gcc -m68000 -I../../../include -c -o sprintf.o68 sprintf.c
+sprintf.c: In function sprntf:
+sprintf.c:25: warning: `sprntf' was declared `extern' and later `static'
+gcc -m68000 -I../../../include -c -o doprnt.o68 doprnt.c
+gcc -m68000 -I../../../include -c -o strcat.o68 strcat.c
+gcc -m68000 -I../../../include -c -o strcmp.o68 strcmp.c
+gcc -m68000 -I../../../include -c -o strcpy.o68 strcpy.c
+gcc -m68000 -I../../../include -c -o strlen.o68 strlen.c
+gcc -m68000 -I../../../include -c -o strncat.o68 strncat.c
+gcc -m68000 -I../../../include -c -o strncmp.o68 strncmp.c
+gcc -m68000 -I../../../include -c -o strncpy.o68 strncpy.c
+gcc -m68000 -I../../../include -c -o getchar.o68 getchar.c
+gcc -m68000 -I../../../include -c -o putchar.o68 putchar.c
+rm -f libxc.a
+ar cr libxc.a abs.o68 atoi.o68 doscan.o68 ecvt.o68 fgets.o68 fprintf.o68 fputs.o68 gets.o68 index.o68 printf.o68 puts.o68 qsort.o68 rand.o68 rindex.o68 scanf.o68 setjmp.o68 sprintf.o68 doprnt.o68 strcat.o68 strcmp.o68 strcpy.o68 strlen.o68 strncat.o68 strncmp.o68 strncpy.o68 getchar.o68 putchar.o68
+ranlib libxc.a
+cp ../gnulib/gnulib libcsupp.a
+ar x /lib/libc.a lmodt.o ldivt.o ptwo.o lmult.o
+ar r libcsupp.a lmodt.o ldivt.o ptwo.o lmult.o
+ranlib libcsupp.a

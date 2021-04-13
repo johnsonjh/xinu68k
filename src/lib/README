@@ -1,0 +1,17 @@
+There are several libraries here, somewhat overlapping:
+
+libxc: C library for use with both Xinu and standalone libraries
+	for printf, scanf, etc.  Uses putc and getc for all i/o.
+	Written in pre-ANSI C, Sun/Gnu as.
+libsa: library for downloaded standalone programs--implements putc
+	and getc, also startup, etc.
+	Written in pre-ANSI C, Sun/Gnu as.
+gnulib: Gnu cc support library, so that it can be compiled for 68000/
+	68010 rather than the host's CPU.
+	Written in pre-ANSI C, should be compiled with cc, not gcc.
+libsa_on7300: combo of libsa and libxc for use on the ATT7300 running
+	UNIX, to build SA programs such as Tutor
+	Written in pre-ANSI C, ATT7300 as.
+tutor_on7300: debugger/downloader to be built on ATT7300 running UNIX,
+	written to floppy disk, booted from host
+	Written in ANSI C, ATT7300 as.

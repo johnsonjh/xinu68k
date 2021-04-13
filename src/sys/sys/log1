@@ -1,0 +1,3 @@
+gcc -O -m68000 -c -I../h -DDEBUG -o lpstubs.o68 lpstubs.c
+gcc -O -m68000 -c -I../h -DDEBUG -DATT7300 -o lpstubs7300.o68 lpstubs.c
+/usr/local/gnu/bin/as -m68000 -o sizmem7300.o68 sizmem7300.s

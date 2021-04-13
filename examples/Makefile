@@ -1,0 +1,83 @@
+# Makefile for Xinu builds
+# Replace test with your user-level program name, or "make U=myprog myprog.68"
+# Since myprog.68 is the first target listed, "make U=myprog" makes myprog.68
+U=test
+# Startaddress for MECB--override by "make U=myprog A=21000" for ex.:
+A=1000
+# Startadddress for ATT7300--
+AA=90000
+# wipe out default suffixes list--
+.SUFFIXES:
+.SUFFIXES: .o68 .c .s
+XINU		=       ..
+# library dir for Xinu--
+XINU_LIB	=	$(XINU)/lib
+# include dir for Xinu--
+XINU_INC 	=	$(XINU)/include
+# Gnu binaries, for Gnu as and ld--
+GNUBIN		=	/usr/local/gnu/bin
+
+#Use Gnu cc, with special flag to restrict it to 68000 instruction set:
+CC	=	gcc -m68000
+# for Sun cc--
+# CC	=	cc -m68010
+CFLAGS	=	-c -I$(XINU_INC)
+#Use Gnu as and ld--
+AS	=	$(GNUBIN)/as -m68000
+LD	=	$(GNUBIN)/gcc-ld
+# for Sun as and ld--
+# AS	= 	as -10
+# LD	=	ld
+# XOFILES--object files unconditionally loaded for Xinu.  The
+# rest of the object files reside in libx.a, the Xinu library.
+# We default to no net code by loading nullnet.o68 ahead of library--
+# similarly, default to no real lp driver by loading lpstubs.o68,
+# and no real dlc driver by loading dlcstubs.o68.
+# All the files that depend explicitly on the platform are
+# in here, so the library libx.a can be used for both platforms.
+XOFILES_COMMON = $(XINU_LIB)/startup.o68 $(XINU_LIB)/initialize.o68 \
+		$(XINU_LIB)/nullnet.o68	$(XINU_LIB)/dlcstubs.o68 
+# MECB versions--
+XOFILES_MECB =	$(XINU_LIB)/conf.o68 $(XINU_LIB)/clkinit.o68 \
+		$(XINU_LIB)/clkint.o68 $(XINU_LIB)/kprintf.o68 \
+		$(XINU_LIB)/sizmem.o68 $(XINU_LIB)/lpstubs.o68
+
+# ATT7300 versions--
+XOFILES_7300 =	$(XINU_LIB)/conf7300.o68 $(XINU_LIB)/clkinit7300.o68 \
+		$(XINU_LIB)/clkint7300.o68 $(XINU_LIB)/kprintf7300.o68 \
+		$(XINU_LIB)/sizmem7300.o68 $(XINU_LIB)/lpstubs7300.o68
+
+# Default rules for building object files--
+.c.o68:
+		$(CC) $(CFLAGS) -o $*.o68 $*.c
+
+.s.o68:
+		$(AS) -o $*.o68 $*.s
+
+# make executable file for downloading from host to target machine
+# repeated library loads are necessary in some cases because syscalls in
+# libx.a use the C library, in libxc.a, and C library uses syscalls.
+# also make syms file for debugging--
+
+$(U).68a:	$(U).o68 
+		$(LD) -N -T $(AA) -o $(U).68a $(XOFILES_COMMON) \
+		$(XOFILES_7300) $(U).o68 $(XINU_LIB)/libxc.a \
+		$(XINU_LIB)/libx.a $(XINU_LIB)/libxc.a $(XINU_LIB)/libcsupp.a
+		nm -n $(U).68a>syms
+
+# Similarly, for MECB--
+$(U).68:	$(U).o68
+		$(LD) -N -T $(A) -o $(U).68 $(XOFILES_COMMON) \
+		$(XOFILES_MECB) $(U).o68 $(XINU_LIB)/libxc.a \
+		$(XINU_LIB)/libx.a $(XINU_LIB)/libxc.a $(XINU_LIB)/libcsupp.a
+		nm -n $(U).68>syms
+
+#for "hands-on" MECBs only--for TUTOR LO;X=cat test.pad--
+$(U).pad:	$(U).68
+		srec $(U).68 | nullpad 25 > $(U).pad
+
+clean:
+		rm -f *.o68 *.68 *.68a *.pad *.srec syms core
+
+
+

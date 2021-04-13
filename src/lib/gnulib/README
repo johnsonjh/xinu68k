@@ -1,0 +1,19 @@
+This dir contains the files to build gnulib for the MECBs.
+(gnulib contains support routines for the more obscure arithmetic
+operations for gcc.)  These files were copied from 
+/usr/local/gnu/src/gcc
+on Feb. 12, 1989, and the only edit was to the Makefile to
+change cc to "cc -m68010 -S" and then add "as -10 -h..."
+to produce 68000-pure library code.
+Just "make gnulib" to build it.
+
+Then "ar qc gnulib ../libxc/lmult.o"  to add lmult.o from Sun libc.a
+to this library to make it self-sufficient.  Some routines in gnulib,
+when compiled by cc, call lmult.
+
+Feb 28, '91--tried to rebuild it without eprintf, clearly not
+wanted for sa work.  as no longer takes -10 or -h.  Substituted
+-mc68010 for -10 and dropped -h (why did we need it before??)
+Got a couple of assembler errors, but look like float support
+anyway.  In addition to lmult.o, need ldivt.o, lmodt.o, and ptwo.o
+from C lib.

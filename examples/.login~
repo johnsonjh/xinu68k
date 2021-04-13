@@ -1,0 +1,131 @@
+# Prototypical .login file for UMB CS lab.
+#
+# This file is available in /usr/local/lib/.login
+# If this stops working after you edit it, and you want to start over, do
+#     cp /usr/local/lib/.login ~/.login
+# Similarly, .cshrc can be redone--
+#     cp /usr/local/lib/.cshrc ~/.cshrc
+
+# Specify new terminal handler, DELETE for char-delete, <control-U> for
+# line-delete, etc., as is normal for DEC operating systems--
+stty new dec crt
+# Uncomment the next line to set char-delete to BACKSPACE--
+#stty erase '^h'
+
+# All users are responsible for notices put up on the bulletin board.
+# If you remove this invocation and miss something important -- you lose.
+echo Checking the msgs bulletin board:
+msgs
+
+#**************start of technical details, advanced options***************
+# Ignore the following to start with
+
+# Now the terminal type needs to be specified: vt100 or whatever.
+# You need to worry about this only if you dial in from outside the
+# University; the following works quietly and effectively for all in-lab
+# terminals.  Dialin terminals have TERM of "dialup" at this point.
+#-----------start of menu-driven dialin TERM setting----------------------
+set noglob
+while ($TERM == network || $TERM == dialup)
+echo Please specify one of the following terminal types for your terminal:
+echo 'vt100     most common dialin type'
+echo 'z29e      Zenith 29'
+echo '925       Televideo 925 or emulator of it (Wyse running TVI925, etc.)'
+echo 'mac       MacIntosh running MacTerminal'
+echo 'z19       Zenith 19, also Heathkit H19'
+echo 'vt102     Newer version of vt100'
+echo 'vt240     DEC graphics terminal'
+echo 'adm3a, adm5, or 610'
+echo your choice:
+set tty=($<)
+switch ($tty)
+ case vt100:
+ case z29e:
+ case 925:
+ case mac:
+ case h19:
+ case z19:
+ case vt102:
+ case vt240:
+ case adm3a:
+ case adm5:
+ case 610:
+	setenv TERM $tty
+        breaksw
+ default:
+	echo $tty not recognized, try again
+	setenv TERM dialup
+endsw
+end
+# Now TERM is set up, finish the job by using the tset command:
+eval `tset -s `
+unset noglob
+#-----------end of menu-driven TERM setting-----------------------
+
+# The following will work in place of the above menu-driven TERM
+# setting, with less chatter:
+# Replace vt100 with your own terminal type if necessary.
+#-----------start of fast TERM setting----------------------------
+#set noglob
+#eval `tset -s -m 'network:?vt100' -m 'dialup:?vt100' `
+#set term = $TERM
+#unset noglob
+#-----------end of fast TERM setting------------------------------
+
+# setups for vi editor--EDITOR and EXINIT environment vars--
+setenv EDITOR /usr/ucb/vi
+
+switch ($TERM)
+    case [hz]19*:
+    case z29*:
+	    setenv EXINIT 'set slowopen window=10 ai sw=4'
+	    breaksw
+    case *610:
+    case unixpc:
+    case intext:
+	    stty erase ''
+    case vt100:
+    default:
+	    setenv EXINIT 'set noslowopen ai sw=4'
+endsw
+
+# Be notified IF mail arrives, and say who it's from.
+# uncomment the following for instant notification--
+#biff y
+# The shell looks at this file every time it puts out a prompt.
+# If it is written upon, you see ``You have new mail.''
+set mail=/usr/spool/mail/$user
+
+# Comment out the following to enable normal ^Z job control
+# but only after you know about processes and the ps, jobs and kill commands--
+#stty susp '^_'
+
+# Arrange for the preferred screen-paging program.
+setenv PAGER /usr/local/bin/mo
+
+#***********end of technical details, advanced options******************
+
+#delete/ignore the rest of this file if not in CS240, 241, or 440--
+# for MECB software development support--
+# top of directory tree for this support--
+setenv M /usr/local/xinu68
+# MECB header files stdio.h, slu.h, etc--
+setenv minc $M/include
+# C library for mecb, startup.o, etc 
+setenv mlib $M/lib
+# doc files for mecb C library--
+setenv mman $M/man/man3
+# source files for mecb C library--
+setenv mlibsrc $M/src/lib/libxc
+# example files, makefiles--
+setenv mex $M/examples
+#for Xinu--
+setenv xinu /usr/local/src/XINU68
+setenv xuinc $xinu/include
+setenv xulib $xinu/lib
+setenv xuex $xinu/examples
+#Xinu kernel sources--
+setenv xuker $xinu/src/sys/sys
+
+
+

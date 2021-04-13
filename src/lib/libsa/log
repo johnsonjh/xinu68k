@@ -1,0 +1,27 @@
+gcc  -I. -g -m68000 -c -o kprintf6850.o68 kprintf.c
+gcc  -I. -g -m68000 -c -o pscfuncts.o68 pscfuncts.c
+gcc  -I. -g -m68000 -c -o slu6850.o68 slu6850.c
+gcc  -I. -g -m68000 -c -o putc_mecb.o68 putc_mecb.c
+gcc  -I. -g -m68000 -c -o kputc6850.o68 kputc6850.c
+gcc  -I. -g -m68000 -c -o getc_mecb.o68 getc_mecb.c
+gcc  -I. -g -m68000 -c -o kgetc6850.o68 kgetc6850.c
+as -m68000 -o pssfuncts.o68 pssfuncts.s
+as -m68000 -o slu1int.o68 slu1int.s
+as -m68000 -o slu2int.o68 slu2int.s
+as -m68000 -o slu3int.o68 slu3int.s
+as -m68000 -o clockint.o68 clockint.s
+as -m68000 -o spurint.o68 spurint.s
+rm -f libsa_mecb.a
+ar cr libsa_mecb.a kprintf6850.o68 pscfuncts.o68 slu6850.o68 putc_mecb.o68 kputc6850.o68 getc_mecb.o68 kgetc6850.o68 pssfuncts.o68 slu1int.o68 slu2int.o68 slu3int.o68 clockint.o68 spurint.o68 
+ranlib libsa_mecb.a
+gcc  -I. -g -m68000 -c -DATT7300 -o kprintf7201.o68 kprintf.c
+gcc  -I. -g -m68000 -c -o slu7201.o68 slu7201.c
+gcc  -I. -g -m68000 -c -o putc_7300.o68 putc_7300.c
+gcc  -I. -g -m68000 -c -o kputc7201.o68 kputc7201.c
+gcc  -I. -g -m68000 -c -o getc_7300.o68 getc_7300.c
+gcc  -I. -g -m68000 -c -o kgetc7201.o68 kgetc7201.c
+rm -f libsa_7300.a
+ar cr libsa_7300.a kprintf7201.o68 pscfuncts.o68 slu6850.o68 slu7201.o68 putc_7300.o68 kputc6850.o68 kputc7201.o68 getc_7300.o68 kgetc6850.o68 kgetc7201.o68 pssfuncts.o68 slu1int.o68 slu2int.o68 slu3int.o68 clockint.o68 spurint.o68 
+ranlib libsa_7300.a
+as -m68000 -o sa_startup_mecb.o68 sa_startup_mecb.s
+as -m68000 -o sa_startup_7300.o68 sa_startup_7300.s

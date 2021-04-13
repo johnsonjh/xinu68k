@@ -1,0 +1,63 @@
+# Sample makefile for building C or assembly language programs for the
+#  ATT7300 or MECB using the PLATFORM preprocessor name
+# vals for PLATFORM--must match #defines used by programs--
+MECB = 1
+ATT7300 = 2
+# system directories needed for compilers, libraries, header files--
+XINU = /nfs/src/XINU68
+SALIB = $(XINU)/sa
+SAINC = $(XINU)/sa
+# for m68000-coded C-library code--
+LIB = $(XINU)/lib
+CC = gcc
+CFLAGS = -m68000 -I$(SALIB) -c
+# File suffixes:
+# .c	C source (often useful for host, mecb, and ATT7300)
+# .s 	assembly language source
+# .o    object file, for 68020/UNIX (Sun OS), not used here
+# .o68  object file, 68000-compatible, PLATFORM independent
+# .o68m object code, 68000-compatible, PLATFORM==MECB during compile
+# .o68a object code, 68000-compatible, PLATFORM==ATT7300 during compile
+# <no suffix>  executable image, for 68020/SunOS, not used here
+# .68 	executable image (bits as in memory), 68000/MECB compatible
+# .68a 	executable image (bits as in memory), 68000/ATT7300 compatible
+
+# Symbol file "syms"--for most recently built executable in directory
+#rules for compiling--
+#platform-independent modules (.c never refers to PLATFORM)--
+.SUFFIXES:
+.SUFFIXES: .o68 .o68a .o68m .c .s
+# for PLATFORM-independent C sources--
+.c.o68:
+		$(CC) $(CFLAGS)	-o $*.o68 $*.c
+
+# for PLATFORM==MECB compilation--
+.c.o68m:
+		$(CC) $(CFLAGS) -DPLATFORM=$(MECB) -o $*.o68m $*.c
+
+# for PLATFORM==ATT7300 compilation--
+.c.o68a:
+		$(CC) $(CFLAGS) -DPLATFORM=$(ATT7300) -o $*.o68a $*.c
+
+# ATT7300 executable--tell ld to start code at 0x90000, load special startup
+# module, then the program, then search the 68000 C library, then
+# the SA i/o library, finally 68000-gcc arithmetic support library
+# (gnulib plus a few arithmetic routines from /lib/libc.a)
+# But since kprintf, in SA lib, calls _doprnt, we need 2nd scan of libxc.a
+timetest.68a:	timetest.o68a
+	ld -N -T 90000 -o timetest.68a $(SALIB)/sa_startup_7300.o68 \
+		 timetest.o68a $(LIB)/libxc.a $(SALIB)/libsa_7300.a \
+		 $(LIB)/libxc.a $(LIB)/libcsupp.a
+	nm -n timetest.68a>syms
+
+# MECB executable--tell ld to start code at 0x1000, load special startup
+# module, etc.--
+timetest.68: timetest.o68m
+	ld -N -T 1000 -o timetest.68 $(SALIB)/sa_startup_mecb.o68 \
+		 timetest.o68m $(LIB)/libxc.a $(SALIB)/libsa_mecb.a \
+		 $(LIB)/libxc.a $(LIB)/libcsupp.a
+	nm -n timetest.68>syms
+
+clean:
+	rm -f *.o *.o68 syms *.68 *.68a core
+

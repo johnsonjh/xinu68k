@@ -1,0 +1,111 @@
+Xinu for the ATT7300 (3B1) and MECB (Motorola Educational Computer Board)
+
+This is an implementation of the Vol. I Xinu for diskless singleboard
+68000/68010 systems.  The ATT7300 is the preferred system, having
+at least .5M memory vs. the MECB's cramped 32K.
+
+ATT7300 hardware and the Xinu support provided here:
+
+MC68010, 10Mhz
+.5M-2M onboard memory, up to 4M with expansion memory
+VA space of 4M, monolithic page table (not used here for paging)
+RS232 port with software-selectable baudrates to 19.2K baud, with
+  NEC7201 SLU (used for Xinu console)
+Line clock interrupting at 60Hz, used for Xinu clock.
+Keyboard interface with MC6850 SLU--Xinu tty driver for it here, but
+  not compatible with the serial encoding from the native keyboard,
+  so you need to attach another terminal to use it.
+Centronics parallel printer port (start on LPR driver here, fleshing
+  it out is a good student project)
+Floppy disk--not supported in Xinu, but used to boot monitor/downloading
+  system
+Hard disk--not supported or needed.  
+Realtime clock--not supported in Xinu.
+Telephone interfaces--not supported.
+Bitmap graphics monitor interface--not supported.
+
+MECB hardware and Xinu support:
+
+MC68000 CPU, 4Mhz
+32K memory
+2 serial ports, each with MC6850 SLUs, available as Xinu ttys or
+  dlcs.  Easy to add a third MC6850 at 0x30001, for 2nd dlc.
+  (However running a Xinu net takes more than 32K memory, not so easy)
+MC68230 PI/timer:  Timer used as Xinu clock, setup for LPR driver
+  using PI.
+
+Changes to Xinu required by this port
+
+A major aim was preserving the original code as far as possible,
+so that Comer's text (Vol I) is still highly relevant.  One
+problem here is that the ATT7300 has 2 different SLU chips, the
+NEC7201 and the MC6850.  To mask the differences, all the required
+hardware actions are carried out by macros, and the necessarily
+device-dependent entry points such as ttyoin and ttywrite are
+now TTYOIN and TTYWRITE, expanding as required to ttyoin7201
+or ttyoin6850, etc., so that ttyoiin7201.o68, the resulting
+object file, has the macros expanded for the 7201 chip.
+One could simplify back to one chip by ignoring the 6850
+altogether--it requires making a special cable to be useful.
+
+Development Host Assumptions
+
+We are downloading Xinu from Suns on which we run Gnu C/as/ld, but
+nothing added to Xinu has been written to require ANSI C.  So it
+should all build with Sun cc or other pre-ANSI C.  The assembler
+sources are in Sun/Gnu syntax, not Motorola syntax nor the still
+different ATT7300 assembler.  Luckily this is a very small part
+of the system.
+
+Turning an ATT7300 into an online standalone system.
+
+The ATT7300 as delivered as a UNIX PC has only a turnkey ROM
+program, that initializes the sytem and boots off the floppy
+disk or hard disk, normally the file "/unix", but this can be
+any executable.  Thus at least a download program needs to be
+here--see below for our software.
+
+It is straightforward to attach the DTE port of the ATT7300 to
+a serial line, and use whatever system you have to download to
+it.  In addition, you need to be able to reset it from the host.
+We have one MECB dedicated as a reset server to all the online
+standalone systems, and the signal from it needs to be connected
+into the reset logic of the 7300.  Note that it uses an RC circuit
+to debounce the reset button, so a TTL-type signal needs gain
+before being connected into this circuit, unlike the MECB that
+uses butterfly-connected gates to debounce its reset button.
+
+Downloading/monitor software on the ATT7300
+
+In libsa_on7300 and tutor_on7300 there are the sources for software
+to be built on the ATT7300 running its own UNIX, then written
+to a floppy disk to be read in on reset from the development
+host.  The "Tutor" debugger follows the command syntax of
+Motorola's TUTOR series, doing breakpoints but not disassembly.
+There is also "remcom" support for remote gdb built in but not
+yet working--maybe by the end of summer.  Getting this working
+from a bare machine was the greater part of this effort--once
+you can download it's easy to do software work, and it means
+you've already got a working serial driver.  The 7300's serial
+interface (NEC7201) is ridiculously complicated--I can't imagine
+why they chose this particular chip.  The downloading is of
+course just one end of the system we use--we can supply the
+host end too if you want.
+
+Running non-Xinu programs.
+
+The two libraries libsa and libxc together provide a C standalone
+programming environment completely separate from Xinu.  The
+top-level directory sa_examples has a few sample programs and
+a Makefile.  In the top-level sa directory are headers for the
+MMU and PI as well as the Xinu-supported parts of the hardware.
+
+Support
+
+As usual, no support is guaranteed, but please write to eoneil@cs.umb.edu
+with any problems and I'll try to help.  In particular, although
+this implementation is known to Purdue and Doug Comer, and this
+method of distribution is OK with them, they have no time to 
+support such specific ports as this.
+
+Betty O'Neil   June, 1991
