@@ -1,0 +1,30 @@
+                      License information for Xinu software
+
+(1) Regarding  the  software  known  as  Xinu  and  documented  in  OPERATING
+    SYSTEM DESIGN - THE XINU APPROACH (Copyright (C) 1984 Prentice Hall Inc.)
+
+    Redistribution and use in source  and binary forms are permitted provided
+    that  this  notice is  preserved  and  that  due  credit is given to  the
+    copyright holders. The names of the copyright  holders may not be used to
+    endorse or promote products derived from  this software  without specific
+    prior written  permission. The software is provided AS IS. Douglas  Comer
+    and  Prentice  Hall,  Inc.  make  no  warranty  of  the  software  and/or
+    documentation as to merchantability and fitness for a particular purpose.
+    Douglas Comer does not warrant or guarantee the use of, or the results of
+    the use of, the software in  terms of correctness, accuracy, reliability,
+    currentness or  otherwise. In no  event will Douglas Comer, Prentice Hall
+    Inc., or CRC Press Incorporated be liable to LICENSEE or any other person
+    for loss or damage, including  time, goodwill,  and consequential damages
+    which  may arise or  be incurred by LICENSEE  or anyone else from the use
+    of the software.
+
+(2) In  consideration  of  the obligations of the parties,  the  nonexclusive
+    royalty-free,  irrevocable right  to  use, copy,  modify, incorporate, or
+    create derivatives of, and  distribute all or  portions of software known
+    as  Xinu as documented  in "OPERATING SYSTEM DESIGN THE XINU APPROACH" is
+    hereby granted to LICENSEE.
+
+    The  above rights are  granted subject to  the condition that  LICENSEE's
+    charge  for product or application  does not include any charge for  Xinu
+    or any unmodified portion thereof.
+
