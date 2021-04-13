@@ -1,6 +1,6 @@
 # Xinu-68K
 
-**_Xinu Is Not Unix_** for 68000 systems
+**_Xinu Is Not Unix_** ... for 68000 systems
 
 ## Description
 
