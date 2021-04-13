@@ -1,15 +1,18 @@
 # Xinu-68K
 
-Xinu Is Not Unix
+***Xinu Is Not Unix***
 
 ## Description
 
 Xinu is a small, elegant operating system that supports dynamic
 process creation, dynamic memory allocation, network communication,
 local and remote file systems, a shell, and device-independent I/O
-functions. Although it shares concepts and even names with Unix,
-the internal design differs completely. It's small size makes it
-suitable for embedded environments.
+functions.
+
+Although it shares concepts and even names with Unix, the internal
+design differs completely.
+
+It's small size makes it suitable for embedded environments.
 
 ## Supported Systems
 
@@ -23,11 +26,13 @@ suitable for embedded environments.
 
 ## Licensing
 
-* See the [Xinu license](LICENSE.md) for details.
+* See the [Xinu license](LICENSE.md) for details
 
 ## Additional Information
 
-* Xinu for modern systems is available from [Xinu-OS.org](http://xinu-os.org/)
-  and the [Xinu-OS](https://github.com/xinu-os) GitHub repository.
+* Xinu for modern systems is available from
+  * The [Xinu-OS.org](http://xinu-os.org/) homepage
+  * The [Xinu-OS](https://github.com/xinu-os) GitHub repository
 
-* Other classic Xinu releases are available via [FTP](ftp://ftp.cs.purdue.edu/pub/comer/).
+* Other classic Xinu releases are available via
+  FTP (*ftp://ftp.cs.purdue.edu/pub/comer/*)
