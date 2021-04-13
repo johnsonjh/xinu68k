@@ -1,8 +1,15 @@
 # Xinu-68K
 
-## About
-
 Xinu Is Not Unix
+
+## Description
+
+Xinu is a small, elegant operating system that supports dynamic
+process creation, dynamic memory allocation, network communication,
+local and remote file systems, a shell, and device-independent I/O
+functions. Although it shares concepts and even names with Unix,
+the internal design differs completely. It's small size makes it
+suitable for embedded environments.
 
 ## Supported Systems
 
