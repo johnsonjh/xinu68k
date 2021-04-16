@@ -1,5 +1,7 @@
 # Xinu-68K
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/95d88dd237824151ab4450bcd042ceff)](https://app.codacy.com/gh/johnsonjh/xinu68k?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/xinu68k&utm_campaign=Badge_Grade_Settings)
+
 **_Xinu Is Not Unix_** ... for 68000 systems
 
 ## Description
