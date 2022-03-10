@@ -29,7 +29,11 @@ It's small size makes it suitable for embedded environments.
 
 ## Additional Information
 
-- Xinu for modern systems is available from
+- Historical Xinu-68K software is available from:
+
+  - [johnsonjh/AncientXinu](https://github.com/johnsonjh/AncientXinu)
+
+- Xinu for modern systems is available from:
 
   - The [Xinu-OS.org](http://xinu-os.org/) homepage
   - The [Xinu-OS](https://github.com/xinu-os) GitHub repository
